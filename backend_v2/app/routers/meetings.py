@@ -107,6 +107,8 @@ def format_meeting_response(m: Meeting) -> dict:
 async def list_meetings(
     search: Optional[str] = None,
     sort: Optional[str] = "newest",
+    month: Optional[int] = None,
+    year: Optional[int] = None,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
@@ -120,8 +122,28 @@ async def list_meetings(
             selectinload(Meeting.user),
         )
     )
+
+    # HOD sees all meetings in their department (all faculty)
+    # Faculty sees only their own meetings
+    if current_user.role == "HOD":
+        stmt = stmt.filter(Meeting.department_id == current_user.department_id)
+    elif current_user.role == "Faculty":
+        stmt = stmt.filter(Meeting.user_id == current_user.id)
+    # Admin sees all — no filter
+
     if search:
         stmt = stmt.filter(Meeting.title.ilike(f"%{search.strip()}%"))
+
+    # Month/year filter
+    if month and year:
+        from sqlalchemy import extract
+        stmt = stmt.filter(
+            extract("month", Meeting.date) == month,
+            extract("year", Meeting.date) == year,
+        )
+    elif year:
+        from sqlalchemy import extract
+        stmt = stmt.filter(extract("year", Meeting.date) == year)
 
     if sort == "oldest":
         stmt = stmt.order_by(Meeting.date.asc())
