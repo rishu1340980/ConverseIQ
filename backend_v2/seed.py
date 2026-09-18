@@ -1,4 +1,7 @@
 import asyncio
+import os
+import json
+from datetime import datetime, timezone
 from sqlalchemy.future import select
 from backend_v2.app.core.database import engine, AsyncSessionLocal, Base
 from backend_v2.app.core.security import get_password_hash
@@ -120,6 +123,85 @@ async def seed():
                 )
                 session.add(new_user)
                 print(f"Created user: {u['name']} ({u['role']}) - {u['email']}")
+
+        # 3. Seed Past / Historical Meetings (if not already present)
+        json_path = os.path.join(os.path.dirname(__file__), "app", "core", "initial_meetings.json")
+        if os.path.exists(json_path):
+            with open(json_path, "r", encoding="utf-8") as f:
+                initial_meetings = json.load(f)
+
+            prof_stmt = select(User).filter(User.email == "prof.sharma@converseiq.edu")
+            prof_res = await session.execute(prof_stmt)
+            default_host = prof_res.scalar_one_or_none()
+            cs_dept = departments_map.get("CS")
+
+            for m_data in initial_meetings:
+                m_stmt = select(Meeting).filter(Meeting.title == m_data["title"])
+                m_res = await session.execute(m_stmt)
+                if not m_res.scalar_one_or_none():
+                    try:
+                        dt = datetime.fromisoformat(m_data["date"]) if m_data.get("date") else datetime.now(timezone.utc)
+                    except Exception:
+                        dt = datetime.now(timezone.utc)
+
+                    new_meeting = Meeting(
+                        title=m_data["title"],
+                        date=dt,
+                        duration_minutes=m_data.get("duration_minutes", 45),
+                        status=m_data.get("status", "Completed"),
+                        user_id=default_host.id if default_host else 1,
+                        department_id=cs_dept.id if cs_dept else None,
+                    )
+                    session.add(new_meeting)
+                    await session.flush()
+
+                    for p in m_data.get("participants", []):
+                        part = MeetingParticipant(
+                            meeting_id=new_meeting.id,
+                            name=p.get("name", "Speaker"),
+                            speaker_label=p.get("speaker_label", "Speaker"),
+                        )
+                        session.add(part)
+
+                    if m_data.get("mom"):
+                        mom_d = m_data["mom"]
+                        mom = MinutesOfMeeting(
+                            meeting_id=new_meeting.id,
+                            summary=mom_d.get("summary", ""),
+                            decisions=mom_d.get("decisions", []),
+                            agenda_topics=mom_d.get("agenda_topics", []),
+                            is_finalized=mom_d.get("is_finalized", True),
+                        )
+                        session.add(mom)
+
+                    for it in m_data.get("action_items", []):
+                        try:
+                            due = datetime.fromisoformat(it["due_date"]) if it.get("due_date") else None
+                        except Exception:
+                            due = None
+                        action = ActionItem(
+                            meeting_id=new_meeting.id,
+                            task=it.get("task", ""),
+                            owner_name=it.get("owner_name", "Faculty"),
+                            priority=it.get("priority", "Medium"),
+                            status=it.get("status", "Pending"),
+                            due_date=due,
+                        )
+                        session.add(action)
+
+                    for u in m_data.get("utterances", []):
+                        utt = Utterance(
+                            meeting_id=new_meeting.id,
+                            speaker_name=u.get("speaker_name"),
+                            speaker_label=u.get("speaker_label"),
+                            text=u.get("text", ""),
+                            english_translation=u.get("english_translation"),
+                            language=u.get("language", "English"),
+                            timestamp=u.get("timestamp", "00:00"),
+                        )
+                        session.add(utt)
+
+                    print(f"Seeded historical meeting: {m_data['title']}")
 
         await session.commit()
         print("Database seeding completed successfully!")

@@ -1,0 +1,1030 @@
+[
+  {
+    "title": "testingpart1",
+    "date": "2026-09-16 10:11:45.934067",
+    "duration_minutes": 45,
+    "status": "Completed",
+    "participants": [
+      {
+        "name": "Ruben",
+        "speaker_label": "Speaker A"
+      },
+      {
+        "name": "Kiara",
+        "speaker_label": "Speaker B"
+      },
+      {
+        "name": "Riya",
+        "speaker_label": "Speaker C"
+      }
+    ],
+    "mom": {
+      "summary": "The session focused on the strategic role of networking, informal mentorship, and soft skills in driving student career trajectories and industry readiness. Panelists examined the psychological necessity of human connectivity, shared case studies on career pivoting through executive outreach, and identified structural shortcomings in formal education regarding interpersonal skill development. The meeting concluded with a consensus on institutionalizing networking and communication training within standard educational curricula to support students across all personality profiles.",
+      "decisions": [],
+      "agenda_topics": [
+        {
+          "topic": "Psychological and Social Imperatives of Networking",
+          "points": [
+            "Discussed human social behavior and foundational research indicating that personal and professional connectivity enhances longevity and cognitive freshness.",
+            "Highlighted the modern gap created by digital convenience and the necessity of in-person, cross-domain networking."
+          ]
+        },
+        {
+          "topic": "Career Advancement through Executive Outreach and Mentorship",
+          "points": [
+            "Analyzed how direct outreach and cold emailing to founders can uncover unlisted career opportunities in emerging tech sectors.",
+            "Reviewed case studies illustrating how industry veterans mitigate onboarding friction for fresh graduates through tailored mentorship."
+          ]
+        },
+        {
+          "topic": "Experiential Apprenticeship vs. Traditional Education",
+          "points": [
+            "Debated the limitations of traditional educational models in fostering practical artistic and technical skills.",
+            "Emphasized the critical value of field experience, mentor-guided practice, and modern skill-bartering networks."
+          ]
+        },
+        {
+          "topic": "Institutionalizing Soft Skills in Early Curricula",
+          "points": [
+            "Assessed the challenges faced by introverted individuals in client-facing and freelance careers.",
+            "Concluded that structured networking education is necessary early in the learning journey to equip introverted students with required professional tools."
+          ]
+        }
+      ],
+      "is_finalized": false
+    },
+    "action_items": [],
+    "utterances": [
+      {
+        "speaker_name": "Ruben",
+        "speaker_label": "Speaker A",
+        "text": "Hi guys, good evening. You know, I'm really glad that we could gather today here to have this meeting, you know? It's a networking event that I would like to welcome you guys to. Would love to hear your thoughts, would love to hear your perspectives, and I hope that all three of us can take some learning from each other today. Welcome Kiara, welcome Riya. How are you guys?",
+        "english_translation": "Hi guys, good evening. You know, I'm really glad that we could gather today here to have this meeting, you know? It's a networking event that I would like to welcome you guys to. Would love to hear your thoughts, would love to hear your perspectives, and I hope that all three of us can take some learning from each other today. Welcome Kiara, welcome Riya. How are you guys?",
+        "language": "English",
+        "timestamp": "00:00"
+      },
+      {
+        "speaker_name": "Kiara",
+        "speaker_label": "Speaker B",
+        "text": "I'm well. I'm doing good. I am really happy to be here. This is exactly the place where I want to be. I'm such an extroverted person, be it in my personal life or be it in my professional life. I love people, like I remember when I was in school and college, I had the subject I studied the subject Psychology very deeply where I remember this very research talking about how humans are social beings, that it's proven if humans live in social groups, and if you have like people you can rely on, you actually tend to live longer. So, be it, like I said, be it in professional life or personal life, people and the existence of people around you, it's very important. Now, not to take away from the fact that existing around people is not easy, so it's very nice to have events like such to learn how to easily network and make your peace with difference of opinions. It really helps people who haven't been out there in the real world. It is such a blessing.",
+        "english_translation": "I'm well. I'm doing good. I am really happy to be here. This is exactly the place where I want to be. I'm such an extroverted person, be it in my personal life or be it in my professional life. I love people, like I remember when I was in school and college, I had the subject I studied the subject Psychology very deeply where I remember this very research talking about how humans are social beings, that it's proven if humans live in social groups, and if you have like people you can rely on, you actually tend to live longer. So, be it, like I said, be it in professional life or personal life, people and the existence of people around you, it's very important. Now, not to take away from the fact that existing around people is not easy, so it's very nice to have events like such to learn how to easily network and make your peace with difference of opinions. It really helps people who haven't been out there in the real world. It is such a blessing.",
+        "language": "English",
+        "timestamp": "00:34"
+      },
+      {
+        "speaker_name": "Riya",
+        "speaker_label": "Speaker C",
+        "text": "I would, you know, really like to agree with what you just said, Kiara, that, you know, we are social beings, and we are, our basic tendency is to, you know, go out there, meet new people, you know, have a conversation. You know, it keeps your mind, you know, gets you fresh ideas, maybe something you can pick up as, you know, an insight into something that you won't be great at. So, yeah, I agree with, you know, us being social beings and needing to have a human conversation.",
+        "english_translation": "I would, you know, really like to agree with what you just said, Kiara, that, you know, we are social beings, and we are, our basic tendency is to, you know, go out there, meet new people, you know, have a conversation. You know, it keeps your mind, you know, gets you fresh ideas, maybe something you can pick up as, you know, an insight into something that you won't be great at. So, yeah, I agree with, you know, us being social beings and needing to have a human conversation.",
+        "language": "English",
+        "timestamp": "01:43"
+      },
+      {
+        "speaker_name": "Kiara",
+        "speaker_label": "Speaker B",
+        "text": "You know, I'm so glad in this digital world stepping outside of your home, seeing actual faces has become like a rare thing. It's like, oh, once in a while thing, which is so sad, which is so sad. We were designed to have human interactions, and while in being in this digital world, it is it's very convenient, but convenience always doesn't mean it's good. So, I'm really happy that everyone everybody stepped out of their comfort zones and is here to talk and network with different people from different different realms, different walks of life. It's really nice. It's really nice to see you, Ruben, as well. I'm seeing you after so long.",
+        "english_translation": "You know, I'm so glad in this digital world stepping outside of your home, seeing actual faces has become like a rare thing. It's like, oh, once in a while thing, which is so sad, which is so sad. We were designed to have human interactions, and while in being in this digital world, it is it's very convenient, but convenience always doesn't mean it's good. So, I'm really happy that everyone everybody stepped out of their comfort zones and is here to talk and network with different people from different different realms, different walks of life. It's really nice. It's really nice to see you, Ruben, as well. I'm seeing you after so long.",
+        "language": "English",
+        "timestamp": "02:23"
+      },
+      {
+        "speaker_name": "Ruben",
+        "speaker_label": "Speaker A",
+        "text": "And, you know, I'm really curious and intrigued by your thoughts and your opinions about this. But I want to start the topic of this conversation in a new direction. I want to talk about why networking is very important for your careers. And I'll start by giving you an example of my own self. So, I realized this in the last year that most jobs aren't even online. People don't post about it. There's no companies that are posting about it. A friend and a mentor guided me through the entire process of how do I find companies, how do I find their founders, how do I email the founders, talk to them, and understand what they're doing and if we could have a potential work opportunity together. So, I started doing that. I started cold emailing so many founders, so many companies in hopes of getting an interview or just a conversation. And through this journey, I spoke to so many brilliant, intelligent minds who I've had such fun, interactive conversations with and they've given me perspective on things that I didn't even know existed. So, that was the start of my journey. And this very networking journey has led me to my current job. I am now in a role that I did not know existed in an industry that I had no idea about. And all of that happened because of one conversation with one founder. So, networking can actually show you the power of what one conversation can do to your entire life. I did not know about anything about my current role, I did not know anything about the AI industry, and yet here I am doing pretty well at it. And all the credit goes to just being able to talk to new people, to being able to have that humility to learn from them, and it also matters that these figures give you an opportunity after talking to you. So, networking can quite literally change your life, and I feel it can give your careers great direction and take it to insane heights. What do you guys think? Do you all have any stories that have helped you network in a way where you've maybe, you know, just upskilled in your career, learned something new, changed departments, changed jobs? Is there any such instance?",
+        "english_translation": "And, you know, I'm really curious and intrigued by your thoughts and your opinions about this. But I want to start the topic of this conversation in a new direction. I want to talk about why networking is very important for your careers. And I'll start by giving you an example of my own self. So, I realized this in the last year that most jobs aren't even online. People don't post about it. There's no companies that are posting about it. A friend and a mentor guided me through the entire process of how do I find companies, how do I find their founders, how do I email the founders, talk to them, and understand what they're doing and if we could have a potential work opportunity together. So, I started doing that. I started cold emailing so many founders, so many companies in hopes of getting an interview or just a conversation. And through this journey, I spoke to so many brilliant, intelligent minds who I've had such fun, interactive conversations with and they've given me perspective on things that I didn't even know existed. So, that was the start of my journey. And this very networking journey has led me to my current job. I am now in a role that I did not know existed in an industry that I had no idea about. And all of that happened because of one conversation with one founder. So, networking can actually show you the power of what one conversation can do to your entire life. I did not know about anything about my current role, I did not know anything about the AI industry, and yet here I am doing pretty well at it. And all the credit goes to just being able to talk to new people, to being able to have that humility to learn from them, and it also matters that these figures give you an opportunity after talking to you. So, networking can quite literally change your life, and I feel it can give your careers great direction and take it to insane heights. What do you guys think? Do you all have any stories that have helped you network in a way where you've maybe, you know, just upskilled in your career, learned something new, changed departments, changed jobs? Is there any such instance?",
+        "language": "English",
+        "timestamp": "03:04"
+      },
+      {
+        "speaker_name": "Kiara",
+        "speaker_label": "Speaker B",
+        "text": "100% yes, 100% yes. We have a mutual shared experience when it comes to the tech industry because we were hired at the same time by the same people with the same intent. But I have another story from when I was tattooing. So, like 2 years back I joined a tattoo school, I didn't know how to draw, I was very scared of art due to some childhood experiences. But I've I've always been into it, I've been such a creative person, I'm a creative mind, but my mind was just blocked. So, I decided to join a tattoo school, brilliant, amazing. Charged me a bomb, and they told me they would teach me drawing with as well as tattooing, but no. The Indian education system, we know how rushed it is. So, I didn't really learn a lot there, I kind of wasted my money. But through the power of networking, so back in the day I had this I knew this guy, Frank. This man, I I remember him doing a tattoo on me, and I loved his vibe, I loved how he was a self-learnt artist, he was an older guy, he was like a mentor to me even when I was not studying tattooing. Then after my course was done, I used to go to his studio to practice things. This man literally took me under his wing and taught me the art for free, how it should have been. Art is not supposed to be charged, art is supposed to be expression. And I think, yeah, networking literally gave me an in into the industry, even though I went to a school. So, yeah, going outside, do getting on-field experience is very important. I know a lot about Ruben's story because we come from similar backgrounds, but what about you, Riya? Has networking come easy to you? What kind of a person you are talking to people? How does that make you feel? Is it like you stepping out of your comfort zone? Has it benefited you in any ways?",
+        "english_translation": "100% yes, 100% yes. We have a mutual shared experience when it comes to the tech industry because we were hired at the same time by the same people with the same intent. But I have another story from when I was tattooing. So, like 2 years back I joined a tattoo school, I didn't know how to draw, I was very scared of art due to some childhood experiences. But I've I've always been into it, I've been such a creative person, I'm a creative mind, but my mind was just blocked. So, I decided to join a tattoo school, brilliant, amazing. Charged me a bomb, and they told me they would teach me drawing with as well as tattooing, but no. The Indian education system, we know how rushed it is. So, I didn't really learn a lot there, I kind of wasted my money. But through the power of networking, so back in the day I had this I knew this guy, Frank. This man, I I remember him doing a tattoo on me, and I loved his vibe, I loved how he was a self-learnt artist, he was an older guy, he was like a mentor to me even when I was not studying tattooing. Then after my course was done, I used to go to his studio to practice things. This man literally took me under his wing and taught me the art for free, how it should have been. Art is not supposed to be charged, art is supposed to be expression. And I think, yeah, networking literally gave me an in into the industry, even though I went to a school. So, yeah, going outside, do getting on-field experience is very important. I know a lot about Ruben's story because we come from similar backgrounds, but what about you, Riya? Has networking come easy to you? What kind of a person you are talking to people? How does that make you feel? Is it like you stepping out of your comfort zone? Has it benefited you in any ways?",
+        "language": "English",
+        "timestamp": "05:57"
+      },
+      {
+        "speaker_name": "Riya",
+        "speaker_label": "Speaker C",
+        "text": "Well, Kiara, I think it won't be surprising when I say that networking hasn't always been easy for me. So, to, you know, to put it into perspective, I would say, since I was just, you know, fresh out of college, you know, only knew about the stories and experiences people were telling me, getting into the industry was something that wasn't easy. It was very difficult. And here is when networking came into the picture. So, I came across a person who was in industry since a very long time. They had a lot of experiences, and, you know, in leadership roles as well. So, we had a conversation. They, you know, sort of gave me an idea as to which industry I wanted to start with. So, you know, through this conversation, through through networking with people already working in the industry, I sort of got a very clear picture as to what I was getting into. But, you know, it always, first experiences, you know, tend to come as a shock. And so, this person, because, you know, we had a conversation, they knew I was really new to everything from the software to, you know, interacting with colleagues, meeting people, talking to customers, getting insights into what they want, you know, decoding the language that the client was speaking to understand what they wanted from our end. So, you know, my my mentor, I could say, you know, taught me, you know, what to do, how to go about it, where were my faults, where I was lacking, and so because of that, I sort of, you know, got a hang of it. And I think that's what made the experience really great on, you know, for my end, as well as theirs.",
+        "english_translation": "Well, Kiara, I think it won't be surprising when I say that networking hasn't always been easy for me. So, to, you know, to put it into perspective, I would say, since I was just, you know, fresh out of college, you know, only knew about the stories and experiences people were telling me, getting into the industry was something that wasn't easy. It was very difficult. And here is when networking came into the picture. So, I came across a person who was in industry since a very long time. They had a lot of experiences, and, you know, in leadership roles as well. So, we had a conversation. They, you know, sort of gave me an idea as to which industry I wanted to start with. So, you know, through this conversation, through through networking with people already working in the industry, I sort of got a very clear picture as to what I was getting into. But, you know, it always, first experiences, you know, tend to come as a shock. And so, this person, because, you know, we had a conversation, they knew I was really new to everything from the software to, you know, interacting with colleagues, meeting people, talking to customers, getting insights into what they want, you know, decoding the language that the client was speaking to understand what they wanted from our end. So, you know, my my mentor, I could say, you know, taught me, you know, what to do, how to go about it, where were my faults, where I was lacking, and so because of that, I sort of, you know, got a hang of it. And I think that's what made the experience really great on, you know, for my end, as well as theirs.",
+        "language": "English",
+        "timestamp": "07:51"
+      },
+      {
+        "speaker_name": "Kiara",
+        "speaker_label": "Speaker B",
+        "text": "That's so lovely to hear. I'm so glad that you navigated through this difficult situation. I have a question for you, Ruben, actually. I want to ask you if you think networking should be taught in schools, because I understand you used to live in a boarding school and that kind of closed you off to new experiences and new people. So, do you think that should have been a subject in your school to just learn how to deal with the outside world?",
+        "english_translation": "That's so lovely to hear. I'm so glad that you navigated through this difficult situation. I have a question for you, Ruben, actually. I want to ask you if you think networking should be taught in schools, because I understand you used to live in a boarding school and that kind of closed you off to new experiences and new people. So, do you think that should have been a subject in your school to just learn how to deal with the outside world?",
+        "language": "English",
+        "timestamp": "10:15"
+      },
+      {
+        "speaker_name": "Ruben",
+        "speaker_label": "Speaker A",
+        "text": "Yeah, 100%. As you guys, you know, you started in the beginning that we are social creatures. No person can survive in isolation. Everyone has to be a people's person in order to optimize optimize, you know, their way of living in life. So, it should be a subject because it doesn't come easy for most people, right? There's a lot of people who are introverted, who are shy, and who would struggle with making these connections. And I think it should be a subject because of the importance and value it holds. Most people don't realize the value and the importance of networking. That answers your question, Kiara. And that also continues on Riya's point that networking got her a mentor, right? And that would be a cheat code in our adult lives. Talking to the right people, building a connection with the right people, having that trust gives you an opportunity, it opens windows for you that you never thought were possible or you never even knew existed or acknowledged them. So, you know, networking, I feel, is a very powerful tool. And if it is taught at an early age, it opens doors and windows for everyone.",
+        "english_translation": "Yeah, 100%. As you guys, you know, you started in the beginning that we are social creatures. No person can survive in isolation. Everyone has to be a people's person in order to optimize optimize, you know, their way of living in life. So, it should be a subject because it doesn't come easy for most people, right? There's a lot of people who are introverted, who are shy, and who would struggle with making these connections. And I think it should be a subject because of the importance and value it holds. Most people don't realize the value and the importance of networking. That answers your question, Kiara. And that also continues on Riya's point that networking got her a mentor, right? And that would be a cheat code in our adult lives. Talking to the right people, building a connection with the right people, having that trust gives you an opportunity, it opens windows for you that you never thought were possible or you never even knew existed or acknowledged them. So, you know, networking, I feel, is a very powerful tool. And if it is taught at an early age, it opens doors and windows for everyone.",
+        "language": "English",
+        "timestamp": "10:44"
+      },
+      {
+        "speaker_name": "Kiara",
+        "speaker_label": "Speaker B",
+        "text": "100%, 100%. Because I come from a house where I have another sibling, and we two have very contrasting personalities. Like I said, I'm a very extroverted person. I love people, I love talking to people. And my sister is the complete opposite. We are at the extreme end of this pole. She was a very closed off person, very shy, and I would motivate her to go out in the real world, I would help her make friends. But nothing really worked. So, I just assumed, it's okay, she's just she's just not in that stage right now, maybe when she has to, she will. But she did not. And that really, really affected her career. She wanted to become a makeup artist, and she wanted to freelance. So, if you want to freelance, you need to be brilliant at networking. She was really good at her art. Don't get me wrong, she was so brilliant. But now, when it comes to networking, because you can be good at your art, yeah, you're a great makeup artist, but if you have no muse, you are actually a nobody. You are as good as a person who is unemployed, right? So, she struggled a lot, a lot, a lot. And then she eventually gave up on the idea of becoming a freelancer. So, yeah, man, it needs to be taught very early on, because now we are under the under the belief that, oh, this is a capitalistic world, there is no barter system. But, honestly, if you think of it, barter system still exists. Humans humans benefit each other in different ways. Sure, they are not trading things for money, but they are trading for skills, they're trading for survival. It's still like human involvement is very it's still very, very vital. So, yeah, we still live in a barter world. So, we benefit from each other all the time. Sometimes, it could be with an ill intent, sometimes and mostly, it is because of our innate behavior of just being transactional as humans. So, yes, man, let's let's just conclude this topic on the fact that networking is god. Without networking and without people, you will be nowhere.",
+        "english_translation": "100%, 100%. Because I come from a house where I have another sibling, and we two have very contrasting personalities. Like I said, I'm a very extroverted person. I love people, I love talking to people. And my sister is the complete opposite. We are at the extreme end of this pole. She was a very closed off person, very shy, and I would motivate her to go out in the real world, I would help her make friends. But nothing really worked. So, I just assumed, it's okay, she's just she's just not in that stage right now, maybe when she has to, she will. But she did not. And that really, really affected her career. She wanted to become a makeup artist, and she wanted to freelance. So, if you want to freelance, you need to be brilliant at networking. She was really good at her art. Don't get me wrong, she was so brilliant. But now, when it comes to networking, because you can be good at your art, yeah, you're a great makeup artist, but if you have no muse, you are actually a nobody. You are as good as a person who is unemployed, right? So, she struggled a lot, a lot, a lot. And then she eventually gave up on the idea of becoming a freelancer. So, yeah, man, it needs to be taught very early on, because now we are under the under the belief that, oh, this is a capitalistic world, there is no barter system. But, honestly, if you think of it, barter system still exists. Humans humans benefit each other in different ways. Sure, they are not trading things for money, but they are trading for skills, they're trading for survival. It's still like human involvement is very it's still very, very vital. So, yeah, we still live in a barter world. So, we benefit from each other all the time. Sometimes, it could be with an ill intent, sometimes and mostly, it is because of our innate behavior of just being transactional as humans. So, yes, man, let's let's just conclude this topic on the fact that networking is god. Without networking and without people, you will be nowhere.",
+        "language": "English",
+        "timestamp": "12:23"
+      },
+      {
+        "speaker_name": "Ruben",
+        "speaker_label": "Speaker A",
+        "text": "Yeah, you know, I'm I'm really glad that, you know, both of you guys could have the time to come attend this networking event. I feel like I have learned something new from both of your minds, from both of your perspectives. And I feel I hope, I don't feel, I hope that even my story could be, you know, a learning lesson for you guys to never hesitate from reaching out to new people, to never hesitate from taking that effort to do something about it. Go talk to people, make the effort to reach out to people, and you never know where your lives could lead on to.",
+        "english_translation": "Yeah, you know, I'm I'm really glad that, you know, both of you guys could have the time to come attend this networking event. I feel like I have learned something new from both of your minds, from both of your perspectives. And I feel I hope, I don't feel, I hope that even my story could be, you know, a learning lesson for you guys to never hesitate from reaching out to new people, to never hesitate from taking that effort to do something about it. Go talk to people, make the effort to reach out to people, and you never know where your lives could lead on to.",
+        "language": "English",
+        "timestamp": "14:31"
+      }
+    ]
+  },
+  {
+    "title": "testingpart2",
+    "date": "2026-09-17 12:24:21.316128",
+    "duration_minutes": 45,
+    "status": "Completed",
+    "participants": [
+      {
+        "name": "Reuben",
+        "speaker_label": "Speaker A"
+      },
+      {
+        "name": "Kiara",
+        "speaker_label": "Speaker B"
+      },
+      {
+        "name": "Riya",
+        "speaker_label": "Speaker C"
+      }
+    ],
+    "mom": {
+      "summary": "Reuben, Kiara, and Riya held a networking meeting where they discussed the vital role of human interaction and networking in personal and professional growth. The attendees shared personal stories of how networking and mentorship helped them secure jobs, learn new skills, and navigate their careers, concluding that networking is an essential tool that should ideally be taught in schools.",
+      "decisions": [],
+      "agenda_topics": [
+        {
+          "topic": "The Importance of Human Connection",
+          "points": [
+            "Kiara shared psychological insights that humans are social beings who live longer and healthier lives when they have social groups to rely on.",
+            "Riya agreed that human conversations provide fresh ideas and valuable insights.",
+            "Kiara expressed concern over the lack of face-to-face interactions in a highly digital world."
+          ]
+        },
+        {
+          "topic": "Personal Career Stories and Mentorship",
+          "points": [
+            "Reuben shared how cold emailing founders and networking led him to his current job in the AI industry, a role and industry he previously knew nothing about.",
+            "Kiara discussed how networking with an experienced tattoo artist named Frank helped her get free, hands-on mentorship in the art industry after a disappointing experience at a formal school.",
+            "Riya explained how connecting with an experienced industry professional helped her navigate her first job, learn software, and understand client communication."
+          ]
+        },
+        {
+          "topic": "Teaching Networking in Schools",
+          "points": [
+            "Kiara asked Reuben if networking should be taught in schools, given his boarding school background.",
+            "Reuben strongly agreed, stating that networking is a powerful tool that does not come easily to introverted or shy people and should be taught early.",
+            "Kiara shared a story about her introverted sister who was a brilliant makeup artist but struggled to freelance and eventually gave up because she could not network."
+          ]
+        }
+      ],
+      "is_finalized": false
+    },
+    "action_items": [],
+    "utterances": [
+      {
+        "speaker_name": "Reuben",
+        "speaker_label": "Speaker A",
+        "text": "Hi guys, good evening. You know, I'm really glad that we could gather today here to have this meeting, you know. It's a networking event that I would like to welcome you guys to. We'd love to hear your thoughts. We'd love to hear your perspectives. And I hope that all three of us can take some learning from each other today. Welcome Kiara, welcome Riya. How are you guys?",
+        "english_translation": "Hi guys, good evening. You know, I'm really glad that we could gather today here to have this meeting, you know. It's a networking event that I would like to welcome you guys to. We'd love to hear your thoughts. We'd love to hear your perspectives. And I hope that all three of us can take some learning from each other today. Welcome Kiara, welcome Riya. How are you guys?",
+        "language": "English",
+        "timestamp": "00:00"
+      },
+      {
+        "speaker_name": "Kiara",
+        "speaker_label": "Speaker B",
+        "text": "I'm well. I'm I'm doing good. I am really happy to be here. This is exactly the place where I want to be. I'm such an extroverted person, be it in my personal life, or be it in my professional life. I love people. Like, I remember when I was in school and college, I had the subject, I studied the subject psychology very deeply where I remember this very research talking about how humans are social beings. That it's proven if humans live in social groups, and if you have like people you can rely on, you actually tend to live longer. So, be it, like I said, be it in professional life or personal life, people and the existence of people around you, it's very important. Now, not to take away from the fact that existing around people is not easy. So, it's very nice to have events like such to learn how to easily network and make your peace with difference of opinions. It It really helps people who haven't been out there in the real world. It is such a blessing.",
+        "english_translation": "I'm well. I'm I'm doing good. I am really happy to be here. This is exactly the place where I want to be. I'm such an extroverted person, be it in my personal life, or be it in my professional life. I love people. Like, I remember when I was in school and college, I had the subject, I studied the subject psychology very deeply where I remember this very research talking about how humans are social beings. That it's proven if humans live in social groups, and if you have like people you can rely on, you actually tend to live longer. So, be it, like I said, be it in professional life or personal life, people and the existence of people around you, it's very important. Now, not to take away from the fact that existing around people is not easy. So, it's very nice to have events like such to learn how to easily network and make your peace with difference of opinions. It It really helps people who haven't been out there in the real world. It is such a blessing.",
+        "language": "English",
+        "timestamp": "00:34"
+      },
+      {
+        "speaker_name": "Riya",
+        "speaker_label": "Speaker C",
+        "text": "I would, you know, really like to agree with what you just said Kiara, that, you know, we are social beings and we are our basic tendency is to, you know, go out there, meet new people, you know, have a conversation. You know, it keeps your mind, you know, gets you fresh ideas. Maybe something you can pick up, you know, an insight into something that you won't be great at. So, yeah, I agree with, you know, us being social beings and needing to have a human conversation.",
+        "english_translation": "I would, you know, really like to agree with what you just said Kiara, that, you know, we are social beings and we are our basic tendency is to, you know, go out there, meet new people, you know, have a conversation. You know, it keeps your mind, you know, gets you fresh ideas. Maybe something you can pick up, you know, an insight into something that you won't be great at. So, yeah, I agree with, you know, us being social beings and needing to have a human conversation.",
+        "language": "English",
+        "timestamp": "01:43"
+      },
+      {
+        "speaker_name": "Kiara",
+        "speaker_label": "Speaker B",
+        "text": "You know, I'm so glad in this digital world, stepping outside of your home, seeing actual faces has become like a rare thing. It's like, oh, once in a while thing, which is so sad, which is so sad. We were designed to have human interactions. And while in being in this digital world, it is it's very convenient, but convenience always doesn't mean it's good. So, I'm really happy that everyone everybody stepped out of their comfort zones and is here to talk and network with different people from different different realms, different walks of life. It's really nice. It's really nice to see you Reuben, as well. I'm seeing you after so long.",
+        "english_translation": "You know, I'm so glad in this digital world, stepping outside of your home, seeing actual faces has become like a rare thing. It's like, oh, once in a while thing, which is so sad, which is so sad. We were designed to have human interactions. And while in being in this digital world, it is it's very convenient, but convenience always doesn't mean it's good. So, I'm really happy that everyone everybody stepped out of their comfort zones and is here to talk and network with different people from different different realms, different walks of life. It's really nice. It's really nice to see you Reuben, as well. I'm seeing you after so long.",
+        "language": "English",
+        "timestamp": "02:23"
+      },
+      {
+        "speaker_name": "Reuben",
+        "speaker_label": "Speaker A",
+        "text": "Um, you know, I'm really curious and intrigued, um, by your thoughts and your opinions about this. But, um, I want to, uh, start the topic of this conversation in a new direction. I want to talk about why networking is very important for your careers. And I'll start by giving you an example of my own self. So, I realized this, um, in the last year that most jobs aren't even online. People don't post about it. There's no companies that are posting about it. A friend and a mentor guided me through the entire process of how do I find companies, how do I find their founders, how do I email the founders, talk to them and understand what they're doing and if we could have a potential work opportunity together. So, I started doing that. I started cold emailing so many founders, so many companies, uh, in hopes of getting an interview or just a conversation. And, uh, through this journey, I spoke to so many brilliant, intelligent minds who I've had such fun, interactive conversations with and they've given me perspective on things that I didn't even know existed. So, that was the start of my journey. And this very networking journey has led me to my current job. I am now in a role that I did not know existed, in an industry that I had no idea about. And all of that happened because of one conversation with one founder. So, networking can actually show you the power of what one conversation can do to your entire life. I did not know about anything about my current role, I did not know anything about the AI industry. And yet, here I am doing pretty well at it. And all the credit goes to just being able to talk to new people, to being able to have that humility to learn from them. And it also matters that these, um, figures give you an opportunity after talking to you. So, networking can quite literally change your life. And I feel it can give your careers great direction and take it to insane heights. What do you guys think? Do you all have any stories that have helped you network in a way where you've maybe, you know, just upskilled in your career, learned something new, changed departments, changed jobs? Is there any such instance?",
+        "english_translation": "Um, you know, I'm really curious and intrigued, um, by your thoughts and your opinions about this. But, um, I want to, uh, start the topic of this conversation in a new direction. I want to talk about why networking is very important for your careers. And I'll start by giving you an example of my own self. So, I realized this, um, in the last year that most jobs aren't even online. People don't post about it. There's no companies that are posting about it. A friend and a mentor guided me through the entire process of how do I find companies, how do I find their founders, how do I email the founders, talk to them and understand what they're doing and if we could have a potential work opportunity together. So, I started doing that. I started cold emailing so many founders, so many companies, uh, in hopes of getting an interview or just a conversation. And, uh, through this journey, I spoke to so many brilliant, intelligent minds who I've had such fun, interactive conversations with and they've given me perspective on things that I didn't even know existed. So, that was the start of my journey. And this very networking journey has led me to my current job. I am now in a role that I did not know existed, in an industry that I had no idea about. And all of that happened because of one conversation with one founder. So, networking can actually show you the power of what one conversation can do to your entire life. I did not know about anything about my current role, I did not know anything about the AI industry. And yet, here I am doing pretty well at it. And all the credit goes to just being able to talk to new people, to being able to have that humility to learn from them. And it also matters that these, um, figures give you an opportunity after talking to you. So, networking can quite literally change your life. And I feel it can give your careers great direction and take it to insane heights. What do you guys think? Do you all have any stories that have helped you network in a way where you've maybe, you know, just upskilled in your career, learned something new, changed departments, changed jobs? Is there any such instance?",
+        "language": "English",
+        "timestamp": "03:04"
+      },
+      {
+        "speaker_name": "Kiara",
+        "speaker_label": "Speaker B",
+        "text": "100% yes, 100% yes. Uh, we have a mutual shared experience when it comes to the tech industry, because we were hired at the same time by the same people with the same intent. But, uh, I have another story from when I was tattooing. So, like 2 years back, I joined a tattoo school, I didn't know how to draw. I was very scared of art due to some childhood experiences. But, I've I've always been into it, I've been such a creative person, I'm I'm a creative mind, but my mind was just blocked. So, I decided to join a tattoo school. Brilliant, amazing, charged me a bomb. And, uh, they told me they would teach me, uh, drawing with as well as tattooing. But, no, the Indian education system, we know how rushed it is. So, I didn't really learn a lot there, I kind of wasted my money. But through the power of networking, so, back in the day, I had this I knew this guy, Frank. This man, I I remember him doing a tattoo on me, and I loved his vibe, I loved how he was a self-learned artist. He was an older guy, he was like a mentor to me, even when I was not studying tattooing. Then, after my course was done, I used to go to his studio to practice things. This man literally took me under his wing and taught me the art for free! How it should've been, art is not supposed to be charged. Art is supposed to be expression. And I think, yeah, networking literally gave me an in into the industry, even though I went to a school. So, yeah, going outside, do getting on-field experience is very important. I know a lot about Reuben's story, because we come from similar backgrounds. But, what about you, Riya? Has networking come easy to you? What kind of a person you are talking to people? How does that make you feel? Is it like you stepping out of your comfort zone, has it benefited you in any ways?",
+        "english_translation": "100% yes, 100% yes. Uh, we have a mutual shared experience when it comes to the tech industry, because we were hired at the same time by the same people with the same intent. But, uh, I have another story from when I was tattooing. So, like 2 years back, I joined a tattoo school, I didn't know how to draw. I was very scared of art due to some childhood experiences. But, I've I've always been into it, I've been such a creative person, I'm I'm a creative mind, but my mind was just blocked. So, I decided to join a tattoo school. Brilliant, amazing, charged me a bomb. And, uh, they told me they would teach me, uh, drawing with as well as tattooing. But, no, the Indian education system, we know how rushed it is. So, I didn't really learn a lot there, I kind of wasted my money. But through the power of networking, so, back in the day, I had this I knew this guy, Frank. This man, I I remember him doing a tattoo on me, and I loved his vibe, I loved how he was a self-learned artist. He was an older guy, he was like a mentor to me, even when I was not studying tattooing. Then, after my course was done, I used to go to his studio to practice things. This man literally took me under his wing and taught me the art for free! How it should've been, art is not supposed to be charged. Art is supposed to be expression. And I think, yeah, networking literally gave me an in into the industry, even though I went to a school. So, yeah, going outside, do getting on-field experience is very important. I know a lot about Reuben's story, because we come from similar backgrounds. But, what about you, Riya? Has networking come easy to you? What kind of a person you are talking to people? How does that make you feel? Is it like you stepping out of your comfort zone, has it benefited you in any ways?",
+        "language": "English",
+        "timestamp": "05:57"
+      },
+      {
+        "speaker_name": "Riya",
+        "speaker_label": "Speaker C",
+        "text": "Uh well, Kiara, uh I think uh it won't be surprising uh when I say that uh networking hasn't always been easy for me. Uh so, to you know, uh to put it into perspective, uh I would say uh since I was just, you know, fresh out of college, uh you know, only knew about the stories and experiences people were telling me, uh getting uh into the industry was something that wasn't easy. It was very difficult. And uh here is when networking came into the picture. So, I came across uh an a person who was in industry since a very long time. Uh they had a lot of experiences and uh you know, in leadership roles as well. Uh so, we had a conversation. They, you know, sort of gave me an idea as to which industry I wanted to start with. So, uh you know, through this conversation, through through networking with uh people already working in the industry, uh I sort of got a very clear picture as to what I was getting into. But, uh you know, it always, first experiences, you know, tend to come as a shock. And uh so, this person because, you know, we had a conversation, they knew I was really new to everything from the software to, you know, interacting with colleagues, meeting people, uh talking to customers, getting insights into what they want, you know, decoding the language that the client was speaking to understand what they wanted from our end. So, um you know, my my mentor, I could say, you know, taught me uh you know, wh- what to do, how to go about it, uh where were my uh faults, where I was lacking. And uh so, because of that, uh I sort of, you know, got a hang of it. And I think that's what wha- made the experience uh really great on uh you know, for my end as well as theirs.",
+        "english_translation": "Uh well, Kiara, uh I think uh it won't be surprising uh when I say that uh networking hasn't always been easy for me. Uh so, to you know, uh to put it into perspective, uh I would say uh since I was just, you know, fresh out of college, uh you know, only knew about the stories and experiences people were telling me, uh getting uh into the industry was something that wasn't easy. It was very difficult. And uh here is when networking came into the picture. So, I came across uh an a person who was in industry since a very long time. Uh they had a lot of experiences and uh you know, in leadership roles as well. Uh so, we had a conversation. They, you know, sort of gave me an idea as to which industry I wanted to start with. So, uh you know, through this conversation, through through networking with uh people already working in the industry, uh I sort of got a very clear picture as to what I was getting into. But, uh you know, it always, first experiences, you know, tend to come as a shock. And uh so, this person because, you know, we had a conversation, they knew I was really new to everything from the software to, you know, interacting with colleagues, meeting people, uh talking to customers, getting insights into what they want, you know, decoding the language that the client was speaking to understand what they wanted from our end. So, um you know, my my mentor, I could say, you know, taught me uh you know, wh- what to do, how to go about it, uh where were my uh faults, where I was lacking. And uh so, because of that, uh I sort of, you know, got a hang of it. And I think that's what wha- made the experience uh really great on uh you know, for my end as well as theirs.",
+        "language": "English",
+        "timestamp": "07:51"
+      },
+      {
+        "speaker_name": "Kiara",
+        "speaker_label": "Speaker B",
+        "text": "That's so lovely to hear. I'm so glad that you navigated through this difficult situation. I have a question for you Reuben, actually. I want to ask you if you think networking should be taught in schools, because uh I understand you used to live in a boarding school and that kind of closed you off to new experiences and new people. So, do you think that should've been a subject in your school to just learn how to deal with the outside world?",
+        "english_translation": "That's so lovely to hear. I'm so glad that you navigated through this difficult situation. I have a question for you Reuben, actually. I want to ask you if you think networking should be taught in schools, because uh I understand you used to live in a boarding school and that kind of closed you off to new experiences and new people. So, do you think that should've been a subject in your school to just learn how to deal with the outside world?",
+        "language": "English",
+        "timestamp": "10:15"
+      },
+      {
+        "speaker_name": "Reuben",
+        "speaker_label": "Speaker A",
+        "text": "Yeah, 100%. Um as you guys, you know, you started in the beginning that we are social creatures. Uh no person can survive in isolation. Everyone has to be a people's person in order to optimize optimize, you know, their um way of living in life. So, it should be a subject, um cause it doesn't come easy for most people, right? Uh there's a lot of people who are introverted, who are shy, and who would struggle with making these connections. And I think it should be a subject because of the importance and value it holds. Uh most people don't realize the value and the importance of networking. Um that answers your question, Kiara, and that also continues on Riya's point that networking uh got her a mentor, right? Um and that would be a cheat code in our adult lives. Talking to the right people, building a connection with the right people, having that trust gives you an opportunity. It opens windows for you that you never thought were possible or you never even knew existed or acknowledged them. So, you know, networking, I feel, is a very powerful tool. And if it is taught at an early age, it opens doors and windows for everyone.",
+        "english_translation": "Yeah, 100%. Um as you guys, you know, you started in the beginning that we are social creatures. Uh no person can survive in isolation. Everyone has to be a people's person in order to optimize optimize, you know, their um way of living in life. So, it should be a subject, um cause it doesn't come easy for most people, right? Uh there's a lot of people who are introverted, who are shy, and who would struggle with making these connections. And I think it should be a subject because of the importance and value it holds. Uh most people don't realize the value and the importance of networking. Um that answers your question, Kiara, and that also continues on Riya's point that networking uh got her a mentor, right? Um and that would be a cheat code in our adult lives. Talking to the right people, building a connection with the right people, having that trust gives you an opportunity. It opens windows for you that you never thought were possible or you never even knew existed or acknowledged them. So, you know, networking, I feel, is a very powerful tool. And if it is taught at an early age, it opens doors and windows for everyone.",
+        "language": "English",
+        "timestamp": "10:44"
+      },
+      {
+        "speaker_name": "Kiara",
+        "speaker_label": "Speaker B",
+        "text": "100%, 100%, because I come from a house where I have another sibling and we two have very contrasting personalities. Like I said, I'm a very extroverted person. I love people, I love talking to people and my sister is the complete opposite. We are at the extreme end of this pole. She was a very closed-off person, very shy, and I would motivate her to go out in the real world, I would help her make friends. But, nothing really struck. So, I just assumed, it's okay, she's just she's just not in that stage right now, maybe when she has to, she will. But she did not and that really really affected her career. She wanted to become a makeup artist and she wanted to freelance. So, if you want to freelance, you need to be brilliant at networking. She was really good at her art. Don't get me wrong, she was so brilliant. But now, when it comes to networking, because you can be good at your art, yeah, you're a great makeup artist, but if you have no muse, you are actually a nobody, you are as good as a person who's unemployed, right? So, she struggled a lot, a lot, a lot. And then, she eventually gave up on the idea of becoming a freelancer. So, yeah, man, it needs to be taught very early on, because now we are under the under the belief that, oh, this is a capitalistic world, there is no barter system. But, honestly, if you think of it, barter system still exists. Humans humans benefit each other in different ways. Sure, they are not trading things for money, but they are trading for skills, they are trading for survival. It's still like human involvement is very it's still very, very vital. So, yeah, we still live in a barter world. So, we benefit from each other all the time. Sometimes, it could be with an ill intent, sometimes and mostly it is because of our innate behavior of just being transactional as humans. So, yes, man, let's let's just conclude this topic on the fact that networking is god. Without networking and without people, you will be nowhere.",
+        "english_translation": "100%, 100%, because I come from a house where I have another sibling and we two have very contrasting personalities. Like I said, I'm a very extroverted person. I love people, I love talking to people and my sister is the complete opposite. We are at the extreme end of this pole. She was a very closed-off person, very shy, and I would motivate her to go out in the real world, I would help her make friends. But, nothing really struck. So, I just assumed, it's okay, she's just she's just not in that stage right now, maybe when she has to, she will. But she did not and that really really affected her career. She wanted to become a makeup artist and she wanted to freelance. So, if you want to freelance, you need to be brilliant at networking. She was really good at her art. Don't get me wrong, she was so brilliant. But now, when it comes to networking, because you can be good at your art, yeah, you're a great makeup artist, but if you have no muse, you are actually a nobody, you are as good as a person who's unemployed, right? So, she struggled a lot, a lot, a lot. And then, she eventually gave up on the idea of becoming a freelancer. So, yeah, man, it needs to be taught very early on, because now we are under the under the belief that, oh, this is a capitalistic world, there is no barter system. But, honestly, if you think of it, barter system still exists. Humans humans benefit each other in different ways. Sure, they are not trading things for money, but they are trading for skills, they are trading for survival. It's still like human involvement is very it's still very, very vital. So, yeah, we still live in a barter world. So, we benefit from each other all the time. Sometimes, it could be with an ill intent, sometimes and mostly it is because of our innate behavior of just being transactional as humans. So, yes, man, let's let's just conclude this topic on the fact that networking is god. Without networking and without people, you will be nowhere.",
+        "language": "English",
+        "timestamp": "12:22"
+      },
+      {
+        "speaker_name": "Reuben",
+        "speaker_label": "Speaker A",
+        "text": "Yeah, you know, I'm I'm really glad that, you know, both of you guys could have the time to come attend this networking event. I feel like I have learned something new from both of your minds, from both of your perspectives. And I feel I hope, I don't feel, I hope that even my story could be, you know, a learning lesson for you guys to never hesitate from reaching out to new people, to never hesitate from taking that effort to do something about it. Go talk to people, make the effort to reach out to people and you never know where your lives could lead on to.",
+        "english_translation": "Yeah, you know, I'm I'm really glad that, you know, both of you guys could have the time to come attend this networking event. I feel like I have learned something new from both of your minds, from both of your perspectives. And I feel I hope, I don't feel, I hope that even my story could be, you know, a learning lesson for you guys to never hesitate from reaching out to new people, to never hesitate from taking that effort to do something about it. Go talk to people, make the effort to reach out to people and you never know where your lives could lead on to.",
+        "language": "English",
+        "timestamp": "14:30"
+      }
+    ]
+  },
+  {
+    "title": "test4",
+    "date": "2026-09-17 12:46:38.467657",
+    "duration_minutes": 45,
+    "status": "Completed",
+    "participants": [
+      {
+        "name": "Janine Correa",
+        "speaker_label": "Speaker 1"
+      },
+      {
+        "name": "Jesus",
+        "speaker_label": "Speaker 2"
+      },
+      {
+        "name": "Sam",
+        "speaker_label": "Speaker 3"
+      }
+    ],
+    "mom": {
+      "summary": "Jesus from Clean Sky Energy contacted Janine Correa to offer a price-protected renewable electricity plan. Janine agreed to enroll her National Grid account in the Eco Reward 12 plan, which features a 12-month fixed rate of 20.99 cents per kilowatt-hour, 100% renewable energy matching, and $50 in Visa gift cards. Sam from TPV 360 conducted the mandatory third-party verification to confirm Janine's authorization, account details, and understanding of the terms, including a $75 early termination fee. The verification was successfully completed with code T0701260.",
+      "decisions": [
+        "Janine Correa agreed to enroll in Clean Sky Energy's Eco Reward 12 electricity plan for a 12-month term.",
+        "Janine Correa agreed to a fixed rate of 20.99 cents per kilowatt-hour with a $75 early termination fee."
+      ],
+      "agenda_topics": [
+        {
+          "topic": "Eco Reward 12 Plan Details",
+          "points": [
+            "Offers a 12-month fixed rate of 20.99 cents per kilowatt-hour with no monthly fees.",
+            "Provides 100% renewable electricity matched with renewable energy certificates from solar, wind, or hydro sources.",
+            "Includes $50 in Visa gift cards, distributed as $25 at each six-month interval.",
+            "Subject to a $75 early termination fee per meter if canceled after the rescission period."
+          ]
+        },
+        {
+          "topic": "Customer Account Information",
+          "points": [
+            "Customer Name: Janine Correa.",
+            "Service and Billing Address: 305 Pine Grove Drive, Brockton, MA 02301.",
+            "Utility Provider: National Grid.",
+            "Utility Account Number: 7569606021.",
+            "Contact Info: Phone 508-345-6904, Email janine.l@yahoo.com, Birth Date April 15th."
+          ]
+        },
+        {
+          "topic": "Third-Party Verification (TPV)",
+          "points": [
+            "Sam from TPV 360 conducted the verification on April 9th, 2025, at 11:45 AM EST.",
+            "Janine Correa confirmed she is the authorized account holder and consented to the enrollment and historical usage release.",
+            "The rescission period allows cancellation until midnight of the third calendar day after receiving the welcome packet.",
+            "The verification was successfully completed with code T0701260."
+          ]
+        }
+      ],
+      "is_finalized": false
+    },
+    "action_items": [
+      {
+        "task": "Send a welcome packet containing the terms of service to Janine Correa",
+        "owner_name": "Clean Sky Energy",
+        "priority": "High",
+        "status": "Pending",
+        "due_date": "2026-09-22 12:47:48.800614"
+      },
+      {
+        "task": "Send a confirmation letter regarding the supplier switch to Janine Correa",
+        "owner_name": "National Grid",
+        "priority": "Medium",
+        "status": "Pending",
+        "due_date": "2026-09-20 12:47:48.801123"
+      }
+    ],
+    "utterances": [
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Hello.",
+        "english_translation": "Hello.",
+        "language": "English",
+        "timestamp": "00:02"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Hello, thanks for taking the call. My name is Jesus with Clean Sky Energy on a recorded line. May I speak with Janine Correa?",
+        "english_translation": "Hello, thanks for taking the call. My name is Jesus with Clean Sky Energy on a recorded line. May I speak with Janine Correa?",
+        "language": "English",
+        "timestamp": "00:04"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yes, speaking.",
+        "english_translation": "Yes, speaking.",
+        "language": "English",
+        "timestamp": "00:15"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Hi, my name is Jesus. I work for ICL. I'm calling on behalf of Clean Sky Energy, a licensed electric supplier. Clean Sky Energy is not affiliated with the local electric utility or any city or town energy program. The line is recorded for quality purposes. Ms. Janine, the reason I'm calling is because you may be eligible for a price-protected renewable electricity plan with your utility habits. All Clean Sky Energy plans lack in a fixed rate for the length of your contract, so no matter how high utility prices go up, your price per is guaranteed not to increase during your terms. Plus, you could receive up to $100 in Visa gift cards when you enroll as an I just need to confirm that you qualify. Are you the account holder or person authorized to make decisions on the account?",
+        "english_translation": "Hi, my name is Jesus. I work for ICL. I'm calling on behalf of Clean Sky Energy, a licensed electric supplier. Clean Sky Energy is not affiliated with the local electric utility or any city or town energy program. The line is recorded for quality purposes. Ms. Janine, the reason I'm calling is because you may be eligible for a price-protected renewable electricity plan with your utility habits. All Clean Sky Energy plans lack in a fixed rate for the length of your contract, so no matter how high utility prices go up, your price per is guaranteed not to increase during your terms. Plus, you could receive up to $100 in Visa gift cards when you enroll as an I just need to confirm that you qualify. Are you the account holder or person authorized to make decisions on the account?",
+        "language": "English",
+        "timestamp": "00:17"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yes.",
+        "english_translation": "Yes.",
+        "language": "English",
+        "timestamp": "01:01"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Okay. Do you receive any government assistance for your energy bill?",
+        "english_translation": "Okay. Do you receive any government assistance for your energy bill?",
+        "language": "English",
+        "timestamp": "01:03"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "No.",
+        "english_translation": "No.",
+        "language": "English",
+        "timestamp": "01:07"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Okay. Have you recently enrolled in Clean Sky Energy?",
+        "english_translation": "Okay. Have you recently enrolled in Clean Sky Energy?",
+        "language": "English",
+        "timestamp": "01:09"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "No.",
+        "english_translation": "No.",
+        "language": "English",
+        "timestamp": "01:13"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Okay. And are you on time with the payments on your utility bill?",
+        "english_translation": "Okay. And are you on time with the payments on your utility bill?",
+        "language": "English",
+        "timestamp": "01:14"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yes.",
+        "english_translation": "Yes.",
+        "language": "English",
+        "timestamp": "01:18"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Okay, perfect. Based on your answers, do you qualify? Now, to enroll in this new price-protecting plan, I need to grab a copy of your electric bill and let me know once you have it, okay?",
+        "english_translation": "Okay, perfect. Based on your answers, do you qualify? Now, to enroll in this new price-protecting plan, I need to grab a copy of your electric bill and let me know once you have it, okay?",
+        "language": "English",
+        "timestamp": "01:19"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Okay.",
+        "english_translation": "Okay.",
+        "language": "English",
+        "timestamp": "01:30"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Perfect. How does the name appear on the bill? Even if it is misspelled.",
+        "english_translation": "Perfect. How does the name appear on the bill? Even if it is misspelled.",
+        "language": "English",
+        "timestamp": "01:32"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Janine Correa, my name.",
+        "english_translation": "Janine Correa, my name.",
+        "language": "English",
+        "timestamp": "01:38"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Perfect, perfect. And what is the service address exactly as it appears on the bill? Even if it is misspelled.",
+        "english_translation": "Perfect, perfect. And what is the service address exactly as it appears on the bill? Even if it is misspelled.",
+        "language": "English",
+        "timestamp": "01:42"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "305 Pine Grove Drive, Brockton, MA 02301.",
+        "english_translation": "305 Pine Grove Drive, Brockton, MA 02301.",
+        "language": "English",
+        "timestamp": "01:48"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Okay. And what's the zip code?",
+        "english_translation": "Okay. And what's the zip code?",
+        "language": "English",
+        "timestamp": "01:55"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "02301.",
+        "english_translation": "02301.",
+        "language": "English",
+        "timestamp": "01:57"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Okay, perfect, perfect. Give me a moment. Is your billing address the same as your service address?",
+        "english_translation": "Okay, perfect, perfect. Give me a moment. Is your billing address the same as your service address?",
+        "language": "English",
+        "timestamp": "01:59"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yeah.",
+        "english_translation": "Yeah.",
+        "language": "English",
+        "timestamp": "02:05"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Perfect. To provide you with the correct rates, what is the name of your utility company, please?",
+        "english_translation": "Perfect. To provide you with the correct rates, what is the name of your utility company, please?",
+        "language": "English",
+        "timestamp": "02:07"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "National Grid.",
+        "english_translation": "National Grid.",
+        "language": "English",
+        "timestamp": "02:12"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "National Grid, perfect. And what's your account number?",
+        "english_translation": "National Grid, perfect. And what's your account number?",
+        "language": "English",
+        "timestamp": "02:14"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "7569606021.",
+        "english_translation": "7569606021.",
+        "language": "English",
+        "timestamp": "02:18"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Perfect. And your phone number is 508-345-6904, correct?",
+        "english_translation": "Perfect. And your phone number is 508-345-6904, correct?",
+        "language": "English",
+        "timestamp": "02:28"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yeah.",
+        "english_translation": "Yeah.",
+        "language": "English",
+        "timestamp": "02:36"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Okay, great. Do you have, sorry, for quality assurance purposes, when is your birthday? Just month and the day.",
+        "english_translation": "Okay, great. Do you have, sorry, for quality assurance purposes, when is your birthday? Just month and the day.",
+        "language": "English",
+        "timestamp": "02:38"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "April 15th.",
+        "english_translation": "April 15th.",
+        "language": "English",
+        "timestamp": "02:46"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Perfect, okay, great. Do you have any other electric bill for this or any other location?",
+        "english_translation": "Perfect, okay, great. Do you have any other electric bill for this or any other location?",
+        "language": "English",
+        "timestamp": "02:48"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "No.",
+        "english_translation": "No.",
+        "language": "English",
+        "timestamp": "02:53"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Okay. May I have your email address, ma'am?",
+        "english_translation": "Okay. May I have your email address, ma'am?",
+        "language": "English",
+        "timestamp": "02:55"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "janine.l@yahoo.com",
+        "english_translation": "janine.l@yahoo.com",
+        "language": "English",
+        "timestamp": "03:00"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Perfect, perfect. Okay, great. The Eco Reward 12 plan offers 12 months of 100% renewable electricity and fixed rates of 20.99 cents per kilowatt-hour with no monthly fees and $50 in Visa gift cards dispersed over the course of your contract. This means that no matter how much energy you use or any market or weather change, your rate will not go up during the term. Additionally, the energy you consume will match 100% with renewable energy certificates. This means that renewable energy sources from solar, wind, or hydroelectric power or other renewable energy will be generated on your behalf. If you decide to cancel your price protection plan after the rescission period, there will be a small early termination fee of $75 per meter. The plan you have selected includes $50 in Visa gift cards. How this works is at every six-month intervals over the course of your fixed-rate term, you will receive a $25 in Visa gift cards when you sign up for 12 months. You are eligible for up to 12 months in loyalty gift cards, remaining assuming your account remains active and in good standing. You will receive a notice from us between 30 and 45 days before the end of your term. The notice will inform you that your term is about to expire and invite you to call us to learn about the new rate options available. If you do nothing, your rate will automatically switch to month-to-month variable rate with no cancellation fee. Okay, perfect, ma'am. Now, the last step is the verification process. It is a requirement by the state just to make sure that we have the correct information along with your request. I'm going to connect you with a live third-party verifier, and they are going to reconfirm your name, the name of your utility company, the service address, account number, and the rate. They will also mention that Clean Sky Energy is not affiliated with your utility company and that your utility company will still be responsible for the delivery portion of your bill, read your meter, bill you, and handle any service calls and emergencies. They will let you know that you are going to receive a welcome package in the next three to five business days, and National Grid will also send you a confirmation letter. Once you receive the welcome package, if you have any additional questions, you can call customer service. Do you have a piece of paper so that I can give you our customer service number? It's 888-355-6205. Now, during the verification process, they are not allowed to answer any questions, therefore, do you have any additional questions?",
+        "english_translation": "Perfect, perfect. Okay, great. The Eco Reward 12 plan offers 12 months of 100% renewable electricity and fixed rates of 20.99 cents per kilowatt-hour with no monthly fees and $50 in Visa gift cards dispersed over the course of your contract. This means that no matter how much energy you use or any market or weather change, your rate will not go up during the term. Additionally, the energy you consume will match 100% with renewable energy certificates. This means that renewable energy sources from solar, wind, or hydroelectric power or other renewable energy will be generated on your behalf. If you decide to cancel your price protection plan after the rescission period, there will be a small early termination fee of $75 per meter. The plan you have selected includes $50 in Visa gift cards. How this works is at every six-month intervals over the course of your fixed-rate term, you will receive a $25 in Visa gift cards when you sign up for 12 months. You are eligible for up to 12 months in loyalty gift cards, remaining assuming your account remains active and in good standing. You will receive a notice from us between 30 and 45 days before the end of your term. The notice will inform you that your term is about to expire and invite you to call us to learn about the new rate options available. If you do nothing, your rate will automatically switch to month-to-month variable rate with no cancellation fee. Okay, perfect, ma'am. Now, the last step is the verification process. It is a requirement by the state just to make sure that we have the correct information along with your request. I'm going to connect you with a live third-party verifier, and they are going to reconfirm your name, the name of your utility company, the service address, account number, and the rate. They will also mention that Clean Sky Energy is not affiliated with your utility company and that your utility company will still be responsible for the delivery portion of your bill, read your meter, bill you, and handle any service calls and emergencies. They will let you know that you are going to receive a welcome package in the next three to five business days, and National Grid will also send you a confirmation letter. Once you receive the welcome package, if you have any additional questions, you can call customer service. Do you have a piece of paper so that I can give you our customer service number? It's 888-355-6205. Now, during the verification process, they are not allowed to answer any questions, therefore, do you have any additional questions?",
+        "language": "English",
+        "timestamp": "03:07"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "No, not now.",
+        "english_translation": "No, not now.",
+        "language": "English",
+        "timestamp": "05:26"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Okay, great. During the verification, if you have any questions or you don't give a clear yes or no, the verification will need to be reset. Okay, perfect, ma'am. So let me get them on the line. The first two questions are for me. Hold for one moment, please stay with me on the line and do not hang up, okay?",
+        "english_translation": "Okay, great. During the verification, if you have any questions or you don't give a clear yes or no, the verification will need to be reset. Okay, perfect, ma'am. So let me get them on the line. The first two questions are for me. Hold for one moment, please stay with me on the line and do not hang up, okay?",
+        "language": "English",
+        "timestamp": "05:29"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Okay.",
+        "english_translation": "Okay.",
+        "language": "English",
+        "timestamp": "05:44"
+      },
+      {
+        "speaker_name": "Jesus",
+        "speaker_label": "Speaker 2",
+        "text": "Ms. Janine, we have the third-party verifier here. Remember that you need to answer with a clear yes or no. Verifier, you can start.",
+        "english_translation": "Ms. Janine, we have the third-party verifier here. Remember that you need to answer with a clear yes or no. Verifier, you can start.",
+        "language": "English",
+        "timestamp": "06:59"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Okay.",
+        "english_translation": "Okay.",
+        "language": "English",
+        "timestamp": "07:07"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "Hello, this is Sam with TPV 360, an independent third-party verifier. Today, I will be confirming and recording your decision to voluntarily select Clean Sky Energy as your electricity supplier. Each question must be answered with a clear yes or no response unless otherwise requested. Do you understand the purpose of this call and that it is being recorded?",
+        "english_translation": "Hello, this is Sam with TPV 360, an independent third-party verifier. Today, I will be confirming and recording your decision to voluntarily select Clean Sky Energy as your electricity supplier. Each question must be answered with a clear yes or no response unless otherwise requested. Do you understand the purpose of this call and that it is being recorded?",
+        "language": "English",
+        "timestamp": "07:09"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yes.",
+        "english_translation": "Yes.",
+        "language": "English",
+        "timestamp": "07:39"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "I'm sorry, I can barely hear your voice. Can you please repeat your response?",
+        "english_translation": "I'm sorry, I can barely hear your voice. Can you please repeat your response?",
+        "language": "English",
+        "timestamp": "07:41"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Did you ask me a question? Sorry, I thought you said yes or no.",
+        "english_translation": "Did you ask me a question? Sorry, I thought you said yes or no.",
+        "language": "English",
+        "timestamp": "07:49"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "Let me repeat. Do you understand the purpose of this call and that it is being recorded?",
+        "english_translation": "Let me repeat. Do you understand the purpose of this call and that it is being recorded?",
+        "language": "English",
+        "timestamp": "07:56"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yes.",
+        "english_translation": "Yes.",
+        "language": "English",
+        "timestamp": "08:03"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "Please confirm today's date is April 9th, 2025, and the time is 11:45 AM Eastern Standard Time.",
+        "english_translation": "Please confirm today's date is April 9th, 2025, and the time is 11:45 AM Eastern Standard Time.",
+        "language": "English",
+        "timestamp": "08:09"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yes.",
+        "english_translation": "Yes.",
+        "language": "English",
+        "timestamp": "08:22"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "Please state the customer name as it appears on the National Grid bill.",
+        "english_translation": "Please state the customer name as it appears on the National Grid bill.",
+        "language": "English",
+        "timestamp": "08:25"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Janine Correa.",
+        "english_translation": "Janine Correa.",
+        "language": "English",
+        "timestamp": "08:32"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "Please state your first and last name.",
+        "english_translation": "Please state your first and last name.",
+        "language": "English",
+        "timestamp": "08:36"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "First name Janine, last name Correa.",
+        "english_translation": "First name Janine, last name Correa.",
+        "language": "English",
+        "timestamp": "08:40"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "Please state your phone number.",
+        "english_translation": "Please state your phone number.",
+        "language": "English",
+        "timestamp": "08:45"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "508-345-6904.",
+        "english_translation": "508-345-6904.",
+        "language": "English",
+        "timestamp": "08:49"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "Thank you. Are you the utility bill account holder or person authorized to switch energy suppliers?",
+        "english_translation": "Thank you. Are you the utility bill account holder or person authorized to switch energy suppliers?",
+        "language": "English",
+        "timestamp": "08:57"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yes.",
+        "english_translation": "Yes.",
+        "language": "English",
+        "timestamp": "09:05"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "I have your month and day of birth as April 15th, is that correct?",
+        "english_translation": "I have your month and day of birth as April 15th, is that correct?",
+        "language": "English",
+        "timestamp": "09:08"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yes.",
+        "english_translation": "Yes.",
+        "language": "English",
+        "timestamp": "09:15"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "Is 305 Pine Grove Drive, Brockton, MA 02301 your correct service address?",
+        "english_translation": "Is 305 Pine Grove Drive, Brockton, MA 02301 your correct service address?",
+        "language": "English",
+        "timestamp": "09:19"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yes.",
+        "english_translation": "Yes.",
+        "language": "English",
+        "timestamp": "09:27"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "I show your billing address to be the same as your service address, is this correct?",
+        "english_translation": "I show your billing address to be the same as your service address, is this correct?",
+        "language": "English",
+        "timestamp": "09:30"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "That's correct, yes.",
+        "english_translation": "That's correct, yes.",
+        "language": "English",
+        "timestamp": "09:36"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "I show the account number on your electric bill as 7569606021, is that correct?",
+        "english_translation": "I show the account number on your electric bill as 7569606021, is that correct?",
+        "language": "English",
+        "timestamp": "09:41"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yes.",
+        "english_translation": "Yes.",
+        "language": "English",
+        "timestamp": "09:51"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "Do you understand that you are enrolling in a fixed-rate electricity plan, which is a 100% renewable product at a price of 20.99 cents per kilowatt-hour for an initial term of 12 months?",
+        "english_translation": "Do you understand that you are enrolling in a fixed-rate electricity plan, which is a 100% renewable product at a price of 20.99 cents per kilowatt-hour for an initial term of 12 months?",
+        "language": "English",
+        "timestamp": "09:54"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yes.",
+        "english_translation": "Yes.",
+        "language": "English",
+        "timestamp": "10:11"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "Do you understand that if you decide to cancel your electricity supplier service before the end of the term, you may be charged an early termination fee in the amount of $75?",
+        "english_translation": "Do you understand that if you decide to cancel your electricity supplier service before the end of the term, you may be charged an early termination fee in the amount of $75?",
+        "language": "English",
+        "timestamp": "10:15"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yes.",
+        "english_translation": "Yes.",
+        "language": "English",
+        "timestamp": "10:27"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "Do you consent to allowing Clean Sky Energy to obtain your historical usage information from your utility company in order to process your enrollment request?",
+        "english_translation": "Do you consent to allowing Clean Sky Energy to obtain your historical usage information from your utility company in order to process your enrollment request?",
+        "language": "English",
+        "timestamp": "10:30"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yes.",
+        "english_translation": "Yes.",
+        "language": "English",
+        "timestamp": "10:45"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "Do you understand that the representative with whom you spoke with earlier represents Clean Sky and that Clean Sky is not an affiliate of National Grid, but is an approved supplier in the Energy Choice program? Please answer with a clear yes or no.",
+        "english_translation": "Do you understand that the representative with whom you spoke with earlier represents Clean Sky and that Clean Sky is not an affiliate of National Grid, but is an approved supplier in the Energy Choice program? Please answer with a clear yes or no.",
+        "language": "English",
+        "timestamp": "10:48"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yes.",
+        "english_translation": "Yes.",
+        "language": "English",
+        "timestamp": "11:09"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "Pardon?",
+        "english_translation": "Pardon?",
+        "language": "English",
+        "timestamp": "11:13"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "I said yes.",
+        "english_translation": "I said yes.",
+        "language": "English",
+        "timestamp": "11:16"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "I'm sorry, your line is cutting in and out. Can you please repeat?",
+        "english_translation": "I'm sorry, your line is cutting in and out. Can you please repeat?",
+        "language": "English",
+        "timestamp": "11:20"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Well, can you please say it again, please? I didn't hear what you said.",
+        "english_translation": "Well, can you please say it again, please? I didn't hear what you said.",
+        "language": "English",
+        "timestamp": "11:24"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "Okay, let me repeat the question. Do you understand that the representative with whom you spoke with earlier represents Clean Sky and that Clean Sky is not an affiliate of National Grid, but is an approved supplier on the Energy Choice program? Please answer with a clear yes or no.",
+        "english_translation": "Okay, let me repeat the question. Do you understand that the representative with whom you spoke with earlier represents Clean Sky and that Clean Sky is not an affiliate of National Grid, but is an approved supplier on the Energy Choice program? Please answer with a clear yes or no.",
+        "language": "English",
+        "timestamp": "11:30"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yes.",
+        "english_translation": "Yes.",
+        "language": "English",
+        "timestamp": "11:53"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "Upon successful completion of this verification, Clean Sky Energy will send you a welcome packet containing the terms of service for your review. By law, you have until midnight of the third calendar day following receipt of the welcome packet to stop the enrollment process. And if you selected a plan that includes an early termination fee, you may be required to pay a penalty after the rescission period ends. To rescind your enrollment, simply call either your utility company or Clean Sky Energy at 888-355-6205. Do you understand?",
+        "english_translation": "Upon successful completion of this verification, Clean Sky Energy will send you a welcome packet containing the terms of service for your review. By law, you have until midnight of the third calendar day following receipt of the welcome packet to stop the enrollment process. And if you selected a plan that includes an early termination fee, you may be required to pay a penalty after the rescission period ends. To rescind your enrollment, simply call either your utility company or Clean Sky Energy at 888-355-6205. Do you understand?",
+        "language": "English",
+        "timestamp": "11:56"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yes.",
+        "english_translation": "Yes.",
+        "language": "English",
+        "timestamp": "12:39"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "Lastly, your service with Clean Sky Energy will begin with the next available meter read date or according to your utility's scheduled timeframe for initiating service. If you decide to cancel your service or if you have any questions about your service, you may call Clean Sky Energy at 888-355-6205. Do you understand?",
+        "english_translation": "Lastly, your service with Clean Sky Energy will begin with the next available meter read date or according to your utility's scheduled timeframe for initiating service. If you decide to cancel your service or if you have any questions about your service, you may call Clean Sky Energy at 888-355-6205. Do you understand?",
+        "language": "English",
+        "timestamp": "12:42"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Yes.",
+        "english_translation": "Yes.",
+        "language": "English",
+        "timestamp": "13:12"
+      },
+      {
+        "speaker_name": "Sam",
+        "speaker_label": "Speaker 3",
+        "text": "Thank you for your responses, and your verification is now complete. Your verification code is T as in Thomas, 0701260. Thank you for using TPV 360, and you have a great day. Goodbye for now.",
+        "english_translation": "Thank you for your responses, and your verification is now complete. Your verification code is T as in Thomas, 0701260. Thank you for using TPV 360, and you have a great day. Goodbye for now.",
+        "language": "English",
+        "timestamp": "13:17"
+      },
+      {
+        "speaker_name": "Janine Correa",
+        "speaker_label": "Speaker 1",
+        "text": "Thank you.",
+        "english_translation": "Thank you.",
+        "language": "English",
+        "timestamp": "13:35"
+      }
+    ]
+  }
+]
