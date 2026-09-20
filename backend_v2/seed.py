@@ -67,42 +67,6 @@ async def seed():
                 "designation": "System Administrator",
                 "phone": "+91 98765 43212"
             },
-            {
-                "name": "Dr. Priya Kapoor",
-                "email": "priya.kapoor@converseiq.edu",
-                "password": "Faculty@123",
-                "role": "Faculty",
-                "dept_code": "CS",
-                "designation": "Assistant Professor",
-                "phone": "+91 98765 43213"
-            },
-            {
-                "name": "Prof. Kavya Rao",
-                "email": "kavya.rao@converseiq.edu",
-                "password": "Faculty@123",
-                "role": "Faculty",
-                "dept_code": "CS",
-                "designation": "Associate Professor",
-                "phone": "+91 98765 43214"
-            },
-            {
-                "name": "Dr. Amit Joshi",
-                "email": "amit.joshi@converseiq.edu",
-                "password": "Faculty@123",
-                "role": "Faculty",
-                "dept_code": "CS",
-                "designation": "Assistant Professor",
-                "phone": "+91 98765 43215"
-            },
-            {
-                "name": "Prof. Rahul Verma",
-                "email": "rahul.verma@converseiq.edu",
-                "password": "Faculty@123",
-                "role": "Faculty",
-                "dept_code": "CS",
-                "designation": "Professor",
-                "phone": "+91 98765 43216"
-            },
         ]
 
         for u in users_to_seed:
@@ -123,6 +87,21 @@ async def seed():
                 )
                 session.add(new_user)
                 print(f"Created user: {u['name']} ({u['role']}) - {u['email']}")
+
+        # Remove any leftover dummy faculty accounts from older seeds
+        dummy_emails = [
+            "priya.kapoor@converseiq.edu",
+            "kavya.rao@converseiq.edu",
+            "amit.joshi@converseiq.edu",
+            "rahul.verma@converseiq.edu",
+        ]
+        for de in dummy_emails:
+            del_stmt = select(User).filter(User.email == de)
+            del_res = await session.execute(del_stmt)
+            dummy_u = del_res.scalar_one_or_none()
+            if dummy_u:
+                await session.delete(dummy_u)
+                print(f"Removed dummy faculty: {de}")
 
         # 3. Seed Past / Historical Meetings (if not already present)
         json_path = os.path.join(os.path.dirname(__file__), "app", "core", "initial_meetings.json")
