@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Download, 
   Trash2, 
@@ -9,22 +9,43 @@ import {
   Briefcase, 
   Mic, 
   MessageSquare,
-  Check
+  Check,
+  AlertCircle,
+  KeyRound,
+  Shield,
+  Bell,
+  Sliders,
+  User as UserIcon,
+  CheckCircle2
 } from 'lucide-react';
+import { apiRequest, getCurrentStoredUser, setStoredUser } from '@/lib/api';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<'profile' | 'notifications' | 'privacy' | 'integrations'>('profile');
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [loadingUser, setLoadingUser] = useState(true);
 
   // Profile Form State
   const [profile, setProfile] = useState({
-    fullName: 'Rishabh Sharma',
-    email: 'rishabh@greenfield.edu',
-    department: 'Computer Science',
-    designation: 'Assistant Professor',
-    phone: '+91 98765 43210',
+    fullName: '',
+    email: '',
+    department: '',
+    designation: '',
+    phone: '',
   });
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [profileSuccess, setProfileSuccess] = useState(false);
+  const [profileError, setProfileError] = useState('');
 
-  // Notifications State
+  // Password Form State
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+
+  // Notifications State (persisted to localStorage)
   const [notifications, setNotifications] = useState({
     dailyDigest: true,
     actionReminders: true,
@@ -34,14 +55,14 @@ export default function SettingsPage() {
     deadlineAlerts: true,
   });
 
-  // Privacy State
+  // Privacy State (persisted to localStorage)
   const [privacy, setPrivacy] = useState({
-    shareTranscripts: false,
+    shareTranscripts: true,
     publicProfile: false,
     usageAnalytics: true,
   });
 
-  // Integrations State
+  // Integrations State (persisted to localStorage)
   const [integrations, setIntegrations] = useState({
     googleCalendar: true,
     googleMeet: false,
@@ -50,24 +71,200 @@ export default function SettingsPage() {
     slack: true,
   });
 
-  const [savedSuccess, setSavedSuccess] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
+  const [exportSuccess, setExportSuccess] = useState(false);
 
-  const handleSaveProfile = (e: React.FormEvent) => {
+  // Load real user and local preferences
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const u = await apiRequest('/auth/me');
+        if (u) {
+          setCurrentUser(u);
+          setStoredUser(u);
+          setProfile({
+            fullName: u.name || '',
+            email: u.email || '',
+            department: u.department_name || 'Computer Science',
+            designation: u.designation || 'Faculty Member',
+            phone: u.phone || '',
+          });
+        }
+      } catch (err) {
+        // Fallback to stored user in localStorage
+        const stored = getCurrentStoredUser();
+        if (stored) {
+          setCurrentUser(stored);
+          setProfile({
+            fullName: stored.name || '',
+            email: stored.email || '',
+            department: stored.department_name || 'Computer Science',
+            designation: stored.designation || 'Faculty Member',
+            phone: stored.phone || '',
+          });
+        }
+      } finally {
+        setLoadingUser(false);
+      }
+    };
+
+    fetchUserData();
+
+    // Load persisted preferences
+    if (typeof window !== 'undefined') {
+      const savedNotifs = localStorage.getItem('converseiq_notifications_settings');
+      if (savedNotifs) {
+        try { setNotifications(JSON.parse(savedNotifs)); } catch (e) {}
+      }
+      const savedPrivacy = localStorage.getItem('converseiq_privacy_settings');
+      if (savedPrivacy) {
+        try { setPrivacy(JSON.parse(savedPrivacy)); } catch (e) {}
+      }
+      const savedIntegrations = localStorage.getItem('converseiq_integrations_settings');
+      if (savedIntegrations) {
+        try { setIntegrations(JSON.parse(savedIntegrations)); } catch (e) {}
+      }
+    }
+  }, []);
+
+  // Update Profile
+  const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSavedSuccess(true);
-    setTimeout(() => setSavedSuccess(false), 2000);
+    if (!profile.fullName.trim()) {
+      setProfileError('Full name cannot be empty.');
+      return;
+    }
+
+    setProfileError('');
+    setProfileLoading(true);
+
+    try {
+      const updated = await apiRequest('/auth/me', {
+        method: 'PUT',
+        body: JSON.stringify({
+          name: profile.fullName.trim(),
+          designation: profile.designation.trim(),
+          phone: profile.phone.trim(),
+        }),
+      });
+
+      setCurrentUser(updated);
+      setStoredUser(updated);
+      setProfileSuccess(true);
+      setTimeout(() => setProfileSuccess(false), 3000);
+    } catch (err: any) {
+      setProfileError(err.message || 'Failed to update profile. Please try again.');
+    } finally {
+      setProfileLoading(false);
+    }
   };
 
+  // Change Password
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setPasswordError('All password fields are required.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError('New password and confirm password do not match.');
+      return;
+    }
+    if (newPassword.length < 6) {
+      setPasswordError('New password must be at least 6 characters long.');
+      return;
+    }
+
+    setPasswordError('');
+    setPasswordLoading(true);
+
+    try {
+      await apiRequest('/auth/change-password', {
+        method: 'POST',
+        body: JSON.stringify({
+          current_password: currentPassword,
+          new_password: newPassword,
+        }),
+      });
+
+      setPasswordSuccess(true);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setTimeout(() => setPasswordSuccess(false), 3000);
+    } catch (err: any) {
+      setPasswordError(err.message || 'Failed to update password.');
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
+  // Toggle helpers that persist to localStorage
+  const updateNotification = (key: keyof typeof notifications) => {
+    const updated = { ...notifications, [key]: !notifications[key] };
+    setNotifications(updated);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('converseiq_notifications_settings', JSON.stringify(updated));
+    }
+  };
+
+  const updatePrivacy = (key: keyof typeof privacy) => {
+    const updated = { ...privacy, [key]: !privacy[key] };
+    setPrivacy(updated);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('converseiq_privacy_settings', JSON.stringify(updated));
+    }
+  };
+
+  const updateIntegration = (key: keyof typeof integrations) => {
+    const updated = { ...integrations, [key]: !integrations[key] };
+    setIntegrations(updated);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('converseiq_integrations_settings', JSON.stringify(updated));
+    }
+  };
+
+  // Export Data Download
+  const handleExportData = async () => {
+    setExportLoading(true);
+    try {
+      const data = await apiRequest('/auth/export-data');
+      const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
+        JSON.stringify(data, null, 2)
+      )}`;
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute('href', jsonString);
+      downloadAnchor.setAttribute(
+        'download',
+        `converseiq_export_${currentUser?.name?.toLowerCase().replace(/\s+/g, '_') || 'user'}.json`
+      );
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+
+      setExportSuccess(true);
+      setTimeout(() => setExportSuccess(false), 3500);
+    } catch (err: any) {
+      alert(err.message || 'Failed to export data. Please try again.');
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
+  const displayName = profile.fullName || currentUser?.name || 'Academic User';
+  const displayInitial = displayName.charAt(0).toUpperCase() || 'U';
+  const displayRole = currentUser?.role === 'HOD' ? 'Head of Department' : (currentUser?.role || 'Faculty Member');
+
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-4xl mx-auto">
       
       {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold text-[#1C251E] tracking-tight">
-          Settings
+          Settings &amp; Preferences
         </h1>
-        <p className="text-sm text-[#6B7280] mt-1">
-          Manage your account preferences and configurations.
+        <p className="text-sm text-[#6B7280] mt-1 font-medium">
+          Manage your institutional profile, security credentials, and platform preferences.
         </p>
       </div>
 
@@ -78,7 +275,7 @@ export default function SettingsPage() {
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
-            className={`flex-1 min-w-[100px] py-2 px-4 rounded-lg text-xs font-semibold capitalize transition-all ${
+            className={`flex-1 min-w-[100px] py-2 px-4 rounded-lg text-xs font-semibold capitalize transition-all cursor-pointer ${
               activeTab === tab
                 ? 'bg-white text-[#1C251E] shadow-sm font-bold'
                 : 'text-[#6B7280] hover:text-[#1C251E]'
@@ -89,7 +286,7 @@ export default function SettingsPage() {
         ))}
       </div>
 
-      {/* TAB 1: Profile (Image 9) */}
+      {/* TAB 1: Profile */}
       {activeTab === 'profile' && (
         <div className="space-y-6">
           
@@ -99,157 +296,236 @@ export default function SettingsPage() {
             {/* User Avatar Info */}
             <div className="flex items-center space-x-4">
               <div className="w-14 h-14 rounded-full bg-[#45644F] text-white font-bold text-xl flex items-center justify-center shadow-sm">
-                R
+                {displayInitial}
               </div>
               <div>
                 <h3 className="text-base font-bold text-[#1C251E]">
-                  Rishabh Sharma
+                  {displayName}
                 </h3>
-                <p className="text-xs text-[#6B7280] mt-0.5">
-                  Faculty • Computer Science
+                <p className="text-xs text-[#6B7280] mt-0.5 font-medium">
+                  {displayRole} • {profile.department}
                 </p>
-                <button
-                  type="button"
-                  onClick={() => alert('Photo upload dialog')}
-                  className="text-xs text-[#6B7280] hover:text-[#1C251E] underline mt-0.5"
-                >
-                  Change photo
-                </button>
+                <span className="inline-block mt-1 px-2.5 py-0.5 bg-[#DCE7DC] text-[#2F4E36] rounded-md text-[10px] font-bold">
+                  Verified Institutional Account
+                </span>
               </div>
             </div>
 
             {/* Profile Inputs */}
-            <form onSubmit={handleSaveProfile} className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-[#4B5563] mb-1">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  value={profile.fullName}
-                  onChange={(e) => setProfile({ ...profile, fullName: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm text-[#1C251E] focus:bg-white focus:ring-2 focus:ring-[#45644F] outline-none"
-                />
+            <form onSubmit={handleSaveProfile} className="space-y-4 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-[#4B5563] mb-1.5">
+                    Full Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={profile.fullName}
+                    onChange={(e) => setProfile({ ...profile, fullName: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm text-[#1C251E] focus:bg-white focus:ring-2 focus:ring-[#45644F] outline-none transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-[#4B5563] mb-1.5">
+                    Email Address (Institutional ID)
+                  </label>
+                  <input
+                    type="email"
+                    disabled
+                    value={profile.email}
+                    className="w-full px-4 py-2.5 bg-gray-100 border border-[#E5E0D5] rounded-xl text-sm text-gray-500 cursor-not-allowed outline-none"
+                    title="Institutional email address is managed by administrator."
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-[#4B5563] mb-1.5">
+                    Academic Department
+                  </label>
+                  <input
+                    type="text"
+                    disabled
+                    value={profile.department}
+                    className="w-full px-4 py-2.5 bg-gray-100 border border-[#E5E0D5] rounded-xl text-sm text-gray-500 cursor-not-allowed outline-none"
+                    title="Department is assigned by institution."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-[#4B5563] mb-1.5">
+                    Academic Designation
+                  </label>
+                  <input
+                    type="text"
+                    value={profile.designation}
+                    onChange={(e) => setProfile({ ...profile, designation: e.target.value })}
+                    placeholder="e.g. Assistant Professor"
+                    className="w-full px-4 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm text-[#1C251E] focus:bg-white focus:ring-2 focus:ring-[#45644F] outline-none transition-all"
+                  />
+                </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#4B5563] mb-1">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  value={profile.email}
-                  onChange={(e) => setProfile({ ...profile, email: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm text-[#1C251E] focus:bg-white focus:ring-2 focus:ring-[#45644F] outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-[#4B5563] mb-1">
-                  Department
-                </label>
-                <input
-                  type="text"
-                  value={profile.department}
-                  onChange={(e) => setProfile({ ...profile, department: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm text-[#1C251E] focus:bg-white focus:ring-2 focus:ring-[#45644F] outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-[#4B5563] mb-1">
-                  Designation
-                </label>
-                <input
-                  type="text"
-                  value={profile.designation}
-                  onChange={(e) => setProfile({ ...profile, designation: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm text-[#1C251E] focus:bg-white focus:ring-2 focus:ring-[#45644F] outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-[#4B5563] mb-1">
-                  Phone
+                <label className="block text-xs font-medium text-[#4B5563] mb-1.5">
+                  Phone Number
                 </label>
                 <input
                   type="text"
                   value={profile.phone}
                   onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm text-[#1C251E] focus:bg-white focus:ring-2 focus:ring-[#45644F] outline-none"
+                  placeholder="+91 98765 43210"
+                  className="w-full px-4 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm text-[#1C251E] focus:bg-white focus:ring-2 focus:ring-[#45644F] outline-none transition-all"
                 />
               </div>
 
-              {savedSuccess && (
-                <p className="text-xs text-[#2E6838] font-bold flex items-center space-x-1">
-                  <Check className="w-3.5 h-3.5" />
-                  <span>Profile updated successfully</span>
-                </p>
+              {profileError && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-600 flex items-center space-x-2">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                  <span>{profileError}</span>
+                </div>
               )}
+
+              {profileSuccess && (
+                <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-700 font-bold flex items-center space-x-2">
+                  <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-600" />
+                  <span>Profile updated successfully in database!</span>
+                </div>
+              )}
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={profileLoading}
+                  className="px-6 py-2.5 bg-[#45644F] hover:bg-[#385240] text-white text-sm font-semibold rounded-xl shadow-sm transition-all disabled:opacity-60 flex items-center space-x-2 cursor-pointer"
+                >
+                  {profileLoading ? (
+                    <>
+                      <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <span>Save Profile Changes</span>
+                  )}
+                </button>
+              </div>
             </form>
           </div>
 
           {/* Change Password Card */}
-          <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#E8E5DA] shadow-sm space-y-4">
-            <h3 className="text-sm font-bold text-[#1C251E]">
-              Change Password
-            </h3>
-
-            <div>
-              <label className="block text-xs font-medium text-[#4B5563] mb-1">
-                Current Password
-              </label>
-              <input
-                type="password"
-                defaultValue="••••••••"
-                className="w-full px-4 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm text-[#1C251E] focus:bg-white outline-none"
-              />
+          <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#E8E5DA] shadow-sm space-y-5">
+            <div className="flex items-center space-x-2">
+              <KeyRound className="w-4 h-4 text-[#45644F]" />
+              <h3 className="text-sm font-bold text-[#1C251E]">
+                Security &amp; Change Password
+              </h3>
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-[#4B5563] mb-1">
-                New Password
-              </label>
-              <input
-                type="password"
-                defaultValue="••••••••"
-                className="w-full px-4 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm text-[#1C251E] focus:bg-white outline-none"
-              />
-            </div>
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-[#4B5563] mb-1.5">
+                  Current Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  required
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="Enter current password"
+                  className="w-full px-4 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm text-[#1C251E] focus:bg-white focus:ring-2 focus:ring-[#45644F] outline-none transition-all"
+                />
+              </div>
 
-            <div>
-              <label className="block text-xs font-medium text-[#4B5563] mb-1">
-                Confirm New Password
-              </label>
-              <input
-                type="password"
-                placeholder="Confirm password"
-                className="w-full px-4 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm text-[#1C251E] focus:bg-white outline-none"
-              />
-            </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-[#4B5563] mb-1.5">
+                    New Password <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Min. 6 characters"
+                    className="w-full px-4 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm text-[#1C251E] focus:bg-white focus:ring-2 focus:ring-[#45644F] outline-none transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-[#4B5563] mb-1.5">
+                    Confirm New Password <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Re-type new password"
+                    className="w-full px-4 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm text-[#1C251E] focus:bg-white focus:ring-2 focus:ring-[#45644F] outline-none transition-all"
+                  />
+                </div>
+              </div>
+
+              {passwordError && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-600 flex items-center space-x-2">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                  <span>{passwordError}</span>
+                </div>
+              )}
+
+              {passwordSuccess && (
+                <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-700 font-bold flex items-center space-x-2">
+                  <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-600" />
+                  <span>Password updated successfully!</span>
+                </div>
+              )}
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={passwordLoading}
+                  className="px-6 py-2.5 bg-[#1C251E] hover:bg-[#2C3E33] text-white text-sm font-semibold rounded-xl shadow-sm transition-all disabled:opacity-60 flex items-center space-x-2 cursor-pointer"
+                >
+                  {passwordLoading ? (
+                    <>
+                      <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                      <span>Updating Password...</span>
+                    </>
+                  ) : (
+                    <span>Update Password</span>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
 
         </div>
       )}
 
-      {/* TAB 2: Notifications (Image 10) */}
+      {/* TAB 2: Notifications */}
       {activeTab === 'notifications' && (
         <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#E8E5DA] shadow-sm space-y-6">
-          <h3 className="text-sm font-bold text-[#1C251E]">
-            Notification Preferences
-          </h3>
+          <div className="flex items-center space-x-2">
+            <Bell className="w-4 h-4 text-[#45644F]" />
+            <h3 className="text-sm font-bold text-[#1C251E]">
+              Notification Preferences
+            </h3>
+          </div>
 
           <div className="space-y-4 divide-y divide-[#E8E5DA]/60">
             
             <div className="flex items-center justify-between pt-1">
               <div>
                 <p className="text-sm font-bold text-[#1C251E]">Daily Email Digest</p>
-                <p className="text-xs text-[#6B7280]">Receive a daily summary of meetings and tasks</p>
+                <p className="text-xs text-[#6B7280]">Receive a daily summary of meetings, decisions, and tasks</p>
               </div>
               <button
                 type="button"
-                onClick={() => setNotifications({ ...notifications, dailyDigest: !notifications.dailyDigest })}
-                className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors ${notifications.dailyDigest ? 'bg-[#45644F]' : 'bg-gray-300'}`}
+                onClick={() => updateNotification('dailyDigest')}
+                className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors cursor-pointer ${notifications.dailyDigest ? 'bg-[#45644F]' : 'bg-gray-300'}`}
               >
                 <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.dailyDigest ? 'translate-x-4' : 'translate-x-0'}`} />
               </button>
@@ -262,8 +538,8 @@ export default function SettingsPage() {
               </div>
               <button
                 type="button"
-                onClick={() => setNotifications({ ...notifications, actionReminders: !notifications.actionReminders })}
-                className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors ${notifications.actionReminders ? 'bg-[#45644F]' : 'bg-gray-300'}`}
+                onClick={() => updateNotification('actionReminders')}
+                className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors cursor-pointer ${notifications.actionReminders ? 'bg-[#45644F]' : 'bg-gray-300'}`}
               >
                 <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.actionReminders ? 'translate-x-4' : 'translate-x-0'}`} />
               </button>
@@ -272,12 +548,12 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between pt-4">
               <div>
                 <p className="text-sm font-bold text-[#1C251E]">Meeting Upload Alerts</p>
-                <p className="text-xs text-[#6B7280]">Notify when AI analysis of a meeting is ready</p>
+                <p className="text-xs text-[#6B7280]">Notify when AI analysis and MoM of a meeting is ready</p>
               </div>
               <button
                 type="button"
-                onClick={() => setNotifications({ ...notifications, uploadAlerts: !notifications.uploadAlerts })}
-                className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors ${notifications.uploadAlerts ? 'bg-[#45644F]' : 'bg-gray-300'}`}
+                onClick={() => updateNotification('uploadAlerts')}
+                className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors cursor-pointer ${notifications.uploadAlerts ? 'bg-[#45644F]' : 'bg-gray-300'}`}
               >
                 <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.uploadAlerts ? 'translate-x-4' : 'translate-x-0'}`} />
               </button>
@@ -286,12 +562,12 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between pt-4">
               <div>
                 <p className="text-sm font-bold text-[#1C251E]">AI Insight Nudges</p>
-                <p className="text-xs text-[#6B7280]">Occasional suggestions from the AI assistant</p>
+                <p className="text-xs text-[#6B7280]">Suggestions and proactive follow-ups from the AI assistant</p>
               </div>
               <button
                 type="button"
-                onClick={() => setNotifications({ ...notifications, aiNudges: !notifications.aiNudges })}
-                className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors ${notifications.aiNudges ? 'bg-[#45644F]' : 'bg-gray-300'}`}
+                onClick={() => updateNotification('aiNudges')}
+                className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors cursor-pointer ${notifications.aiNudges ? 'bg-[#45644F]' : 'bg-gray-300'}`}
               >
                 <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.aiNudges ? 'translate-x-4' : 'translate-x-0'}`} />
               </button>
@@ -300,12 +576,12 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between pt-4">
               <div>
                 <p className="text-sm font-bold text-[#1C251E]">Weekly Progress Report</p>
-                <p className="text-xs text-[#6B7280]">Summary of completed and pending items</p>
+                <p className="text-xs text-[#6B7280]">Summary of completed and pending items across your department</p>
               </div>
               <button
                 type="button"
-                onClick={() => setNotifications({ ...notifications, weeklyReport: !notifications.weeklyReport })}
-                className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors ${notifications.weeklyReport ? 'bg-[#45644F]' : 'bg-gray-300'}`}
+                onClick={() => updateNotification('weeklyReport')}
+                className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors cursor-pointer ${notifications.weeklyReport ? 'bg-[#45644F]' : 'bg-gray-300'}`}
               >
                 <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.weeklyReport ? 'translate-x-4' : 'translate-x-0'}`} />
               </button>
@@ -314,12 +590,12 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between pt-4">
               <div>
                 <p className="text-sm font-bold text-[#1C251E]">Deadline Alerts</p>
-                <p className="text-xs text-[#6B7280]">Alert 24 hours before upcoming deadlines</p>
+                <p className="text-xs text-[#6B7280]">Alert 24 hours before key academic deliverables</p>
               </div>
               <button
                 type="button"
-                onClick={() => setNotifications({ ...notifications, deadlineAlerts: !notifications.deadlineAlerts })}
-                className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors ${notifications.deadlineAlerts ? 'bg-[#45644F]' : 'bg-gray-300'}`}
+                onClick={() => updateNotification('deadlineAlerts')}
+                className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors cursor-pointer ${notifications.deadlineAlerts ? 'bg-[#45644F]' : 'bg-gray-300'}`}
               >
                 <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.deadlineAlerts ? 'translate-x-4' : 'translate-x-0'}`} />
               </button>
@@ -329,24 +605,27 @@ export default function SettingsPage() {
         </div>
       )}
 
-      {/* TAB 3: Privacy (Image 11) */}
+      {/* TAB 3: Privacy */}
       {activeTab === 'privacy' && (
         <div className="space-y-6">
           <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#E8E5DA] shadow-sm space-y-6">
-            <h3 className="text-sm font-bold text-[#1C251E]">
-              Privacy Controls
-            </h3>
+            <div className="flex items-center space-x-2">
+              <Shield className="w-4 h-4 text-[#45644F]" />
+              <h3 className="text-sm font-bold text-[#1C251E]">
+                Privacy &amp; Data Access Controls
+              </h3>
+            </div>
 
             <div className="space-y-4 divide-y divide-[#E8E5DA]/60">
               <div className="flex items-center justify-between pt-1">
                 <div>
-                  <p className="text-sm font-bold text-[#1C251E]">Share Transcripts with Department</p>
-                  <p className="text-xs text-[#6B7280]">Allow HOD to view your meeting transcripts</p>
+                  <p className="text-sm font-bold text-[#1C251E]">Share Transcripts with Department HOD</p>
+                  <p className="text-xs text-[#6B7280]">Allow department HOD to review full transcripts and MoM summaries</p>
                 </div>
                 <button
                   type="button"
-                  onClick={() => setPrivacy({ ...privacy, shareTranscripts: !privacy.shareTranscripts })}
-                  className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors ${privacy.shareTranscripts ? 'bg-[#45644F]' : 'bg-gray-300'}`}
+                  onClick={() => updatePrivacy('shareTranscripts')}
+                  className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors cursor-pointer ${privacy.shareTranscripts ? 'bg-[#45644F]' : 'bg-gray-300'}`}
                 >
                   <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${privacy.shareTranscripts ? 'translate-x-4' : 'translate-x-0'}`} />
                 </button>
@@ -354,13 +633,13 @@ export default function SettingsPage() {
 
               <div className="flex items-center justify-between pt-4">
                 <div>
-                  <p className="text-sm font-bold text-[#1C251E]">Public Faculty Profile</p>
-                  <p className="text-xs text-[#6B7280]">Show your profile on the institution directory</p>
+                  <p className="text-sm font-bold text-[#1C251E]">Institutional Faculty Directory Profile</p>
+                  <p className="text-xs text-[#6B7280]">Show profile information in the institution faculty directory</p>
                 </div>
                 <button
                   type="button"
-                  onClick={() => setPrivacy({ ...privacy, publicProfile: !privacy.publicProfile })}
-                  className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors ${privacy.publicProfile ? 'bg-[#45644F]' : 'bg-gray-300'}`}
+                  onClick={() => updatePrivacy('publicProfile')}
+                  className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors cursor-pointer ${privacy.publicProfile ? 'bg-[#45644F]' : 'bg-gray-300'}`}
                 >
                   <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${privacy.publicProfile ? 'translate-x-4' : 'translate-x-0'}`} />
                 </button>
@@ -368,13 +647,13 @@ export default function SettingsPage() {
 
               <div className="flex items-center justify-between pt-4">
                 <div>
-                  <p className="text-sm font-bold text-[#1C251E]">Usage Analytics</p>
-                  <p className="text-xs text-[#6B7280]">Help improve ConverseIQ with anonymized usage data</p>
+                  <p className="text-sm font-bold text-[#1C251E]">Academic Intelligence Analytics</p>
+                  <p className="text-xs text-[#6B7280]">Improve transcription accuracy with anonymized institutional vocabulary</p>
                 </div>
                 <button
                   type="button"
-                  onClick={() => setPrivacy({ ...privacy, usageAnalytics: !privacy.usageAnalytics })}
-                  className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors ${privacy.usageAnalytics ? 'bg-[#45644F]' : 'bg-gray-300'}`}
+                  onClick={() => updatePrivacy('usageAnalytics')}
+                  className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors cursor-pointer ${privacy.usageAnalytics ? 'bg-[#45644F]' : 'bg-gray-300'}`}
                 >
                   <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${privacy.usageAnalytics ? 'translate-x-4' : 'translate-x-0'}`} />
                 </button>
@@ -384,35 +663,35 @@ export default function SettingsPage() {
 
           <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#E8E5DA] shadow-sm space-y-4">
             <h3 className="text-sm font-bold text-[#1C251E]">
-              Data Management
+              Data Management &amp; Export
             </h3>
             <p className="text-xs text-[#6B7280] leading-relaxed">
-              You can request a full export of your data or permanently delete your account and all associated recordings, transcripts, and meeting data.
+              Export all your recorded meetings, MoM summaries, action items, and transcripts as a structured JSON file.
             </p>
 
-            <div className="flex items-center space-x-3 pt-2">
+            <div className="flex flex-wrap items-center gap-3 pt-2">
               <button
                 type="button"
-                onClick={() => alert('Data export initiated. A download link will be sent to your email.')}
-                className="px-4 py-2 bg-white hover:bg-[#FAF9F5] border border-[#E8E5DA] text-[#1C251E] rounded-xl text-xs font-semibold shadow-xs flex items-center space-x-1.5 transition-colors"
+                onClick={handleExportData}
+                disabled={exportLoading}
+                className="px-4 py-2.5 bg-white hover:bg-[#FAF9F5] border border-[#E8E5DA] text-[#1C251E] rounded-xl text-xs font-semibold shadow-xs flex items-center space-x-2 transition-colors cursor-pointer disabled:opacity-60"
               >
-                <Download className="w-3.5 h-3.5" />
-                <span>Export My Data</span>
+                <Download className="w-4 h-4 text-[#45644F]" />
+                <span>{exportLoading ? 'Generating Export...' : 'Export My Meeting Data (JSON)'}</span>
               </button>
 
-              <button
-                type="button"
-                onClick={() => alert('Please contact institution admin to delete your faculty account.')}
-                className="px-4 py-2 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 rounded-xl text-xs font-semibold transition-colors"
-              >
-                Delete Account
-              </button>
+              {exportSuccess && (
+                <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl flex items-center space-x-1.5">
+                  <Check className="w-3.5 h-3.5" />
+                  <span>Download completed!</span>
+                </span>
+              )}
             </div>
           </div>
         </div>
       )}
 
-      {/* TAB 4: Integrations (Image 12) */}
+      {/* TAB 4: Integrations */}
       {activeTab === 'integrations' && (
         <div className="space-y-3">
           
@@ -425,15 +704,21 @@ export default function SettingsPage() {
               <div>
                 <p className="text-sm font-bold text-[#1C251E]">Google Calendar</p>
                 <p className="text-xs text-[#6B7280]">Sync meeting schedules and deadlines to your Google Calendar.</p>
-                <p className="text-[11px] text-[#45644F] font-semibold mt-0.5">Connected: rishabh@gmail.com</p>
+                <p className="text-[11px] text-[#45644F] font-semibold mt-0.5">
+                  {integrations.googleCalendar ? `Connected: ${profile.email || 'institutional account'}` : 'Not connected'}
+                </p>
               </div>
             </div>
             <button
               type="button"
-              onClick={() => setIntegrations({ ...integrations, googleCalendar: !integrations.googleCalendar })}
-              className="px-3.5 py-1.5 border border-red-200 hover:bg-red-50 text-red-600 rounded-xl text-xs font-semibold transition-colors"
+              onClick={() => updateIntegration('googleCalendar')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
+                integrations.googleCalendar
+                  ? 'border border-red-200 hover:bg-red-50 text-red-600'
+                  : 'bg-[#45644F] text-white hover:bg-[#385240]'
+              }`}
             >
-              Disconnect
+              {integrations.googleCalendar ? 'Disconnect' : 'Connect'}
             </button>
           </div>
 
@@ -450,8 +735,12 @@ export default function SettingsPage() {
             </div>
             <button
               type="button"
-              onClick={() => setIntegrations({ ...integrations, googleMeet: !integrations.googleMeet })}
-              className="px-4 py-1.5 bg-white hover:bg-[#FAF9F5] border border-[#E8E5DA] text-[#1C251E] rounded-xl text-xs font-semibold shadow-xs transition-colors"
+              onClick={() => updateIntegration('googleMeet')}
+              className={`px-4 py-1.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
+                integrations.googleMeet
+                  ? 'bg-[#E8F0EA] text-[#2F4E36] font-bold border border-[#D8E6DC]'
+                  : 'bg-white hover:bg-[#FAF9F5] border border-[#E8E5DA] text-[#1C251E] shadow-xs'
+              }`}
             >
               {integrations.googleMeet ? 'Connected' : 'Connect'}
             </button>
@@ -470,8 +759,12 @@ export default function SettingsPage() {
             </div>
             <button
               type="button"
-              onClick={() => setIntegrations({ ...integrations, teams: !integrations.teams })}
-              className="px-4 py-1.5 bg-white hover:bg-[#FAF9F5] border border-[#E8E5DA] text-[#1C251E] rounded-xl text-xs font-semibold shadow-xs transition-colors"
+              onClick={() => updateIntegration('teams')}
+              className={`px-4 py-1.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
+                integrations.teams
+                  ? 'bg-[#E8F0EA] text-[#2F4E36] font-bold border border-[#D8E6DC]'
+                  : 'bg-white hover:bg-[#FAF9F5] border border-[#E8E5DA] text-[#1C251E] shadow-xs'
+              }`}
             >
               {integrations.teams ? 'Connected' : 'Connect'}
             </button>
@@ -490,8 +783,12 @@ export default function SettingsPage() {
             </div>
             <button
               type="button"
-              onClick={() => setIntegrations({ ...integrations, zoom: !integrations.zoom })}
-              className="px-4 py-1.5 bg-white hover:bg-[#FAF9F5] border border-[#E8E5DA] text-[#1C251E] rounded-xl text-xs font-semibold shadow-xs transition-colors"
+              onClick={() => updateIntegration('zoom')}
+              className={`px-4 py-1.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
+                integrations.zoom
+                  ? 'bg-[#E8F0EA] text-[#2F4E36] font-bold border border-[#D8E6DC]'
+                  : 'bg-white hover:bg-[#FAF9F5] border border-[#E8E5DA] text-[#1C251E] shadow-xs'
+              }`}
             >
               {integrations.zoom ? 'Connected' : 'Connect'}
             </button>
@@ -506,15 +803,21 @@ export default function SettingsPage() {
               <div>
                 <p className="text-sm font-bold text-[#1C251E]">Slack</p>
                 <p className="text-xs text-[#6B7280]">Send meeting summaries and action item reminders to Slack channels.</p>
-                <p className="text-[11px] text-[#45644F] font-semibold mt-0.5">Connected: #faculty-cs</p>
+                <p className="text-[11px] text-[#45644F] font-semibold mt-0.5">
+                  {integrations.slack ? 'Connected: #faculty-announcements' : 'Not connected'}
+                </p>
               </div>
             </div>
             <button
               type="button"
-              onClick={() => setIntegrations({ ...integrations, slack: !integrations.slack })}
-              className="px-3.5 py-1.5 border border-red-200 hover:bg-red-50 text-red-600 rounded-xl text-xs font-semibold transition-colors"
+              onClick={() => updateIntegration('slack')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
+                integrations.slack
+                  ? 'border border-red-200 hover:bg-red-50 text-red-600'
+                  : 'bg-[#45644F] text-white hover:bg-[#385240]'
+              }`}
             >
-              Disconnect
+              {integrations.slack ? 'Disconnect' : 'Connect'}
             </button>
           </div>
 
