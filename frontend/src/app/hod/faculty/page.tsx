@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Users, UserPlus, X, CheckCircle2, XCircle } from 'lucide-react';
+import { Users, UserPlus, X, CheckCircle2, XCircle, Trash2 } from 'lucide-react';
 import { apiRequest } from '@/lib/api';
 
 interface FacultyMember {
@@ -104,6 +104,16 @@ export default function HodFacultyPerformancePage() {
     }
   };
 
+  const handleDeleteFaculty = async (faculty: FacultyMember) => {
+    if (!confirm(`Are you sure you want to remove ${faculty.name} from the department roster?`)) return;
+    try {
+      await apiRequest(`/users/${faculty.id}`, { method: 'DELETE' });
+      await loadFacultyData();
+    } catch (err: any) {
+      alert(err.message || 'Failed to remove faculty member.');
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Header */}
@@ -197,6 +207,13 @@ export default function HodFacultyPerformancePage() {
                     ? <XCircle className="w-4 h-4 text-red-400 hover:text-red-600" />
                     : <CheckCircle2 className="w-4 h-4 text-green-500 hover:text-green-700" />
                   }
+                </button>
+                <button
+                  onClick={() => handleDeleteFaculty(faculty)}
+                  title="Remove faculty from roster"
+                  className="text-gray-400 hover:text-red-600 transition-colors cursor-pointer p-0.5"
+                >
+                  <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             </div>

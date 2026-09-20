@@ -196,3 +196,35 @@ async def update_user(
     await db.refresh(target)
 
     return {"id": target.id, "name": target.name, "is_active": target.is_active}
+
+
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_user(
+    user_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Delete a user.
+    HOD can delete faculty in their own department.
+    Admin can delete any user except themselves.
+    """
+    if current_user.role not in ("HOD", "Admin"):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized.")
+
+    if current_user.id == user_id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot delete your own account.")
+
+    stmt = select(User).filter(User.id == user_id)
+    result = await db.execute(stmt)
+    target = result.scalar_one_or_none()
+
+    if not target:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found.")
+
+    if current_user.role == "HOD" and target.department_id != current_user.department_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Cannot delete faculty outside your department.")
+
+    await db.delete(target)
+    await db.commit()
+    return None
