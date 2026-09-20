@@ -24,7 +24,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [isAddMeetingOpen, setIsAddMeetingOpen] = useState(false);
-  const [user, setUser] = useState<{ name?: string; full_name?: string; email?: string; role?: string } | null>(null);
+  const [user, setUser] = useState<{ name?: string; full_name?: string; email?: string; role?: string; department_name?: string } | null>(null);
 
   useEffect(() => {
     const u = getCurrentStoredUser();
@@ -39,9 +39,11 @@ export default function Sidebar() {
   // If on login page, don't show sidebar
   if (pathname === '/login') return null;
 
-  const isHodMode = pathname.startsWith('/hod');
-  const isAdminMode = pathname.startsWith('/admin');
-  const isFacultyMode = !isHodMode && !isAdminMode;
+  // Determine mode based on user's authenticated role
+  const userRole = user?.role || (pathname.startsWith('/hod') ? 'HOD' : pathname.startsWith('/admin') ? 'Admin' : 'Faculty');
+  const isHodMode = userRole === 'HOD';
+  const isAdminMode = userRole === 'Admin';
+  const isFacultyMode = userRole === 'Faculty';
 
   const facultyNavItems = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutGrid },
@@ -69,7 +71,7 @@ export default function Sidebar() {
   const currentNavItems = isHodMode ? hodNavItems : isAdminMode ? adminNavItems : facultyNavItems;
 
   const displayName = user?.name || user?.full_name || 'User';
-  const displayRole = isHodMode ? 'Head of Department' : isAdminMode ? 'Administrator' : (user?.role || 'Faculty');
+  const displayRole = isHodMode ? 'Head of Department' : isAdminMode ? 'Administrator' : (user?.role || 'Faculty Member');
   const initial = displayName.charAt(0).toUpperCase() || 'U';
 
   return (
@@ -88,42 +90,20 @@ export default function Sidebar() {
               </span>
             </div>
 
-            {/* Role / View Switcher */}
-            <div className="mt-3 bg-[#EAE5D9] p-1 rounded-xl flex items-center justify-between text-xs font-semibold">
-              <Link
-                href="/dashboard"
-                className={`flex-1 py-1.5 text-center rounded-lg transition-all ${
-                  isFacultyMode ? 'bg-white text-[#2F4E36] shadow-xs font-bold' : 'text-[#6B7280] hover:text-[#1C251E]'
-                }`}
-              >
-                Faculty
-              </Link>
-              <Link
-                href="/hod/overview"
-                className={`flex-1 py-1.5 text-center rounded-lg transition-all ${
-                  isHodMode ? 'bg-white text-[#2F4E36] shadow-xs font-bold' : 'text-[#6B7280] hover:text-[#1C251E]'
-                }`}
-              >
-                HOD
-              </Link>
-              <Link
-                href="/admin"
-                className={`flex-1 py-1.5 text-center rounded-lg transition-all ${
-                  isAdminMode ? 'bg-white text-[#2F4E36] shadow-xs font-bold' : 'text-[#6B7280] hover:text-[#1C251E]'
-                }`}
-              >
-                Admin
-              </Link>
-            </div>
-
-            {/* Department Pill Badge (HOD Mode) */}
-            {isHodMode && (
-              <div className="mt-2.5">
-                <span className="inline-block px-2.5 py-1 bg-[#E8F0EA] border border-[#D8E6DC] text-[#3D5A45] rounded-md text-[11px] font-semibold tracking-wide">
-                  HOD • Computer Science
-                </span>
+            {/* Role & Department Info Badge (No role switching) */}
+            <div className="mt-3.5 px-3 py-2 bg-[#EAE5D9]/60 border border-[#E0DACB] rounded-xl flex items-center space-x-2.5">
+              <div className="w-2 h-2 rounded-full bg-[#45644F] flex-shrink-0"></div>
+              <div className="truncate">
+                <p className="text-[11px] font-bold text-[#1C251E] uppercase tracking-wider truncate">
+                  {displayRole}
+                </p>
+                {user?.department_name && (
+                  <p className="text-[10px] text-[#6B7280] truncate mt-0.5">
+                    {user.department_name}
+                  </p>
+                )}
               </div>
-            )}
+            </div>
           </div>
 
           {/* Nav Items */}
