@@ -61,6 +61,7 @@ export default function Sidebar() {
     { label: 'Department Meetings', href: '/hod/meetings', icon: Folder },
     { label: 'Action Tracker', href: '/hod/action-tracker', icon: CheckSquare },
     { label: 'Schedule', href: '/hod/schedule', icon: Calendar },
+    { label: 'AI Assistant', href: '/ai-assistant', icon: Sparkles },
   ];
 
   const adminNavItems = [
