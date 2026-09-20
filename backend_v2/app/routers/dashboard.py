@@ -57,12 +57,38 @@ async def get_faculty_dashboard(
     recent_m_res = await db.execute(recent_m_stmt)
     recent_meetings = recent_m_res.scalars().all()
 
+    # Upcoming scheduled meetings
+    sched_stmt = (
+        select(Meeting)
+        .filter(
+            (Meeting.user_id == current_user.id) | (Meeting.department_id == current_user.department_id),
+            Meeting.status.in_(["Scheduled", "Upcoming"])
+        )
+        .order_by(Meeting.date.asc())
+        .limit(5)
+    )
+    sched_res = await db.execute(sched_stmt)
+    sched_meetings = sched_res.scalars().all()
+
+    # Deadlines for faculty
+    fac_deadlines_stmt = (
+        select(ActionItem)
+        .filter(
+            ActionItem.due_date >= now,
+            ActionItem.status != "Completed"
+        )
+        .order_by(ActionItem.due_date.asc())
+        .limit(5)
+    )
+    fac_deadlines_res = await db.execute(fac_deadlines_stmt)
+    fac_deadlines = fac_deadlines_res.scalars().all()
+
     return {
         "metrics": {
             "total_meetings": total_meetings,
             "pending_action_items": pending_actions,
             "upcoming_deadlines_count": upcoming_deadlines,
-            "upcoming_sessions_count": 0,
+            "upcoming_sessions_count": len(sched_meetings),
         },
         "priority_action_items": [
             {
@@ -86,6 +112,25 @@ async def get_faculty_dashboard(
             }
             for m in recent_meetings
         ],
+        "schedule": {
+            "meetings": [
+                {
+                    "title": m.title,
+                    "date": m.date.strftime("%d") if m.date else "",
+                    "date_info": m.date.strftime("%b %d, %Y • %I:%M %p") if m.date else "",
+                }
+                for m in sched_meetings
+            ],
+            "sessions": [],
+            "deadlines": [
+                {
+                    "title": it.task,
+                    "due_date": it.due_date.strftime("%d") if it.due_date else "",
+                    "date_info": it.due_date.strftime("%b %d, %Y") if it.due_date else "",
+                }
+                for it in fac_deadlines
+            ],
+        },
         "upcoming_events": [],
     }
 
@@ -256,6 +301,19 @@ async def get_hod_dashboard(
     else:
         deadline_items = []
 
+    # ── 8. Scheduled meetings in this department ────────────────────────────
+    sched_dept_stmt = (
+        select(Meeting)
+        .filter(
+            Meeting.department_id == dept_id,
+            Meeting.status.in_(["Scheduled", "Upcoming"])
+        )
+        .order_by(Meeting.date.asc())
+        .limit(10)
+    )
+    sched_dept_res = await db.execute(sched_dept_stmt)
+    sched_dept_meetings = sched_dept_res.scalars().all()
+
     return {
         "metrics": {
             "total_faculty": total_faculty,
@@ -280,8 +338,18 @@ async def get_hod_dashboard(
             for it in urgent_actions_raw
         ],
         "schedule": {
-            "meetings": [],  # Future scheduled meetings — empty until scheduling feature built
-            "sessions": [],  # Future faculty sessions
+            "meetings": [
+                {
+                    "id": m.id,
+                    "title": m.title,
+                    "day": m.date.day if m.date else None,
+                    "dateInfo": m.date.strftime("%b %d, %Y • %I:%M %p") if m.date else "TBD",
+                    "duration": f"{m.duration_minutes}m",
+                    "status": m.status,
+                }
+                for m in sched_dept_meetings
+            ],
+            "sessions": [],
             "deadlines": [
                 {
                     "title": it.task,

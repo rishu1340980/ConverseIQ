@@ -24,6 +24,8 @@ class CreateMeetingRequest(BaseModel):
     title: str
     duration_minutes: Optional[int] = 45
     participants: Optional[str] = None  # Comma-separated names
+    date: Optional[datetime] = None
+    status: Optional[str] = "Analysis Complete"
 
 class MapAttendeeRequest(BaseModel):
     speaker_label: str
@@ -164,10 +166,10 @@ async def create_meeting(
     new_meeting = Meeting(
         title=payload.title.strip(),
         duration_minutes=payload.duration_minutes or 45,
-        status="Analysis Complete",
+        status=payload.status or "Analysis Complete",
         user_id=current_user.id,
         department_id=current_user.department_id,
-        date=datetime.now(timezone.utc)
+        date=payload.date if payload.date else datetime.now(timezone.utc)
     )
     db.add(new_meeting)
     await db.flush()
