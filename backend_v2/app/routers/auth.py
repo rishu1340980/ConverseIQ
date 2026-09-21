@@ -12,6 +12,7 @@ from backend_v2.app.core.dependencies import get_current_user
 from backend_v2.app.models.user import User
 from backend_v2.app.models.meeting import Meeting
 from backend_v2.app.schemas.auth import LoginRequest, TokenResponse, UserResponse
+from backend_v2.app.services.audit import log_audit_event
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -38,16 +39,44 @@ async def login(req: LoginRequest, db: AsyncSession = Depends(get_db)):
     user = result.scalar_one_or_none()
 
     if not user or not verify_password(req.password, user.hashed_password):
+        await log_audit_event(
+            db=db,
+            action="LOGIN_FAILED",
+            details=f"Failed authentication attempt for email: {req.email.lower().strip()}",
+            severity="Warn",
+            resource_type="auth",
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password"
         )
 
     if not user.is_active:
+        await log_audit_event(
+            db=db,
+            action="SUSPENDED_LOGIN_ATTEMPT",
+            details=f"Suspended user {user.email} attempted to log in",
+            severity="Alert",
+            user_id=user.id,
+            user_name=user.name,
+            resource_type="auth",
+            resource_id=user.id,
+        )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Account has been suspended. Please contact institutional administrator."
         )
+
+    await log_audit_event(
+        db=db,
+        action="USER_LOGIN",
+        details=f"{user.name} ({user.role}) logged in successfully",
+        severity="OK",
+        user_id=user.id,
+        user_name=user.name,
+        resource_type="auth",
+        resource_id=user.id,
+    )
 
     access_token = create_access_token(
         data={"sub": str(user.id), "email": user.email, "role": user.role}
@@ -98,6 +127,17 @@ async def update_profile(
     await db.commit()
     await db.refresh(current_user)
 
+    await log_audit_event(
+        db=db,
+        action="PROFILE_UPDATED",
+        details=f"User {current_user.name} ({current_user.email}) updated their profile details",
+        severity="Info",
+        user_id=current_user.id,
+        user_name=current_user.name,
+        resource_type="user",
+        resource_id=current_user.id,
+    )
+
     return UserResponse(
         id=current_user.id,
         name=current_user.name,
@@ -131,6 +171,17 @@ async def change_password(
 
     current_user.hashed_password = get_password_hash(payload.new_password)
     await db.commit()
+
+    await log_audit_event(
+        db=db,
+        action="PASSWORD_CHANGED",
+        details=f"User {current_user.name} ({current_user.email}) changed their password",
+        severity="Info",
+        user_id=current_user.id,
+        user_name=current_user.name,
+        resource_type="auth",
+        resource_id=current_user.id,
+    )
 
     return {"message": "Password updated successfully."}
 

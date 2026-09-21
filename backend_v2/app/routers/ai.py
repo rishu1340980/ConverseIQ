@@ -16,6 +16,7 @@ from backend_v2.app.models.meeting import Meeting
 from backend_v2.app.models.action_item import ActionItem
 from backend_v2.app.models.mom import MinutesOfMeeting
 from backend_v2.app.models.transcript import Utterance
+from backend_v2.app.services.audit import log_audit_event
 
 router = APIRouter(prefix="/ai", tags=["AI Assistant"])
 
@@ -265,6 +266,16 @@ INSTRUCTIONS:
     # 5. Fallback if Gemini unavailable
     if not answer:
         answer = _fallback_keyword_answer(query_text, meetings_context, all_action_items)
+
+    await log_audit_event(
+        db=db,
+        action="AI_QUERY",
+        details=f"User {current_user.name} asked: '{query_text[:80]}'",
+        severity="Info",
+        user_id=current_user.id,
+        user_name=current_user.name,
+        resource_type="ai",
+    )
 
     return ChatQueryResponse(
         answer=answer,

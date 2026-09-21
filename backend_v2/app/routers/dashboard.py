@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy import func
+from sqlalchemy import func, desc
 from datetime import datetime, timezone
 from backend_v2.app.core.database import get_db
 from backend_v2.app.core.dependencies import get_current_user
@@ -9,6 +9,7 @@ from backend_v2.app.models.user import User
 from backend_v2.app.models.meeting import Meeting
 from backend_v2.app.models.action_item import ActionItem
 from backend_v2.app.models.department import Department
+from backend_v2.app.models.audit_log import AuditLog
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 
@@ -369,35 +370,89 @@ async def get_admin_dashboard(
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Admin system-wide dashboard. Only real counts — no dummy data.
+    Admin system-wide dashboard. Only real counts — strictly zero dummy data.
     """
-    total_users_res = await db.execute(select(func.count(User.id)))
-    total_users = total_users_res.scalar() or 0
+    if current_user.role != "Admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access restricted to Institutional Administrators."
+        )
 
-    active_users_res = await db.execute(select(func.count(User.id)).filter(User.is_active == True))
-    active_users = active_users_res.scalar() or 0
+    # Real faculty count (role == 'Faculty')
+    total_faculty_res = await db.execute(select(func.count(User.id)).filter(User.role == "Faculty"))
+    total_faculty = total_faculty_res.scalar() or 0
 
+    # Total meetings
     total_meetings_res = await db.execute(select(func.count(Meeting.id)))
     total_meetings = total_meetings_res.scalar() or 0
 
-    total_depts_res = await db.execute(select(func.count(Department.id)))
-    total_depts = total_depts_res.scalar() or 0
-
+    # Action items tracked
     total_actions_res = await db.execute(select(func.count(ActionItem.id)))
-    total_actions = total_actions_res.scalar() or 0
+    action_items_tracked = total_actions_res.scalar() or 0
 
+    # Completed actions
     completed_actions_res = await db.execute(
         select(func.count(ActionItem.id)).filter(ActionItem.status == "Completed")
     )
     completed_actions = completed_actions_res.scalar() or 0
 
-    return {
-        "metrics": {
-            "total_users": total_users,
-            "active_users": active_users,
-            "total_meetings": total_meetings,
-            "total_departments": total_depts,
-            "total_action_items": total_actions,
-            "completed_action_items": completed_actions,
+    completion_percentage = round((completed_actions / action_items_tracked) * 100, 1) if action_items_tracked > 0 else 0.0
+
+    # Active departments breakdown
+    dept_stmt = select(Department).order_by(Department.name.asc())
+    dept_res = await db.execute(dept_stmt)
+    all_depts = dept_res.scalars().all()
+
+    department_activity = []
+    active_depts_count = 0
+    for d in all_depts:
+        fc_res = await db.execute(
+            select(func.count(User.id)).filter(User.department_id == d.id, User.is_active == True)
+        )
+        dept_fc = fc_res.scalar() or 0
+
+        mc_res = await db.execute(
+            select(func.count(Meeting.id)).filter(Meeting.department_id == d.id)
+        )
+        dept_mc = mc_res.scalar() or 0
+
+        if dept_fc > 0 or dept_mc > 0:
+            active_depts_count += 1
+
+        department_activity.append({
+            "department_id": d.id,
+            "department_name": d.name,
+            "faculty_count": dept_fc,
+            "meeting_count": dept_mc,
+        })
+
+    # System alerts: recent audit logs with Warn or Alert
+    alerts_stmt = (
+        select(AuditLog)
+        .filter(AuditLog.severity.in_(["Warn", "Alert"]))
+        .order_by(desc(AuditLog.timestamp))
+        .limit(5)
+    )
+    alerts_res = await db.execute(alerts_stmt)
+    alert_logs = alerts_res.scalars().all()
+
+    system_alerts = [
+        {
+            "id": log.id,
+            "action": log.action,
+            "details": log.details,
+            "severity": log.severity,
+            "timestamp": log.timestamp.isoformat() if log.timestamp else None,
         }
+        for log in alert_logs
+    ]
+
+    return {
+        "total_faculty": total_faculty,
+        "total_meetings": total_meetings,
+        "action_items_tracked": action_items_tracked,
+        "active_departments": active_depts_count,
+        "completion_percentage": completion_percentage,
+        "department_activity": department_activity,
+        "system_alerts": system_alerts,
     }

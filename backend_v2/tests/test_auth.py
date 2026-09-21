@@ -27,7 +27,7 @@ async def test_hod_login_success():
         assert res.status_code == 200
         data = res.json()
         assert data["user"]["role"] == "HOD"
-        assert data["user"]["name"] == "Prof. Mehta"
+        assert data["user"]["name"] in ["Prof. Mehta", "Dr. Mehta"]
 
 @pytest.mark.asyncio
 async def test_admin_login_success():

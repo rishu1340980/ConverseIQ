@@ -10,6 +10,7 @@ from backend_v2.app.core.security import get_password_hash
 from backend_v2.app.models.user import User
 from backend_v2.app.models.meeting import Meeting
 from backend_v2.app.models.action_item import ActionItem
+from backend_v2.app.services.audit import log_audit_event
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -149,6 +150,17 @@ async def create_faculty(
     await db.commit()
     await db.refresh(new_faculty)
 
+    await log_audit_event(
+        db=db,
+        action="USER_CREATED",
+        details=f"{current_user.role} {current_user.name} created faculty account for {new_faculty.name} ({new_faculty.email})",
+        severity="Info",
+        user_id=current_user.id,
+        user_name=current_user.name,
+        resource_type="user",
+        resource_id=new_faculty.id,
+    )
+
     return {
         "id": new_faculty.id,
         "name": new_faculty.name,
@@ -195,6 +207,18 @@ async def update_user(
     await db.commit()
     await db.refresh(target)
 
+    status_str = "activated" if target.is_active else "suspended"
+    await log_audit_event(
+        db=db,
+        action="USER_STATUS_UPDATED",
+        details=f"{current_user.role} {current_user.name} {status_str} account for {target.name} ({target.email})",
+        severity="Warn" if not target.is_active else "Info",
+        user_id=current_user.id,
+        user_name=current_user.name,
+        resource_type="user",
+        resource_id=target.id,
+    )
+
     return {"id": target.id, "name": target.name, "is_active": target.is_active}
 
 
@@ -225,6 +249,22 @@ async def delete_user(
     if current_user.role == "HOD" and target.department_id != current_user.department_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Cannot delete faculty outside your department.")
 
+    deleted_user_name = target.name
+    deleted_user_email = target.email
+    deleted_user_id = target.id
+
     await db.delete(target)
     await db.commit()
+
+    await log_audit_event(
+        db=db,
+        action="USER_DELETED",
+        details=f"{current_user.role} {current_user.name} deleted user {deleted_user_name} ({deleted_user_email})",
+        severity="Alert",
+        user_id=current_user.id,
+        user_name=current_user.name,
+        resource_type="user",
+        resource_id=deleted_user_id,
+    )
+
     return None

@@ -18,10 +18,11 @@ import {
   Lock,
   Eye
 } from 'lucide-react';
-import { apiRequest } from '@/lib/api';
+import { apiRequest, getCurrentStoredUser } from '@/lib/api';
 import { AdminDashboardData, User, AuditLog } from '@/types';
 
 export default function AdminPage() {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'departments' | 'analytics' | 'audit' | 'settings'>('overview');
   const [dashboard, setDashboard] = useState<AdminDashboardData | null>(null);
   const [users, setUsers] = useState<any[]>([]);
@@ -44,17 +45,20 @@ export default function AdminPage() {
   const [auditSearch, setAuditSearch] = useState('');
 
   useEffect(() => {
+    const user = getCurrentStoredUser();
+    setCurrentUser(user);
     fetchAdminData();
   }, []);
 
   const fetchAdminData = async () => {
     try {
-      const [dRes, uRes, deptRes, aRes, logsRes] = await Promise.all([
+      const [dRes, uRes, deptRes, aRes, logsRes, sRes] = await Promise.all([
         apiRequest<AdminDashboardData>('/dashboard/admin').catch(() => null),
         apiRequest<any[]>('/users').catch(() => []),
         apiRequest<any[]>('/departments').catch(() => []),
         apiRequest<any>('/analytics').catch(() => null),
         apiRequest<AuditLog[]>('/audit').catch(() => []),
+        apiRequest<any>('/admin/settings').catch(() => null),
       ]);
 
       if (dRes) setDashboard(dRes);
@@ -62,6 +66,15 @@ export default function AdminPage() {
       setDepartments(deptRes);
       if (aRes) setAnalytics(aRes);
       setAuditLogs(logsRes);
+
+      if (sRes) {
+        if (sRes.institution_name) setInstName(sRes.institution_name);
+        if (sRes.ai_model) setAiModel(sRes.ai_model);
+        if (sRes.retention_days !== undefined) setRetentionDays(sRes.retention_days);
+        if (sRes.enable_email_alerts !== undefined) setEnableEmailAlerts(sRes.enable_email_alerts);
+        if (sRes.enable_auto_transcription !== undefined) setEnableAutoTranscription(sRes.enable_auto_transcription);
+        if (sRes.enable_2fa !== undefined) setEnable2FA(sRes.enable_2fa);
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -75,17 +88,38 @@ export default function AdminPage() {
         method: 'PUT',
         body: JSON.stringify({ is_active: !currentActive }),
       });
-      const updatedUsers = await apiRequest<any[]>('/users');
+      const [updatedUsers, updatedLogs] = await Promise.all([
+        apiRequest<any[]>('/users').catch(() => []),
+        apiRequest<AuditLog[]>('/audit').catch(() => []),
+      ]);
       setUsers(updatedUsers);
+      setAuditLogs(updatedLogs);
     } catch (err) {
       alert('Failed to update user account status');
     }
   };
 
-  const handleSaveSettings = (e: React.FormEvent) => {
+  const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSettingsSaved(true);
-    setTimeout(() => setSettingsSaved(false), 3000);
+    try {
+      await apiRequest('/admin/settings', {
+        method: 'PUT',
+        body: JSON.stringify({
+          institution_name: instName,
+          ai_model: aiModel,
+          retention_days: retentionDays,
+          enable_email_alerts: enableEmailAlerts,
+          enable_auto_transcription: enableAutoTranscription,
+          enable_2fa: enable2FA,
+        }),
+      });
+      setSettingsSaved(true);
+      const updatedLogs = await apiRequest<AuditLog[]>('/audit').catch(() => []);
+      setAuditLogs(updatedLogs);
+      setTimeout(() => setSettingsSaved(false), 3000);
+    } catch (err: any) {
+      alert(err?.message || 'Failed to update system settings');
+    }
   };
 
   const filteredLogs = auditLogs.filter((log) => {
@@ -97,10 +131,30 @@ export default function AdminPage() {
     return true;
   });
 
+  if (currentUser && currentUser.role !== 'Admin') {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-6">
+        <div className="w-16 h-16 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mb-4">
+          <Lock className="w-8 h-8" />
+        </div>
+        <h2 className="text-2xl font-black text-gray-900 mb-2">Access Restricted</h2>
+        <p className="text-gray-500 max-w-md text-sm mb-6">
+          The Administration Suite is strictly restricted to Institutional Administrators. Your account does not have administrative oversight privileges.
+        </p>
+        <Link
+          href={currentUser.role === 'HOD' ? '/hod/overview' : '/dashboard'}
+          className="px-5 py-2.5 bg-gray-900 hover:bg-black text-white text-xs font-bold rounded-xl transition-colors"
+        >
+          Return to Dashboard
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       
-      {/* Top Header & Back to Faculty View */}
+      {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2">
@@ -184,24 +238,24 @@ export default function AdminPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
               <p className="text-xs font-bold text-gray-400 uppercase">Total Faculty</p>
-              <h3 className="text-2xl font-black text-gray-900 mt-1">{dashboard?.total_faculty ?? 4}</h3>
+              <h3 className="text-2xl font-black text-gray-900 mt-1">{dashboard?.total_faculty ?? 0}</h3>
             </div>
             <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
               <p className="text-xs font-bold text-gray-400 uppercase">Meetings Analyzed</p>
-              <h3 className="text-2xl font-black text-gray-900 mt-1">{dashboard?.total_meetings ?? 1}</h3>
+              <h3 className="text-2xl font-black text-gray-900 mt-1">{dashboard?.total_meetings ?? 0}</h3>
             </div>
             <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
               <p className="text-xs font-bold text-gray-400 uppercase">Actions Tracked</p>
-              <h3 className="text-2xl font-black text-gray-900 mt-1">{dashboard?.action_items_tracked ?? 3}</h3>
+              <h3 className="text-2xl font-black text-gray-900 mt-1">{dashboard?.action_items_tracked ?? 0}</h3>
             </div>
             <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
               <p className="text-xs font-bold text-gray-400 uppercase">Active Depts</p>
-              <h3 className="text-2xl font-black text-gray-900 mt-1">{dashboard?.active_departments ?? 2}</h3>
+              <h3 className="text-2xl font-black text-gray-900 mt-1">{dashboard?.active_departments ?? 0}</h3>
             </div>
             <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
               <p className="text-xs font-bold text-gray-400 uppercase">Completion Rate</p>
               <h3 className="text-2xl font-black text-emerald-600 mt-1">
-                {dashboard?.completion_percentage ?? 33.3}%
+                {dashboard?.completion_percentage ?? 0}%
               </h3>
             </div>
           </div>
@@ -349,40 +403,50 @@ export default function AdminPage() {
       )}
 
       {/* Tab 4: Analytics */}
-      {activeTab === 'analytics' && analytics && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-            <div className="bg-white p-5 rounded-2xl border shadow-sm">
-              <p className="text-xs font-bold text-gray-400 uppercase">Avg Meeting Duration</p>
-              <h3 className="text-2xl font-black text-gray-900 mt-1">{analytics.stats.avg_meeting_duration_mins} mins</h3>
-            </div>
-            <div className="bg-white p-5 rounded-2xl border shadow-sm">
-              <p className="text-xs font-bold text-gray-400 uppercase">Actions Per Meeting</p>
-              <h3 className="text-2xl font-black text-gray-900 mt-1">{analytics.stats.actions_per_meeting}</h3>
-            </div>
-            <div className="bg-white p-5 rounded-2xl border shadow-sm">
-              <p className="text-xs font-bold text-gray-400 uppercase">Action Completion Rate</p>
-              <h3 className="text-2xl font-black text-emerald-600 mt-1">{analytics.stats.action_completion_rate}%</h3>
-            </div>
-            <div className="bg-white p-5 rounded-2xl border shadow-sm">
-              <p className="text-xs font-bold text-gray-400 uppercase">AI Queries This Month</p>
-              <h3 className="text-2xl font-black text-blue-600 mt-1">{analytics.stats.ai_queries_this_month}</h3>
-            </div>
+      {activeTab === 'analytics' && (
+        !analytics ? (
+          <div className="bg-white p-12 rounded-2xl border border-gray-200 text-center text-gray-400 text-sm">
+            Loading real-time institutional analytics...
           </div>
+        ) : (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+              <div className="bg-white p-5 rounded-2xl border shadow-sm">
+                <p className="text-xs font-bold text-gray-400 uppercase">Avg Meeting Duration</p>
+                <h3 className="text-2xl font-black text-gray-900 mt-1">{analytics.stats?.avg_meeting_duration_mins ?? 0} mins</h3>
+              </div>
+              <div className="bg-white p-5 rounded-2xl border shadow-sm">
+                <p className="text-xs font-bold text-gray-400 uppercase">Actions Per Meeting</p>
+                <h3 className="text-2xl font-black text-gray-900 mt-1">{analytics.stats?.actions_per_meeting ?? 0}</h3>
+              </div>
+              <div className="bg-white p-5 rounded-2xl border shadow-sm">
+                <p className="text-xs font-bold text-gray-400 uppercase">Action Completion Rate</p>
+                <h3 className="text-2xl font-black text-emerald-600 mt-1">{analytics.stats?.action_completion_rate ?? 0}%</h3>
+              </div>
+              <div className="bg-white p-5 rounded-2xl border shadow-sm">
+                <p className="text-xs font-bold text-gray-400 uppercase">AI Queries This Month</p>
+                <h3 className="text-2xl font-black text-blue-600 mt-1">{analytics.stats?.ai_queries_this_month ?? 0}</h3>
+              </div>
+            </div>
 
-          <div className="bg-white p-6 rounded-2xl border shadow-sm">
-            <h4 className="font-bold text-gray-900 mb-4">6-Month Meeting &amp; Action Item Trends</h4>
-            <div className="grid grid-cols-6 gap-2 text-center text-xs">
-              {analytics.meetings_vs_actions_trend?.map((t: any, idx: number) => (
-                <div key={idx} className="p-3 bg-gray-50 rounded-xl">
-                  <span className="font-bold text-gray-500 block mb-2">{t.month}</span>
-                  <div className="text-blue-600 font-bold">{t.meetings} Mtgs</div>
-                  <div className="text-amber-600 font-medium">{t.actions} Actions</div>
+            <div className="bg-white p-6 rounded-2xl border shadow-sm">
+              <h4 className="font-bold text-gray-900 mb-4">6-Month Meeting &amp; Action Item Trends</h4>
+              {analytics.meetings_vs_actions_trend && analytics.meetings_vs_actions_trend.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-6 gap-2 text-center text-xs">
+                  {analytics.meetings_vs_actions_trend.map((t: any, idx: number) => (
+                    <div key={idx} className="p-3 bg-gray-50 rounded-xl border border-gray-100">
+                      <span className="font-bold text-gray-500 block mb-2">{t.month}</span>
+                      <div className="text-blue-600 font-bold">{t.meetings} Mtgs</div>
+                      <div className="text-amber-600 font-medium">{t.actions} Actions</div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              ) : (
+                <p className="text-xs text-gray-400 py-4">No historical activity logged yet.</p>
+              )}
             </div>
           </div>
-        </div>
+        )
       )}
 
       {/* Tab 5: Audit Log */}

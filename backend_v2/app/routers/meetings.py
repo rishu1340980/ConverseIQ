@@ -17,6 +17,7 @@ from backend_v2.app.models.transcript import Utterance
 from backend_v2.app.models.action_item import ActionItem
 from backend_v2.app.models.participant import MeetingParticipant
 from backend_v2.app.services.ai_pipeline import transcribe_audio_with_diarization, generate_mom_and_actions
+from backend_v2.app.services.audit import log_audit_event
 
 router = APIRouter(prefix="/meetings", tags=["Meetings"])
 
@@ -211,6 +212,17 @@ async def create_meeting(
     )
     res = await db.execute(stmt)
     full_meeting = res.scalar_one()
+
+    await log_audit_event(
+        db=db,
+        action="MEETING_CREATED",
+        details=f"{current_user.name} created meeting: '{new_meeting.title}'",
+        severity="Info",
+        user_id=current_user.id,
+        user_name=current_user.name,
+        resource_type="meeting",
+        resource_id=new_meeting.id,
+    )
 
     return format_meeting_response(full_meeting)
 
@@ -420,3 +432,44 @@ async def map_attendee(
         "speaker_label": label,
         "real_name": real_name
     }
+
+
+@router.delete("/{meeting_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_meeting(
+    meeting_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Delete a meeting and all its associated artifacts.
+    Allowed for meeting organizer, HOD of the department, or Admin.
+    """
+    stmt = select(Meeting).filter(Meeting.id == meeting_id)
+    res = await db.execute(stmt)
+    meeting = res.scalar_one_or_none()
+
+    if not meeting:
+        raise HTTPException(status_code=404, detail="Meeting not found")
+
+    is_organizer = meeting.user_id == current_user.id
+    is_hod = current_user.role == "HOD" and current_user.department_id == meeting.department_id
+    is_admin = current_user.role == "Admin"
+
+    if not (is_organizer or is_hod or is_admin):
+        raise HTTPException(status_code=403, detail="Not authorized to delete this meeting.")
+
+    meeting_title = meeting.title
+    await db.delete(meeting)
+    await db.commit()
+
+    await log_audit_event(
+        db=db,
+        action="MEETING_DELETED",
+        details=f"{current_user.role} {current_user.name} deleted meeting '{meeting_title}'",
+        severity="Alert",
+        user_id=current_user.id,
+        user_name=current_user.name,
+        resource_type="meeting",
+        resource_id=meeting_id,
+    )
+    return None
