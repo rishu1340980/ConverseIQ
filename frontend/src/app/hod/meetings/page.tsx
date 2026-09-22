@@ -70,10 +70,10 @@ export default function HodDepartmentMeetingsPage() {
       {/* Header with Month/Year Filter */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#1C251E] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#173A2C] tracking-tight">
             Department Meetings
           </h1>
-          <p className="text-sm text-[#6B7280] mt-1 font-medium">
+          <p className="text-sm text-[#667875] mt-1 font-medium">
             All meetings recorded by faculty in your department
           </p>
         </div>
@@ -84,71 +84,71 @@ export default function HodDepartmentMeetingsPage() {
             <select
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(Number(e.target.value))}
-              className="appearance-none bg-white border border-[#E8E5DA] rounded-xl px-4 py-2 pr-8 text-sm font-medium text-[#1C251E] focus:outline-none focus:ring-2 focus:ring-[#45644F] cursor-pointer"
+              className="appearance-none bg-white border border-[#DCE7E2] rounded-xl px-4 py-2 pr-8 text-sm font-semibold text-[#173A2C] focus:outline-none focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] cursor-pointer shadow-xs"
             >
               {MONTHS.map((m, i) => (
                 <option key={i + 1} value={i + 1}>{m}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#667875] pointer-events-none" />
           </div>
           <div className="relative">
             <select
               value={selectedYear}
               onChange={(e) => setSelectedYear(Number(e.target.value))}
-              className="appearance-none bg-white border border-[#E8E5DA] rounded-xl px-4 py-2 pr-8 text-sm font-medium text-[#1C251E] focus:outline-none focus:ring-2 focus:ring-[#45644F] cursor-pointer"
+              className="appearance-none bg-white border border-[#DCE7E2] rounded-xl px-4 py-2 pr-8 text-sm font-semibold text-[#173A2C] focus:outline-none focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] cursor-pointer shadow-xs"
             >
               {yearOptions.map((y) => (
                 <option key={y} value={y}>{y}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#667875] pointer-events-none" />
           </div>
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-[#E8E5DA] shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-xs overflow-hidden card-interactive">
         {loading ? (
-          <div className="py-16 text-center text-xs text-gray-500">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-[#45644F] mx-auto mb-3"></div>
+          <div className="py-16 text-center text-xs text-[#667875]">
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#DCE7E2] border-t-[#3F795F] mx-auto mb-3"></div>
             <span>Loading department meetings...</span>
           </div>
         ) : meetings.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-[#E8E5DA] text-xs font-semibold text-gray-400">
-                  <th className="py-4 px-6 font-medium">Meeting</th>
-                  <th className="py-4 px-6 font-medium">Host</th>
-                  <th className="py-4 px-6 font-medium">Date</th>
-                  <th className="py-4 px-6 font-medium">Participants</th>
-                  <th className="py-4 px-6 font-medium">Duration</th>
-                  <th className="py-4 px-6 font-medium">Status</th>
+                <tr className="border-b border-[#DCE7E2] bg-[#F5FAF8]/60 text-xs font-semibold text-[#667875]">
+                  <th className="py-3.5 px-6 font-semibold">Meeting</th>
+                  <th className="py-3.5 px-6 font-semibold">Host</th>
+                  <th className="py-3.5 px-6 font-semibold">Date</th>
+                  <th className="py-3.5 px-6 font-semibold">Participants</th>
+                  <th className="py-3.5 px-6 font-semibold">Duration</th>
+                  <th className="py-3.5 px-6 font-semibold">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E8E5DA] text-sm">
+              <tbody className="divide-y divide-[#DCE7E2] text-sm">
                 {meetings.map((m) => (
-                  <tr key={m.id} className="hover:bg-[#FAF9F5] transition-colors">
+                  <tr key={m.id} className="hover:bg-[#F5FAF8] transition-colors">
                     <td className="py-4 px-6">
                       <Link
                         href={`/meetings/${m.id}`}
                         className="flex items-center space-x-3 group"
                       >
-                        <div className="w-9 h-9 rounded-xl bg-[#45644F] text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+                        <div className="w-9 h-9 rounded-xl bg-[#3F795F] text-white flex items-center justify-center font-bold text-sm flex-shrink-0 shadow-xs">
                           {m.initial}
                         </div>
-                        <span className="font-semibold text-[#1C251E] group-hover:text-[#45644F] transition-colors">
+                        <span className="font-semibold text-[#173A2C] group-hover:text-[#3F795F] transition-colors">
                           {m.title}
                         </span>
                       </Link>
                     </td>
-                    <td className="py-4 px-6 text-gray-600 font-medium">{m.host}</td>
-                    <td className="py-4 px-6 text-gray-500 font-medium">{m.date}</td>
-                    <td className="py-4 px-6 text-gray-500">{m.participants}</td>
-                    <td className="py-4 px-6 text-gray-500">{m.duration}</td>
+                    <td className="py-4 px-6 text-[#667875] font-medium">{m.host}</td>
+                    <td className="py-4 px-6 text-[#667875] font-medium">{m.date}</td>
+                    <td className="py-4 px-6 text-[#667875]">{m.participants}</td>
+                    <td className="py-4 px-6 text-[#667875]">{m.duration}</td>
                     <td className="py-4 px-6">
-                      <span className="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold bg-[#DCE7DC] text-[#2F4E36]">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#D4E9DF] text-[#173A2C] border border-[#78A98F]/40">
                         {m.status}
                       </span>
                     </td>
@@ -160,8 +160,8 @@ export default function HodDepartmentMeetingsPage() {
         ) : (
           <div className="py-16 text-center space-y-3">
             <FolderOpen className="w-10 h-10 text-gray-300 mx-auto" />
-            <h3 className="text-base font-bold text-[#1C251E]">No meetings found</h3>
-            <p className="text-xs text-[#6B7280] max-w-sm mx-auto">
+            <h3 className="text-base font-bold text-[#173A2C]">No meetings found</h3>
+            <p className="text-xs text-[#667875] max-w-sm mx-auto">
               No meetings were recorded in your department for {MONTHS[selectedMonth - 1]} {selectedYear}.
             </p>
           </div>

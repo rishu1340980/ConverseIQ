@@ -7,10 +7,15 @@ import {
   ChevronDown, 
   Plus, 
   Video,
-  FolderOpen
+  FolderOpen,
+  Calendar,
+  Clock,
+  Users
 } from 'lucide-react';
 import { apiRequest } from '@/lib/api';
 import AddMeetingModal from '@/components/AddMeetingModal';
+import AnimatedButton from '@/components/ui/AnimatedButton';
+import Skeleton from '@/components/ui/Skeleton';
 
 interface MeetingItem {
   id: number | string;
@@ -39,10 +44,16 @@ export default function MeetingsPage() {
     try {
       const res = await apiRequest<any[]>('/meetings');
       if (res && res.length > 0) {
+        const badgeColors = [
+          'bg-[#3F795F] text-white',
+          'bg-[#367C88] text-white',
+          'bg-[#78A98F] text-white',
+          'bg-[#4B8B9B] text-white',
+        ];
         const liveItems: MeetingItem[] = res.map((m, idx) => ({
           id: m.id,
           badge: m.title.charAt(0).toUpperCase(),
-          badgeBg: ['bg-[#45644F]', 'bg-[#385240]', 'bg-[#4A6B53]', 'bg-[#557A60]'][idx % 4],
+          badgeBg: badgeColors[idx % badgeColors.length],
           title: m.title,
           date: new Date(m.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
           participants: `${m.participant_count || 1} members`,
@@ -69,39 +80,38 @@ export default function MeetingsPage() {
     });
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="space-y-6 max-w-6xl animate-fade-in">
       
       {/* Header Row */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#1C251E] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#173A2C] tracking-tight">
             Meetings
           </h1>
-          <p className="text-sm text-[#6B7280] mt-1">
-            All previously analyzed meetings and recordings.
+          <p className="text-sm text-[#667875] mt-1">
+            All institutional discussions, diarized recordings, and analyzed sessions.
           </p>
         </div>
 
-        <button
-          type="button"
+        <AnimatedButton
+          variant="primary"
+          icon={<Plus className="w-4 h-4" />}
           onClick={() => setIsAddMeetingOpen(true)}
-          className="inline-flex items-center space-x-2 px-4 py-2.5 bg-[#45644F] hover:bg-[#385240] text-white text-sm font-semibold rounded-xl shadow-sm transition-all"
         >
-          <Plus className="w-4 h-4" />
-          <span>Analyze New Meeting</span>
-        </button>
+          Analyze New Meeting
+        </AnimatedButton>
       </div>
 
       {/* Controls: Search & Sort Dropdown */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="relative w-full sm:flex-1">
-          <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#667875] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search meetings..."
-            className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#E8E5DA] rounded-xl text-sm text-[#1C251E] focus:ring-2 focus:ring-[#45644F] focus:border-[#45644F] outline-none transition-all shadow-sm"
+            placeholder="Search meetings by title or keywords..."
+            className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] placeholder:text-[#667875]/60 focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all shadow-xs"
           />
         </div>
 
@@ -109,27 +119,41 @@ export default function MeetingsPage() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="appearance-none w-full sm:w-44 px-4 py-2.5 bg-white border border-[#E8E5DA] rounded-xl text-sm font-medium text-[#1C251E] focus:ring-2 focus:ring-[#45644F] outline-none shadow-sm cursor-pointer pr-10"
+            className="appearance-none w-full sm:w-44 px-4 py-2.5 bg-white border border-[#DCE7E2] rounded-xl text-sm font-medium text-[#173A2C] focus:ring-2 focus:ring-[#78A98F] outline-none shadow-xs cursor-pointer pr-10"
           >
             <option value="newest">Newest First</option>
             <option value="oldest">Oldest First</option>
           </select>
-          <ChevronDown className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <ChevronDown className="w-4 h-4 text-[#667875] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>
       </div>
 
       {/* Meetings Table Card */}
-      <div className="bg-white rounded-2xl border border-[#E8E5DA] shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm overflow-hidden">
         {loading ? (
-          <div className="py-16 text-center text-xs text-gray-500">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-[#45644F] mx-auto mb-3"></div>
-            <span>Loading meetings...</span>
+          <div className="p-6 space-y-4">
+            <div className="flex justify-between items-center pb-4 border-b border-[#DCE7E2]">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-4 w-24" />
+            </div>
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="flex items-center justify-between py-3 border-b border-[#DCE7E2]/50 last:border-0">
+                <div className="flex items-center space-x-3.5">
+                  <Skeleton className="w-9 h-9 rounded-xl" />
+                  <div className="space-y-1.5">
+                    <Skeleton className="h-4 w-48" />
+                    <Skeleton className="h-3 w-28" />
+                  </div>
+                </div>
+                <Skeleton className="h-6 w-28 rounded-full" />
+              </div>
+            ))}
           </div>
         ) : filtered.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-[#E8E5DA] text-[12px] font-semibold text-[#6B7280]">
+                <tr className="border-b border-[#DCE7E2] text-[12px] font-semibold text-[#667875] bg-[#F5FAF8]/50">
                   <th className="py-4 px-6">Meeting Title</th>
                   <th className="py-4 px-6">Date</th>
                   <th className="py-4 px-6">Participants</th>
@@ -137,36 +161,36 @@ export default function MeetingsPage() {
                   <th className="py-4 px-6 text-right">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E8E5DA]/60 text-sm">
+              <tbody className="divide-y divide-[#DCE7E2]/60 text-sm">
                 {filtered.map((item) => (
                   <tr
                     key={item.id}
-                    className="hover:bg-[#FAF9F5] transition-colors cursor-pointer group"
+                    className="hover:bg-[#F5FAF8] transition-colors cursor-pointer group"
                   >
                     <td className="py-4 px-6">
                       <Link
                         href={`/meetings/${item.id}`}
                         className="flex items-center space-x-3.5"
                       >
-                        <div className={`w-9 h-9 rounded-xl ${item.badgeBg} text-white flex items-center justify-center font-bold text-sm flex-shrink-0 shadow-sm`}>
+                        <div className={`w-9 h-9 rounded-xl ${item.badgeBg} flex items-center justify-center font-bold text-sm flex-shrink-0 shadow-xs group-hover:scale-105 transition-transform`}>
                           {item.badge}
                         </div>
-                        <span className="font-bold text-[#1C251E] group-hover:text-[#45644F] transition-colors">
+                        <span className="font-bold text-[#173A2C] group-hover:text-[#3F795F] transition-colors">
                           {item.title}
                         </span>
                       </Link>
                     </td>
-                    <td className="py-4 px-6 text-[#4B5563]">
+                    <td className="py-4 px-6 text-[#667875] text-xs">
                       {item.date}
                     </td>
-                    <td className="py-4 px-6 text-[#4B5563]">
+                    <td className="py-4 px-6 text-[#667875] text-xs">
                       {item.participants}
                     </td>
-                    <td className="py-4 px-6 text-[#4B5563]">
+                    <td className="py-4 px-6 text-[#667875] text-xs">
                       {item.duration}
                     </td>
                     <td className="py-4 px-6 text-right">
-                      <span className="inline-flex items-center px-3 py-1 bg-[#E1EFE1] text-[#2E6838] rounded-full text-xs font-semibold">
+                      <span className="inline-flex items-center px-3 py-1 bg-[#D4E9DF] text-[#3F795F] rounded-full text-xs font-semibold">
                         {item.status}
                       </span>
                     </td>
@@ -177,18 +201,20 @@ export default function MeetingsPage() {
           </div>
         ) : (
           <div className="py-16 text-center space-y-3">
-            <FolderOpen className="w-10 h-10 text-gray-300 mx-auto" />
-            <h3 className="text-base font-bold text-[#1C251E]">No meetings found</h3>
-            <p className="text-xs text-[#6B7280] max-w-sm mx-auto">
+            <FolderOpen className="w-10 h-10 text-[#667875]/40 mx-auto" />
+            <h3 className="text-base font-bold text-[#173A2C]">No meetings found</h3>
+            <p className="text-xs text-[#667875] max-w-sm mx-auto">
               You haven&apos;t recorded or uploaded any meetings yet. Click below to analyze your first academic session.
             </p>
-            <button
-              onClick={() => setIsAddMeetingOpen(true)}
-              className="inline-flex items-center space-x-1.5 px-4 py-2 bg-[#45644F] text-white text-xs font-semibold rounded-xl hover:bg-[#385240] transition-colors shadow-sm"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Analyze New Meeting</span>
-            </button>
+            <div className="pt-2">
+              <AnimatedButton
+                variant="primary"
+                icon={<Plus className="w-3.5 h-3.5" />}
+                onClick={() => setIsAddMeetingOpen(true)}
+              >
+                Analyze New Meeting
+              </AnimatedButton>
+            </div>
           </div>
         )}
       </div>

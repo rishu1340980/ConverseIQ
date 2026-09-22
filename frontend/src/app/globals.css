@@ -5,17 +5,17 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 28, 37, 30;
-  --background-start-rgb: 248, 247, 242;
-  --background-end-rgb: 248, 247, 242;
-  color: #1C251E;
-  background-color: #F8F7F2;
+  --foreground-rgb: 23, 58, 44;
+  --background-start-rgb: 245, 250, 248;
+  --background-end-rgb: 245, 250, 248;
+  color: #173A2C;
+  background-color: #F5FAF8;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
-  color: #1C251E;
-  background-color: #F8F7F2;
+  color: #173A2C;
+  background-color: #F5FAF8;
   min-height: 100vh;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -27,7 +27,7 @@ h1, h2, h3, h4, h5, h6, .font-heading, .font-display, [data-font="manrope"] {
   letter-spacing: -0.02em;
 }
 
-/* Custom scrollbar for modern sleek look */
+/* Custom modern scrollbar */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -36,9 +36,49 @@ h1, h2, h3, h4, h5, h6, .font-heading, .font-display, [data-font="manrope"] {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #DDD6C7;
+  background: #D4E9DF;
   border-radius: 9999px;
+  transition: background-color 0.2s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #C9D8C9;
+  background: #78A98F;
+}
+
+/* Microinteraction Utilities */
+.card-interactive {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -6px rgba(23, 58, 44, 0.07);
+  border-color: rgba(120, 169, 143, 0.45);
+}
+
+.btn-interactive {
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-interactive:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+.btn-interactive:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* Shimmer animation for loading states */
+.shimmer-bg {
+  background: linear-gradient(90deg, #EDF5F2 0%, #FAFDFC 50%, #EDF5F2 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite linear;
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

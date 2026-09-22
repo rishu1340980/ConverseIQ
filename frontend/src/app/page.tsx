@@ -18,7 +18,7 @@ export default function HomePage() {
 
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
-      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#45644F]"></div>
+      <div className="animate-spin rounded-full h-10 w-10 border-2 border-[#DCE7E2] border-t-[#3F795F]"></div>
     </div>
   );
 }

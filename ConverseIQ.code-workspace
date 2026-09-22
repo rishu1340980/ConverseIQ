@@ -1,0 +1,19 @@
+{
+  "folders": [
+    {
+      "name": "ConverseIQ Root",
+      "path": "."
+    },
+    {
+      "name": "Backend (FastAPI)",
+      "path": "backend_v2"
+    },
+    {
+      "name": "Frontend (Next.js)",
+      "path": "frontend"
+    }
+  ],
+  "settings": {
+    "editor.formatOnSave": true
+  }
+}

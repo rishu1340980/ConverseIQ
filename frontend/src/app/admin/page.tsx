@@ -16,10 +16,14 @@ import {
   ArrowLeft,
   CheckCircle2,
   Lock,
-  Eye
+  Eye,
+  Check
 } from 'lucide-react';
 import { apiRequest, getCurrentStoredUser } from '@/lib/api';
 import { AdminDashboardData, User, AuditLog } from '@/types';
+import SegmentedControl from '@/components/ui/SegmentedControl';
+import StatCard from '@/components/ui/StatCard';
+import AnimatedButton from '@/components/ui/AnimatedButton';
 
 export default function AdminPage() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -39,6 +43,7 @@ export default function AdminPage() {
   const [enableAutoTranscription, setEnableAutoTranscription] = useState(true);
   const [enable2FA, setEnable2FA] = useState(false);
   const [settingsSaved, setSettingsSaved] = useState(false);
+  const [savingSettings, setSavingSettings] = useState(false);
 
   // Audit filter state
   const [auditSeverity, setAuditSeverity] = useState('');
@@ -101,6 +106,7 @@ export default function AdminPage() {
 
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSavingSettings(true);
     try {
       await apiRequest('/admin/settings', {
         method: 'PUT',
@@ -119,6 +125,8 @@ export default function AdminPage() {
       setTimeout(() => setSettingsSaved(false), 3000);
     } catch (err: any) {
       alert(err?.message || 'Failed to update system settings');
+    } finally {
+      setSavingSettings(false);
     }
   };
 
@@ -131,19 +139,28 @@ export default function AdminPage() {
     return true;
   });
 
+  const adminNavTabs = [
+    { id: 'overview', label: 'Overview', icon: <Activity className="w-3.5 h-3.5" /> },
+    { id: 'users', label: 'Users', icon: <Users className="w-3.5 h-3.5" />, count: users.length },
+    { id: 'departments', label: 'Departments', icon: <Building2 className="w-3.5 h-3.5" />, count: departments.length },
+    { id: 'analytics', label: 'Analytics', icon: <BarChart3 className="w-3.5 h-3.5" /> },
+    { id: 'audit', label: 'Audit Log', icon: <FileText className="w-3.5 h-3.5" />, count: auditLogs.length },
+    { id: 'settings', label: 'Settings', icon: <Sliders className="w-3.5 h-3.5" /> },
+  ];
+
   if (currentUser && currentUser.role !== 'Admin') {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-6">
-        <div className="w-16 h-16 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mb-4">
+      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-6 animate-fade-in">
+        <div className="w-16 h-16 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mb-4 shadow-sm">
           <Lock className="w-8 h-8" />
         </div>
-        <h2 className="text-2xl font-black text-gray-900 mb-2">Access Restricted</h2>
-        <p className="text-gray-500 max-w-md text-sm mb-6">
+        <h2 className="text-2xl font-black text-[#173A2C] mb-2">Access Restricted</h2>
+        <p className="text-[#667875] max-w-md text-sm mb-6">
           The Administration Suite is strictly restricted to Institutional Administrators. Your account does not have administrative oversight privileges.
         </p>
         <Link
           href={currentUser.role === 'HOD' ? '/hod/overview' : '/dashboard'}
-          className="px-5 py-2.5 bg-gray-900 hover:bg-black text-white text-xs font-bold rounded-xl transition-colors"
+          className="btn-interactive px-5 py-2.5 bg-[#173A2C] hover:bg-[#2A5643] text-white text-xs font-bold rounded-xl transition-colors shadow-sm"
         >
           Return to Dashboard
         </Link>
@@ -152,127 +169,85 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto animate-fade-in">
       
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-purple-100 text-purple-800 uppercase tracking-wider">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#D4E9DF] text-[#173A2C] uppercase tracking-wider">
               Administration Suite
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight mt-1">
-            Institutional Governance & Oversight
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#173A2C] tracking-tight mt-1">
+            Institutional Governance &amp; Oversight
           </h1>
+          <p className="text-sm text-[#667875] mt-1 font-medium">
+            System configuration, faculty compliance, user management, and security telemetry.
+          </p>
         </div>
-
       </div>
 
-      {/* Admin Navigation Tabs */}
-      <div className="flex flex-wrap gap-2 border-b border-gray-200">
-        <button
-          onClick={() => setActiveTab('overview')}
-          className={`pb-3 px-4 text-xs font-bold border-b-2 transition-colors flex items-center space-x-1.5 ${
-            activeTab === 'overview' ? 'border-purple-600 text-purple-600' : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Activity className="w-4 h-4" />
-          <span>Institution Overview</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('users')}
-          className={`pb-3 px-4 text-xs font-bold border-b-2 transition-colors flex items-center space-x-1.5 ${
-            activeTab === 'users' ? 'border-purple-600 text-purple-600' : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Users className="w-4 h-4" />
-          <span>User Management</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('departments')}
-          className={`pb-3 px-4 text-xs font-bold border-b-2 transition-colors flex items-center space-x-1.5 ${
-            activeTab === 'departments' ? 'border-purple-600 text-purple-600' : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Building2 className="w-4 h-4" />
-          <span>Departments</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('analytics')}
-          className={`pb-3 px-4 text-xs font-bold border-b-2 transition-colors flex items-center space-x-1.5 ${
-            activeTab === 'analytics' ? 'border-purple-600 text-purple-600' : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <BarChart3 className="w-4 h-4" />
-          <span>Analytics & Trends</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('audit')}
-          className={`pb-3 px-4 text-xs font-bold border-b-2 transition-colors flex items-center space-x-1.5 ${
-            activeTab === 'audit' ? 'border-purple-600 text-purple-600' : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <FileText className="w-4 h-4" />
-          <span>Audit Log</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('settings')}
-          className={`pb-3 px-4 text-xs font-bold border-b-2 transition-colors flex items-center space-x-1.5 ${
-            activeTab === 'settings' ? 'border-purple-600 text-purple-600' : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Sliders className="w-4 h-4" />
-          <span>System Settings</span>
-        </button>
+      {/* Modern Segmented Navigation Tabs */}
+      <div className="overflow-x-auto pb-1">
+        <SegmentedControl
+          options={adminNavTabs}
+          activeId={activeTab}
+          onChange={(id: any) => setActiveTab(id)}
+          size="md"
+        />
       </div>
 
       {/* Tab 1: Institution Overview */}
       {activeTab === 'overview' && (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-fade-in">
+          {/* 5 Metric Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
-              <p className="text-xs font-bold text-gray-400 uppercase">Total Faculty</p>
-              <h3 className="text-2xl font-black text-gray-900 mt-1">{dashboard?.total_faculty ?? 0}</h3>
-            </div>
-            <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
-              <p className="text-xs font-bold text-gray-400 uppercase">Meetings Analyzed</p>
-              <h3 className="text-2xl font-black text-gray-900 mt-1">{dashboard?.total_meetings ?? 0}</h3>
-            </div>
-            <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
-              <p className="text-xs font-bold text-gray-400 uppercase">Actions Tracked</p>
-              <h3 className="text-2xl font-black text-gray-900 mt-1">{dashboard?.action_items_tracked ?? 0}</h3>
-            </div>
-            <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
-              <p className="text-xs font-bold text-gray-400 uppercase">Active Depts</p>
-              <h3 className="text-2xl font-black text-gray-900 mt-1">{dashboard?.active_departments ?? 0}</h3>
-            </div>
-            <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
-              <p className="text-xs font-bold text-gray-400 uppercase">Completion Rate</p>
-              <h3 className="text-2xl font-black text-emerald-600 mt-1">
-                {dashboard?.completion_percentage ?? 0}%
-              </h3>
-            </div>
+            <StatCard
+              label="Total Faculty"
+              value={dashboard?.total_faculty ?? 0}
+              icon={<Users className="w-5 h-5" />}
+              variant="sage"
+            />
+            <StatCard
+              label="Meetings Analyzed"
+              value={dashboard?.total_meetings ?? 0}
+              icon={<Activity className="w-5 h-5" />}
+              variant="softblue"
+            />
+            <StatCard
+              label="Actions Tracked"
+              value={dashboard?.action_items_tracked ?? 0}
+              icon={<FileText className="w-5 h-5" />}
+              variant="amber"
+            />
+            <StatCard
+              label="Active Depts"
+              value={dashboard?.active_departments ?? 0}
+              icon={<Building2 className="w-5 h-5" />}
+              variant="light"
+            />
+            <StatCard
+              label="Completion Rate"
+              value={`${dashboard?.completion_percentage ?? 0}%`}
+              icon={<ShieldCheck className="w-5 h-5" />}
+              variant="sage"
+            />
           </div>
 
           {/* Department Activity & Live Alerts Feed */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-              <h3 className="font-bold text-gray-900 text-base mb-4 flex items-center space-x-2">
-                <Building2 className="w-5 h-5 text-purple-600" />
+            <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm p-6 card-interactive">
+              <h3 className="font-bold text-[#173A2C] text-base mb-4 flex items-center space-x-2">
+                <Building2 className="w-5 h-5 text-[#78A98F]" />
                 <span>Department Activity Breakdown</span>
               </h3>
-              <div className="divide-y divide-gray-100">
+              <div className="divide-y divide-[#DCE7E2]/70">
                 {dashboard?.department_activity && dashboard.department_activity.length > 0 ? (
                   dashboard.department_activity.map((dept, idx) => (
                     <div key={idx} className="py-3 flex items-center justify-between">
-                      <span className="font-medium text-sm text-gray-800">{dept.department_name}</span>
-                      <div className="text-xs text-gray-500 space-x-3">
+                      <span className="font-bold text-sm text-[#173A2C]">{dept.department_name}</span>
+                      <div className="text-xs text-[#667875] space-x-3 font-semibold">
                         <span>{dept.faculty_count} Faculty</span>
                         <span>•</span>
                         <span>{dept.meeting_count} Meetings</span>
@@ -280,31 +255,31 @@ export default function AdminPage() {
                     </div>
                   ))
                 ) : (
-                  <p className="text-xs text-gray-400 py-4">No activity logged.</p>
+                  <p className="text-xs text-[#667875] py-4 text-center">No department activity logged yet.</p>
                 )}
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-              <h3 className="font-bold text-gray-900 text-base mb-4 flex items-center space-x-2">
-                <AlertTriangle className="w-5 h-5 text-amber-500" />
+            <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm p-6 card-interactive">
+              <h3 className="font-bold text-[#173A2C] text-base mb-4 flex items-center space-x-2">
+                <AlertTriangle className="w-5 h-5 text-[#367C88]" />
                 <span>Live System Alerts Feed</span>
               </h3>
               <div className="space-y-3">
                 {dashboard?.system_alerts && dashboard.system_alerts.length > 0 ? (
                   dashboard.system_alerts.map((alert) => (
-                    <div key={alert.id} className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs">
-                      <div className="flex items-center justify-between font-bold text-amber-900">
+                    <div key={alert.id} className="p-3 bg-[#E4F2F4] border border-[#B9DDE3] rounded-xl text-xs">
+                      <div className="flex items-center justify-between font-bold text-[#132F34]">
                         <span>{alert.action}</span>
-                        <span className="text-[10px] font-normal text-amber-700">
+                        <span className="text-[10px] font-normal text-[#28606A]">
                           {new Date(alert.timestamp).toLocaleTimeString()}
                         </span>
                       </div>
-                      <p className="text-amber-800 mt-1">{alert.details}</p>
+                      <p className="text-[#1D454C] mt-1">{alert.details}</p>
                     </div>
                   ))
                 ) : (
-                  <p className="text-xs text-gray-400 py-4">No active security alerts.</p>
+                  <p className="text-xs text-[#667875] py-4 text-center">No active security alerts.</p>
                 )}
               </div>
             </div>
@@ -314,13 +289,16 @@ export default function AdminPage() {
 
       {/* Tab 2: User Management */}
       {activeTab === 'users' && (
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-5 border-b border-gray-100 flex items-center justify-between">
-            <h3 className="font-bold text-gray-900">Institution Faculty &amp; HOD Accounts</h3>
+        <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm overflow-hidden animate-fade-in card-interactive">
+          <div className="p-5 border-b border-[#DCE7E2] flex items-center justify-between bg-[#F5FAF8]">
+            <h3 className="font-bold text-[#173A2C]">Institution Faculty &amp; HOD Accounts</h3>
+            <span className="text-xs font-bold text-[#3F795F] bg-[#D4E9DF] px-2.5 py-1 rounded-full">
+              {users.length} Total Users
+            </span>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 text-left text-sm">
-              <thead className="bg-gray-50 text-xs font-bold text-gray-500 uppercase tracking-wider">
+            <table className="min-w-full divide-y divide-[#DCE7E2] text-left text-sm">
+              <thead className="bg-[#F5FAF8] text-xs font-bold text-[#667875] uppercase tracking-wider">
                 <tr>
                   <th className="px-6 py-4">User Name</th>
                   <th className="px-6 py-4">Role</th>
@@ -330,32 +308,32 @@ export default function AdminPage() {
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-[#DCE7E2]/60">
                 {users.map((u) => (
-                  <tr key={u.id}>
+                  <tr key={u.id} className="hover:bg-[#F5FAF8] transition-colors">
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-gray-900">{u.name}</div>
-                      <div className="text-xs text-gray-400">{u.email}</div>
+                      <div className="font-bold text-[#173A2C]">{u.name}</div>
+                      <div className="text-xs text-[#667875]">{u.email}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="px-2 py-0.5 text-xs font-bold rounded bg-gray-100 text-gray-800">
+                      <span className="px-2.5 py-0.5 text-xs font-bold rounded-lg bg-[#E4F2F4] text-[#132F34]">
                         {u.role}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-gray-600">{u.department_name}</td>
-                    <td className="px-6 py-4 text-gray-600">{u.meeting_count}</td>
+                    <td className="px-6 py-4 text-[#667875] font-medium">{u.department_name || '—'}</td>
+                    <td className="px-6 py-4 text-[#173A2C] font-bold">{u.meeting_count ?? 0}</td>
                     <td className="px-6 py-4">
-                      <span className={`px-2 py-0.5 text-xs font-bold rounded ${u.is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}`}>
+                      <span className={`px-2.5 py-0.5 text-xs font-bold rounded-full ${u.is_active ? 'bg-[#D4E9DF] text-[#173A2C]' : 'bg-rose-50 text-rose-700'}`}>
                         {u.is_active ? 'Active' : 'Suspended'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => handleToggleUserStatus(u.id, u.is_active)}
-                        className={`text-xs font-bold px-3 py-1 rounded-lg transition-colors ${
+                        className={`btn-interactive text-xs font-bold px-3 py-1.5 rounded-xl transition-colors ${
                           u.is_active
                             ? 'bg-rose-50 text-rose-700 hover:bg-rose-100'
-                            : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                            : 'bg-[#D4E9DF] text-[#173A2C] hover:bg-[#BDDEC0]'
                         }`}
                       >
                         {u.is_active ? 'Suspend' : 'Activate'}
@@ -371,13 +349,13 @@ export default function AdminPage() {
 
       {/* Tab 3: Departments */}
       {activeTab === 'departments' && (
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-5 border-b border-gray-100">
-            <h3 className="font-bold text-gray-900">Academic Departments</h3>
+        <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm overflow-hidden animate-fade-in card-interactive">
+          <div className="p-5 border-b border-[#DCE7E2] bg-[#F5FAF8]">
+            <h3 className="font-bold text-[#173A2C]">Academic Departments Overview</h3>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 text-left text-sm">
-              <thead className="bg-gray-50 text-xs font-bold text-gray-500 uppercase tracking-wider">
+            <table className="min-w-full divide-y divide-[#DCE7E2] text-left text-sm">
+              <thead className="bg-[#F5FAF8] text-xs font-bold text-[#667875] uppercase tracking-wider">
                 <tr>
                   <th className="px-6 py-4">Department Name</th>
                   <th className="px-6 py-4">Faculty Count</th>
@@ -386,14 +364,14 @@ export default function AdminPage() {
                   <th className="px-6 py-4">Completion %</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-[#DCE7E2]/60">
                 {departments.map((d) => (
-                  <tr key={d.id}>
-                    <td className="px-6 py-4 font-semibold text-gray-900">{d.name}</td>
-                    <td className="px-6 py-4 text-gray-600">{d.faculty_count}</td>
-                    <td className="px-6 py-4 text-gray-600">{d.meeting_count}</td>
-                    <td className="px-6 py-4 text-gray-600">{d.pending_actions}</td>
-                    <td className="px-6 py-4 font-semibold text-emerald-600">{d.completion_rate}%</td>
+                  <tr key={d.id} className="hover:bg-[#F5FAF8] transition-colors">
+                    <td className="px-6 py-4 font-bold text-[#173A2C]">{d.name}</td>
+                    <td className="px-6 py-4 text-[#667875] font-semibold">{d.faculty_count}</td>
+                    <td className="px-6 py-4 text-[#667875] font-semibold">{d.meeting_count}</td>
+                    <td className="px-6 py-4 text-[#667875] font-semibold">{d.pending_actions}</td>
+                    <td className="px-6 py-4 font-black text-[#3F795F]">{d.completion_rate}%</td>
                   </tr>
                 ))}
               </tbody>
@@ -405,44 +383,52 @@ export default function AdminPage() {
       {/* Tab 4: Analytics */}
       {activeTab === 'analytics' && (
         !analytics ? (
-          <div className="bg-white p-12 rounded-2xl border border-gray-200 text-center text-gray-400 text-sm">
+          <div className="bg-white p-12 rounded-2xl border border-[#DCE7E2] text-center text-[#667875] text-sm animate-fade-in">
             Loading real-time institutional analytics...
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fade-in">
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-              <div className="bg-white p-5 rounded-2xl border shadow-sm">
-                <p className="text-xs font-bold text-gray-400 uppercase">Avg Meeting Duration</p>
-                <h3 className="text-2xl font-black text-gray-900 mt-1">{analytics.stats?.avg_meeting_duration_mins ?? 0} mins</h3>
-              </div>
-              <div className="bg-white p-5 rounded-2xl border shadow-sm">
-                <p className="text-xs font-bold text-gray-400 uppercase">Actions Per Meeting</p>
-                <h3 className="text-2xl font-black text-gray-900 mt-1">{analytics.stats?.actions_per_meeting ?? 0}</h3>
-              </div>
-              <div className="bg-white p-5 rounded-2xl border shadow-sm">
-                <p className="text-xs font-bold text-gray-400 uppercase">Action Completion Rate</p>
-                <h3 className="text-2xl font-black text-emerald-600 mt-1">{analytics.stats?.action_completion_rate ?? 0}%</h3>
-              </div>
-              <div className="bg-white p-5 rounded-2xl border shadow-sm">
-                <p className="text-xs font-bold text-gray-400 uppercase">AI Queries This Month</p>
-                <h3 className="text-2xl font-black text-blue-600 mt-1">{analytics.stats?.ai_queries_this_month ?? 0}</h3>
-              </div>
+              <StatCard
+                label="Avg Meeting Duration"
+                value={`${analytics.stats?.avg_meeting_duration_mins ?? 0}m`}
+                icon={<Activity className="w-5 h-5" />}
+                variant="sage"
+              />
+              <StatCard
+                label="Actions Per Meeting"
+                value={analytics.stats?.actions_per_meeting ?? 0}
+                icon={<FileText className="w-5 h-5" />}
+                variant="softblue"
+              />
+              <StatCard
+                label="Action Completion Rate"
+                value={`${analytics.stats?.action_completion_rate ?? 0}%`}
+                icon={<ShieldCheck className="w-5 h-5" />}
+                variant="light"
+              />
+              <StatCard
+                label="AI Queries This Month"
+                value={analytics.stats?.ai_queries_this_month ?? 0}
+                icon={<BarChart3 className="w-5 h-5" />}
+                variant="softblue"
+              />
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border shadow-sm">
-              <h4 className="font-bold text-gray-900 mb-4">6-Month Meeting &amp; Action Item Trends</h4>
+            <div className="bg-white p-6 rounded-2xl border border-[#DCE7E2] shadow-sm card-interactive">
+              <h4 className="font-bold text-[#173A2C] mb-4">6-Month Meeting &amp; Action Item Trends</h4>
               {analytics.meetings_vs_actions_trend && analytics.meetings_vs_actions_trend.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-6 gap-2 text-center text-xs">
+                <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 text-center text-xs">
                   {analytics.meetings_vs_actions_trend.map((t: any, idx: number) => (
-                    <div key={idx} className="p-3 bg-gray-50 rounded-xl border border-gray-100">
-                      <span className="font-bold text-gray-500 block mb-2">{t.month}</span>
-                      <div className="text-blue-600 font-bold">{t.meetings} Mtgs</div>
-                      <div className="text-amber-600 font-medium">{t.actions} Actions</div>
+                    <div key={idx} className="p-3.5 bg-[#F5FAF8] rounded-xl border border-[#DCE7E2]/60 hover:border-[#78A98F]/40 transition-colors">
+                      <span className="font-bold text-[#667875] block mb-2">{t.month}</span>
+                      <div className="text-[#3F795F] font-extrabold text-sm">{t.meetings} Mtgs</div>
+                      <div className="text-[#367C88] font-bold mt-1">{t.actions} Actions</div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-gray-400 py-4">No historical activity logged yet.</p>
+                <p className="text-xs text-[#667875] py-4">No historical activity logged yet.</p>
               )}
             </div>
           </div>
@@ -451,14 +437,14 @@ export default function AdminPage() {
 
       {/* Tab 5: Audit Log */}
       {activeTab === 'audit' && (
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden p-6 space-y-4">
+        <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm overflow-hidden p-6 space-y-4 animate-fade-in card-interactive">
           <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
-            <h3 className="font-bold text-gray-900 text-base">Security &amp; Operational Audit Log</h3>
+            <h3 className="font-bold text-[#173A2C] text-base">Security &amp; Operational Audit Log</h3>
             <div className="flex gap-2 w-full sm:w-auto">
               <select
                 value={auditSeverity}
                 onChange={(e) => setAuditSeverity(e.target.value)}
-                className="px-3 py-1.5 border rounded-xl text-xs font-semibold"
+                className="px-3 py-1.5 border border-[#DCE7E2] rounded-xl text-xs font-semibold bg-[#F5FAF8] text-[#173A2C] focus:outline-none focus:ring-1 focus:ring-[#78A98F]"
               >
                 <option value="">All Severities</option>
                 <option value="Info">Info</option>
@@ -472,35 +458,35 @@ export default function AdminPage() {
                 value={auditSearch}
                 onChange={(e) => setAuditSearch(e.target.value)}
                 placeholder="Search action or details..."
-                className="px-3 py-1.5 border rounded-xl text-xs flex-1 sm:w-56"
+                className="px-3 py-1.5 border border-[#DCE7E2] rounded-xl text-xs flex-1 sm:w-56 bg-[#F5FAF8] text-[#173A2C] focus:outline-none focus:ring-1 focus:ring-[#78A98F]"
               />
             </div>
           </div>
 
-          <div className="divide-y divide-gray-100 text-xs">
+          <div className="divide-y divide-[#DCE7E2]/60 text-xs">
             {filteredLogs.length > 0 ? (
               filteredLogs.map((log) => (
-                <div key={log.id} className="py-3 flex items-start justify-between">
+                <div key={log.id} className="py-3 flex items-start justify-between hover:bg-[#F5FAF8] px-2 rounded-xl transition-colors">
                   <div>
-                    <div className="font-bold text-gray-900 flex items-center space-x-2">
+                    <div className="font-bold text-[#173A2C] flex items-center space-x-2">
                       <span>{log.action}</span>
-                      <span className={`px-2 py-0.2 rounded text-[10px] uppercase font-extrabold ${
-                        log.severity === 'Alert' ? 'bg-red-100 text-red-800' :
+                      <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-black ${
+                        log.severity === 'Alert' ? 'bg-rose-100 text-rose-800' :
                         log.severity === 'Warn' ? 'bg-amber-100 text-amber-800' :
-                        log.severity === 'OK' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'
+                        log.severity === 'OK' ? 'bg-[#D4E9DF] text-[#173A2C]' : 'bg-[#E4F2F4] text-[#132F34]'
                       }`}>
                         {log.severity}
                       </span>
                     </div>
-                    <p className="text-gray-600 mt-0.5">{log.details}</p>
+                    <p className="text-[#667875] mt-0.5">{log.details}</p>
                   </div>
-                  <span className="text-gray-400 whitespace-nowrap ml-4">
+                  <span className="text-[#667875]/70 whitespace-nowrap ml-4 font-mono text-[11px]">
                     {new Date(log.timestamp).toLocaleString()}
                   </span>
                 </div>
               ))
             ) : (
-              <p className="text-gray-400 py-6 text-center">No logs matching criteria.</p>
+              <p className="text-[#667875] py-6 text-center">No logs matching criteria.</p>
             )}
           </div>
         </div>
@@ -508,33 +494,36 @@ export default function AdminPage() {
 
       {/* Tab 6: System Settings */}
       {activeTab === 'settings' && (
-        <form onSubmit={handleSaveSettings} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-6 max-w-2xl">
-          <h3 className="font-bold text-gray-900 text-lg">Institutional Configuration &amp; Feature Toggles</h3>
+        <form onSubmit={handleSaveSettings} className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm p-6 space-y-6 max-w-2xl animate-fade-in card-interactive">
+          <div>
+            <h3 className="font-bold text-[#173A2C] text-lg">Institutional Configuration &amp; Feature Toggles</h3>
+            <p className="text-xs text-[#667875] mt-0.5">Parameters apply across all academic departments.</p>
+          </div>
 
           {settingsSaved && (
-            <div className="p-3 bg-emerald-50 text-emerald-700 rounded-xl text-xs font-bold flex items-center space-x-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              <span>System settings updated successfully!</span>
+            <div className="p-3 bg-[#D4E9DF] text-[#173A2C] rounded-xl text-xs font-bold flex items-center space-x-2 animate-slide-up">
+              <CheckCircle2 className="w-4 h-4 text-[#3F795F]" />
+              <span>System settings updated and persisted successfully!</span>
             </div>
           )}
 
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Institution Name</label>
+              <label className="block text-xs font-bold text-[#173A2C] uppercase mb-1">Institution Name</label>
               <input
                 type="text"
                 value={instName}
                 onChange={(e) => setInstName(e.target.value)}
-                className="w-full px-3 py-2 border rounded-xl text-sm"
+                className="w-full px-3.5 py-2.5 border border-[#DCE7E2] rounded-xl text-sm bg-[#F5FAF8] text-[#173A2C] focus:outline-none focus:ring-1 focus:ring-[#78A98F]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">AI MoM Extraction Model</label>
+              <label className="block text-xs font-bold text-[#173A2C] uppercase mb-1">AI MoM Extraction Model</label>
               <select
                 value={aiModel}
                 onChange={(e) => setAiModel(e.target.value)}
-                className="w-full px-3 py-2 border rounded-xl text-sm"
+                className="w-full px-3.5 py-2.5 border border-[#DCE7E2] rounded-xl text-sm bg-[#F5FAF8] text-[#173A2C] focus:outline-none focus:ring-1 focus:ring-[#78A98F]"
               >
                 <option value="meta-llama/llama-3.3-70b-instruct">Llama 3.3 70B Instruct (OpenRouter)</option>
                 <option value="google/gemini-2.5-flash">Google Gemini 2.5 Flash</option>
@@ -543,54 +532,56 @@ export default function AdminPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Data Retention Period (Days)</label>
+              <label className="block text-xs font-bold text-[#173A2C] uppercase mb-1">Data Retention Period (Days)</label>
               <input
                 type="number"
                 value={retentionDays}
                 onChange={(e) => setRetentionDays(Number(e.target.value))}
-                className="w-full px-3 py-2 border rounded-xl text-sm"
+                className="w-full px-3.5 py-2.5 border border-[#DCE7E2] rounded-xl text-sm bg-[#F5FAF8] text-[#173A2C] focus:outline-none focus:ring-1 focus:ring-[#78A98F]"
               />
             </div>
 
             <div className="pt-2 space-y-3">
-              <label className="flex items-center space-x-2 text-sm font-medium text-gray-800 cursor-pointer">
+              <label className="flex items-center space-x-3 text-sm font-medium text-[#173A2C] cursor-pointer">
                 <input
                   type="checkbox"
                   checked={enableEmailAlerts}
                   onChange={(e) => setEnableEmailAlerts(e.target.checked)}
-                  className="rounded text-blue-600"
+                  className="rounded border-[#DCE7E2] text-[#78A98F] focus:ring-[#78A98F] w-4 h-4"
                 />
                 <span>Enable Automated Email Notifications</span>
               </label>
 
-              <label className="flex items-center space-x-2 text-sm font-medium text-gray-800 cursor-pointer">
+              <label className="flex items-center space-x-3 text-sm font-medium text-[#173A2C] cursor-pointer">
                 <input
                   type="checkbox"
                   checked={enableAutoTranscription}
                   onChange={(e) => setEnableAutoTranscription(e.target.checked)}
-                  className="rounded text-blue-600"
+                  className="rounded border-[#DCE7E2] text-[#78A98F] focus:ring-[#78A98F] w-4 h-4"
                 />
                 <span>Enable Automated Audio Diarization &amp; Transcription</span>
               </label>
 
-              <label className="flex items-center space-x-2 text-sm font-medium text-gray-800 cursor-pointer">
+              <label className="flex items-center space-x-3 text-sm font-medium text-[#173A2C] cursor-pointer">
                 <input
                   type="checkbox"
                   checked={enable2FA}
                   onChange={(e) => setEnable2FA(e.target.checked)}
-                  className="rounded text-blue-600"
+                  className="rounded border-[#DCE7E2] text-[#78A98F] focus:ring-[#78A98F] w-4 h-4"
                 />
                 <span>Enforce Two-Factor Authentication (2FA) for Faculty Accounts</span>
               </label>
             </div>
           </div>
 
-          <button
+          <AnimatedButton
             type="submit"
-            className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold rounded-xl shadow-sm transition-colors"
+            variant="primary"
+            isLoading={savingSettings}
+            icon={<Check className="w-4 h-4" />}
           >
             Save Configuration
-          </button>
+          </AnimatedButton>
         </form>
       )}
 

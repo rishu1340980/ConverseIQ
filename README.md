@@ -1,44 +1,78 @@
-# ConverseIQ Phase 2: Production System
+# ConverseIQ — Academic Meeting Intelligence Platform
 
-ConverseIQ is an enterprise-grade academic meeting intelligence platform designed for Higher Education institutions. It captures, transcribes, and diarizes multi-speaker faculty meetings, generates structured and editable Minutes of Meeting (MoM), tracks action item accountability with priority and status, provides calendar reminders, and offers institutional administration and analytics.
-
----
-
-## 🏗️ Architecture
-
-- **Backend**: FastAPI with async SQLAlchemy 2.0
-- **Database**: PostgreSQL 16 (with asyncpg, pgvector-ready) + SQLite fallback for seamless local tests
-- **Authentication**: JWT tokens (8-hour expiration), bcrypt password hashing, role-based access control (`Faculty`, `HOD`, `Admin`), login rate-limiting (429 lockout on 6th failed attempt)
-- **Document Export**: PDF (ReportLab) & Microsoft Word (.docx)
-- **AI Engine**: AssemblyAI for audio transcription & speaker diarization, OpenRouter/Gemini LLM for structured MoM synthesis & RAG Q&A
-- **Frontend**: Next.js & React with Tailwind CSS, Lucide icons, responsive tables, and interactive dashboards
+Enterprise multi-speaker academic meeting transcription, editable MoM generation, grounded AI Query Assistant, and strategic action tracking for higher education institutions.
 
 ---
 
-## 🚀 Directory Structure
+## 📁 Project Structure
 
 ```
-converseiq-phase2/
-├── backend/
+ConverseIQ/
+├── backend_v2/             # FastAPI Async Backend (Python 3.10+)
 │   ├── app/
-│   │   ├── api/v1/          # Modular API endpoints (auth, dashboard, meetings, mom, action_items, export, ai, admin)
-│   │   ├── core/            # Config, security (JWT/bcrypt/RBAC), database, audit helpers
-│   │   ├── models/          # PostgreSQL SQLAlchemy models (User, Department, Meeting, ActionItem, AuditLog, etc.)
-│   │   ├── schemas/         # Pydantic validation schemas
-│   │   ├── services/        # Exporter (PDF/Docx), AI analysis, Transcription, RAG
-│   │   └── main.py          # FastAPI application entrypoint with seed data & CORS
-│   ├── tests/               # Automated test suite (RBAC 403, Rate-limiting 429, MoM export, etc.)
-│   ├── requirements.txt     # Python dependencies
-│   └── .env.example         # Environment template
-├── frontend/                # Next.js frontend application
-└── docker-compose.yml       # Production Docker deployment
+│   │   ├── core/           # Security, DB, Config, Dependencies
+│   │   ├── models/         # SQLAlchemy DB Models (Users, Meetings, MoM, Action Items)
+│   │   ├── routers/        # API Endpoints (auth, meetings, dashboard, users, ai, etc.)
+│   │   ├── schemas/        # Pydantic Schemas
+│   │   ├── services/       # AI Pipeline & Transcription Service
+│   │   └── main.py         # Application Entrypoint
+│   ├── seed.py             # Automatic Database Seeder
+│   └── requirements.txt    # Python Dependencies
+├── frontend/               # Next.js 14 App Router + Tailwind CSS
+│   ├── src/
+│   │   ├── app/            # Next.js Routes (dashboard, hod, meetings, schedule, settings, ai-assistant)
+│   │   ├── components/     # UI Components & Modals (Sidebar, AddMeeting, etc.)
+│   │   └── lib/            # API Client & Auth Utilities
+│   └── package.json        # Frontend Dependencies
+└── ConverseIQ.code-workspace # VS Code Multi-Root Workspace Configuration
 ```
 
 ---
 
-## 🔑 Default Seed Credentials for Testing
+## 🚀 How to Run in VS Code
 
-- **Admin Account**: `admin@converseiq.edu` / `Admin@123`
-- **HOD Account**: `hod.cs@converseiq.edu` / `Hod@123`
-- **Faculty Account**: `prof.sharma@converseiq.edu` / `Faculty@123`
-- **Faculty Account 2**: `prof.mishra@converseiq.edu` / `Faculty@123`
+### Option 1: Open via Terminal
+```bash
+code ~/Desktop/ConverseIQ
+```
+
+### Option 2: Open via VS Code Menu
+1. Open **VS Code**.
+2. Click **File** → **Open Folder...**
+3. Select the **`ConverseIQ`** folder located on your **Desktop**.
+
+---
+
+## 💻 Local Development Setup
+
+### 1. Run the Backend (Terminal 1)
+```bash
+cd backend_v2
+pip install -r requirements.txt
+uvicorn backend_v2.app.main:app --reload --port 8001
+```
+*Backend API will run at:* `http://localhost:8001`  
+*Swagger Documentation:* `http://localhost:8001/docs`
+
+### 2. Run the Frontend (Terminal 2)
+```bash
+cd frontend
+npm run dev
+```
+*Frontend App will run at:* `http://localhost:3000`
+
+---
+
+## 🔐 Default Demo Accounts
+
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Faculty** | `prof.sharma@converseiq.edu` | `Faculty@123` |
+| **HOD** | `hod.cs@converseiq.edu` | `Hod@123` |
+| **Admin** | `admin@converseiq.edu` | `Admin@123` |
+
+---
+
+## 🌐 Live Cloud Deployments
+- **Backend (Render):** `https://converseiq.onrender.com`
+- **Frontend (Vercel):** Connected directly to GitHub `main` branch

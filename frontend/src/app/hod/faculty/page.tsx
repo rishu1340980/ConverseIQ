@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Users, UserPlus, X, CheckCircle2, XCircle, Trash2 } from 'lucide-react';
 import { apiRequest } from '@/lib/api';
+import AnimatedButton from '@/components/ui/AnimatedButton';
 
 interface FacultyMember {
   id: number;
@@ -119,27 +120,27 @@ export default function HodFacultyPerformancePage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#1C251E] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#173A2C] tracking-tight">
             Faculty Performance
           </h1>
-          <p className="text-sm text-[#6B7280] mt-1 font-medium">
+          <p className="text-sm text-[#667875] mt-1 font-medium">
             {facultyList.length} faculty member{facultyList.length !== 1 ? 's' : ''} in your department
           </p>
         </div>
         {/* Add Faculty — HOD only right */}
-        <button
+        <AnimatedButton
           onClick={() => { setShowAddModal(true); setAddError(''); }}
-          className="flex items-center space-x-2 px-4 py-2.5 bg-[#45644F] hover:bg-[#385240] text-white text-sm font-semibold rounded-xl shadow-sm transition-colors cursor-pointer"
+          variant="primary"
+          icon={<UserPlus className="w-4 h-4" />}
         >
-          <UserPlus className="w-4 h-4" />
-          <span>Add Faculty</span>
-        </button>
+          Add Faculty
+        </AnimatedButton>
       </div>
 
       {/* Faculty List */}
       {loading ? (
-        <div className="py-16 text-center text-xs text-gray-500">
-          <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-[#45644F] mx-auto mb-3"></div>
+        <div className="py-16 text-center text-xs text-[#667875]">
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#DCE7E2] border-t-[#3F795F] mx-auto mb-3"></div>
           <span>Loading faculty directory...</span>
         </div>
       ) : facultyList.length > 0 ? (
@@ -147,22 +148,22 @@ export default function HodFacultyPerformancePage() {
           {facultyList.map((faculty) => (
             <div
               key={faculty.id}
-              className={`bg-white rounded-2xl border p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all ${
-                faculty.is_active ? 'border-[#E8E5DA] hover:border-[#D0CBBF]' : 'border-gray-200 opacity-60'
+              className={`bg-white rounded-2xl border p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-200 card-interactive ${
+                faculty.is_active ? 'border-[#DCE7E2] hover:border-[#78A98F]/50' : 'border-gray-200 opacity-60'
               }`}
             >
               {/* Left: Avatar + Details */}
               <div className="flex items-center space-x-4">
-                <div className="w-11 h-11 rounded-full bg-[#4E6B56] text-white flex items-center justify-center font-bold text-sm flex-shrink-0 shadow-sm">
+                <div className="w-11 h-11 rounded-full bg-[#3F795F] text-white flex items-center justify-center font-bold text-sm flex-shrink-0 shadow-xs">
                   {faculty.initial}
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-[#1C251E]">{faculty.name}</p>
-                  <p className="text-xs text-[#6B7280] font-medium mt-0.5">{faculty.designation}</p>
+                  <p className="text-sm font-bold text-[#173A2C]">{faculty.name}</p>
+                  <p className="text-xs text-[#667875] font-medium mt-0.5">{faculty.designation}</p>
                   <div className="flex items-center gap-3 mt-1">
-                    <span className="text-[11px] text-gray-500">{faculty.meeting_count} meeting{faculty.meeting_count !== 1 ? 's' : ''}</span>
+                    <span className="text-[11px] text-[#667875]">{faculty.meeting_count} meeting{faculty.meeting_count !== 1 ? 's' : ''}</span>
                     {faculty.actions_total > 0 && (
-                      <span className="text-[11px] text-gray-500">{faculty.actions_done}/{faculty.actions_total} actions done</span>
+                      <span className="text-[11px] text-[#367C88] font-medium">{faculty.actions_done}/{faculty.actions_total} actions done</span>
                     )}
                   </div>
                 </div>
@@ -171,21 +172,21 @@ export default function HodFacultyPerformancePage() {
               {/* Middle: Action completion rate */}
               <div className="flex-1 max-w-xs">
                 <div className="flex items-center justify-between text-xs mb-1.5">
-                  <span className="text-[#6B7280] font-medium">Action Completion</span>
-                  <span className="font-bold text-[#1C251E]">
+                  <span className="text-[#667875] font-medium">Action Completion</span>
+                  <span className="font-bold text-[#173A2C]">
                     {faculty.actions_total > 0 ? `${faculty.completion_rate}%` : '—'}
                   </span>
                 </div>
-                <div className="w-full bg-[#EFECE6] h-2 rounded-full overflow-hidden">
+                <div className="w-full bg-[#EDF5F2] h-2 rounded-full overflow-hidden">
                   {faculty.actions_total > 0 && (
                     <div
-                      className="bg-[#45644F] h-full rounded-full transition-all duration-500"
+                      className="bg-[#3F795F] h-full rounded-full transition-all duration-500"
                       style={{ width: `${faculty.completion_rate}%` }}
                     />
                   )}
                 </div>
                 {faculty.actions_total === 0 && (
-                  <p className="text-[11px] text-gray-400 mt-1">No action items recorded yet</p>
+                  <p className="text-[11px] text-[#667875] mt-1">No action items recorded yet</p>
                 )}
               </div>
 
@@ -193,7 +194,7 @@ export default function HodFacultyPerformancePage() {
               <div className="flex items-center gap-3">
                 <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${
                   faculty.is_active
-                    ? 'bg-[#DCE7DC] text-[#2F4E36]'
+                    ? 'bg-[#D4E9DF] text-[#173A2C]'
                     : 'bg-gray-100 text-gray-500'
                 }`}>
                   {faculty.is_active ? 'Active' : 'Inactive'}
@@ -201,17 +202,17 @@ export default function HodFacultyPerformancePage() {
                 <button
                   onClick={() => handleToggleActive(faculty)}
                   title={faculty.is_active ? 'Deactivate faculty' : 'Activate faculty'}
-                  className="text-gray-400 hover:text-[#45644F] transition-colors cursor-pointer"
+                  className="text-gray-400 hover:text-[#3F795F] transition-colors cursor-pointer"
                 >
                   {faculty.is_active
-                    ? <XCircle className="w-4 h-4 text-red-400 hover:text-red-600" />
-                    : <CheckCircle2 className="w-4 h-4 text-green-500 hover:text-green-700" />
+                    ? <XCircle className="w-4 h-4 text-rose-400 hover:text-rose-600" />
+                    : <CheckCircle2 className="w-4 h-4 text-emerald-500 hover:text-emerald-700" />
                   }
                 </button>
                 <button
                   onClick={() => handleDeleteFaculty(faculty)}
                   title="Remove faculty from roster"
-                  className="text-gray-400 hover:text-red-600 transition-colors cursor-pointer p-0.5"
+                  className="text-gray-400 hover:text-rose-600 transition-colors cursor-pointer p-0.5"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -220,10 +221,10 @@ export default function HodFacultyPerformancePage() {
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-[#E8E5DA] py-16 text-center space-y-3 shadow-sm">
+        <div className="bg-white rounded-2xl border border-[#DCE7E2] py-16 text-center space-y-3 shadow-xs">
           <Users className="w-10 h-10 text-gray-300 mx-auto" />
-          <h3 className="text-base font-bold text-[#1C251E]">No faculty members yet</h3>
-          <p className="text-xs text-[#6B7280] max-w-sm mx-auto">
+          <h3 className="text-base font-bold text-[#173A2C]">No faculty members yet</h3>
+          <p className="text-xs text-[#667875] max-w-sm mx-auto">
             Use the &quot;Add Faculty&quot; button above to add faculty members to your department.
           </p>
         </div>
@@ -231,52 +232,52 @@ export default function HodFacultyPerformancePage() {
 
       {/* Add Faculty Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center px-4">
-          <div className="bg-white rounded-2xl border border-[#E8E5DA] shadow-xl w-full max-w-md p-6 space-y-5">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center px-4 animate-fade-in">
+          <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-xl w-full max-w-md p-6 space-y-5 animate-scale-in">
             <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-[#1C251E]">Add Faculty Member</h2>
-              <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-600 cursor-pointer">
+              <h2 className="text-base font-bold text-[#173A2C]">Add Faculty Member</h2>
+              <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-[#173A2C] cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-[#4B5563] mb-1">Full Name *</label>
+                <label className="block text-xs font-semibold text-[#173A2C] mb-1">Full Name *</label>
                 <input
                   type="text"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   placeholder="e.g. Dr. Priya Nair"
-                  className="w-full px-3 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-[#45644F] outline-none"
+                  className="w-full px-3 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#4B5563] mb-1">Email *</label>
+                <label className="block text-xs font-semibold text-[#173A2C] mb-1">Email *</label>
                 <input
                   type="email"
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
                   placeholder="e.g. priya.nair@converseiq.edu"
-                  className="w-full px-3 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-[#45644F] outline-none"
+                  className="w-full px-3 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#4B5563] mb-1">Temporary Password *</label>
+                <label className="block text-xs font-semibold text-[#173A2C] mb-1">Temporary Password *</label>
                 <input
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Min. 8 characters"
-                  className="w-full px-3 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-[#45644F] outline-none"
+                  className="w-full px-3 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#4B5563] mb-1">Designation</label>
+                <label className="block text-xs font-semibold text-[#173A2C] mb-1">Designation</label>
                 <select
                   value={newDesignation}
                   onChange={(e) => setNewDesignation(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-[#45644F] outline-none"
+                  className="w-full px-3 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none"
                 >
                   <option>Assistant Professor</option>
                   <option>Associate Professor</option>
@@ -286,35 +287,37 @@ export default function HodFacultyPerformancePage() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#4B5563] mb-1">Phone (Optional)</label>
+                <label className="block text-xs font-semibold text-[#173A2C] mb-1">Phone (Optional)</label>
                 <input
                   type="text"
                   value={newPhone}
                   onChange={(e) => setNewPhone(e.target.value)}
                   placeholder="+91 98765 43210"
-                  className="w-full px-3 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-[#45644F] outline-none"
+                  className="w-full px-3 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none"
                 />
               </div>
 
               {addError && (
-                <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2">{addError}</p>
+                <p className="text-xs text-rose-600 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2">{addError}</p>
               )}
             </div>
 
             <div className="flex gap-3">
-              <button
+              <AnimatedButton
                 onClick={() => setShowAddModal(false)}
-                className="flex-1 py-2.5 border border-[#E8E5DA] rounded-xl text-sm font-medium text-[#4B5563] hover:bg-gray-50 cursor-pointer"
+                variant="outline"
+                className="flex-1"
               >
                 Cancel
-              </button>
-              <button
+              </AnimatedButton>
+              <AnimatedButton
                 onClick={handleAddFaculty}
-                disabled={addLoading}
-                className="flex-1 py-2.5 bg-[#45644F] hover:bg-[#385240] text-white rounded-xl text-sm font-semibold disabled:opacity-70 cursor-pointer"
+                isLoading={addLoading}
+                variant="primary"
+                className="flex-1"
               >
-                {addLoading ? 'Creating...' : 'Create Faculty'}
-              </button>
+                Create Faculty
+              </AnimatedButton>
             </div>
           </div>
         </div>

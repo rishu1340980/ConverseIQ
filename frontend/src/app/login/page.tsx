@@ -2,8 +2,10 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Check, AlertCircle } from 'lucide-react';
+import { Check, AlertCircle, Sparkles } from 'lucide-react';
 import { apiRequest, setAuthToken, setStoredUser } from '@/lib/api';
+import AnimatedButton from '@/components/ui/AnimatedButton';
+import SegmentedControl from '@/components/ui/SegmentedControl';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,12 +15,13 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleRoleSelect = (role: 'Faculty' | 'HOD' | 'Admin') => {
-    setSelectedRole(role);
-    if (role === 'Faculty') {
+  const handleRoleSelect = (role: string) => {
+    const typedRole = role as 'Faculty' | 'HOD' | 'Admin';
+    setSelectedRole(typedRole);
+    if (typedRole === 'Faculty') {
       setEmail('prof.sharma@converseiq.edu');
       setPassword('Faculty@123');
-    } else if (role === 'HOD') {
+    } else if (typedRole === 'HOD') {
       setEmail('hod.cs@converseiq.edu');
       setPassword('Hod@123');
     } else {
@@ -56,77 +59,85 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F7F2] flex items-center justify-center p-6 lg:p-12">
-      <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+    <div className="min-h-screen bg-[#F5FAF8] flex items-center justify-center p-6 lg:p-12 relative overflow-hidden">
+      {/* Decorative ambient background accents */}
+      <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-[#B9DDE3]/30 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-5%] w-96 h-96 bg-[#D4E9DF]/40 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center relative z-10">
         
         {/* Left Hero Side */}
-        <div className="lg:col-span-7 space-y-8">
+        <div className="lg:col-span-7 space-y-8 animate-fade-in">
           
           {/* Logo */}
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-[#45644F] text-white flex items-center justify-center font-bold text-xl shadow-sm">
+            <div className="w-11 h-11 rounded-2xl bg-[#3F795F] text-white flex items-center justify-center font-black text-2xl shadow-sm tracking-tight">
               c
             </div>
-            <span className="font-bold text-2xl text-[#1C251E] tracking-tight">
+            <span className="font-extrabold text-2xl text-[#173A2C] tracking-tight">
               ConverseIQ
+            </span>
+            <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-[#E4F2F4] text-[#367C88] text-xs font-bold border border-[#B9DDE3]/60">
+              <Sparkles className="w-3 h-3 text-[#367C88]" />
+              <span>Academic Intelligence</span>
             </span>
           </div>
 
           {/* Headline & Subtitle */}
           <div className="space-y-4 max-w-xl">
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-[#1C251E] tracking-tight leading-[1.15]">
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-[#173A2C] tracking-tight leading-[1.15]">
               Turn Conversations into Actionable Intelligence
             </h1>
-            <p className="text-base sm:text-lg text-[#4B5563] leading-relaxed">
-              Transform your meetings into summaries, decisions, action items, and meaningful insights using AI.
+            <p className="text-base sm:text-lg text-[#667875] leading-relaxed font-medium">
+              Transform academic and departmental meetings into structured MoM summaries, verified decisions, action trackers, and multilingual transcripts using AI.
             </p>
           </div>
 
           {/* Floating Pipeline Progress Card */}
-          <div className="bg-white/80 backdrop-blur-sm border border-[#E8E5DA] rounded-2xl p-6 max-w-md shadow-sm space-y-3.5">
+          <div className="bg-white/90 backdrop-blur-md border border-[#DCE7E2] rounded-2xl p-6 max-w-md shadow-sm space-y-3.5 card-interactive">
             
-            <div className="flex items-center space-x-3 text-sm font-medium text-[#1C251E]">
-              <div className="w-5 h-5 rounded-full bg-[#45644F] text-white flex items-center justify-center flex-shrink-0">
+            <div className="flex items-center space-x-3 text-sm font-semibold text-[#173A2C]">
+              <div className="w-5 h-5 rounded-full bg-[#3F795F] text-white flex items-center justify-center flex-shrink-0 shadow-xs">
                 <Check className="w-3 h-3 stroke-[3]" />
               </div>
-              <span className="flex items-center space-x-1.5">
+              <span className="flex items-center space-x-2">
                 <span>🎙</span>
-                <span>Recording Uploaded</span>
+                <span>Meeting Recording Uploaded</span>
               </span>
             </div>
 
-            <div className="flex items-center space-x-3 text-sm font-medium text-[#1C251E]">
-              <div className="w-5 h-5 rounded-full bg-[#45644F] text-white flex items-center justify-center flex-shrink-0">
+            <div className="flex items-center space-x-3 text-sm font-semibold text-[#173A2C]">
+              <div className="w-5 h-5 rounded-full bg-[#3F795F] text-white flex items-center justify-center flex-shrink-0 shadow-xs">
                 <Check className="w-3 h-3 stroke-[3]" />
               </div>
-              <span className="flex items-center space-x-1.5">
+              <span className="flex items-center space-x-2">
                 <span>📝</span>
-                <span>Transcript Generated</span>
+                <span>Bilingual Transcript Generated</span>
               </span>
             </div>
 
-            <div className="flex items-center space-x-3 text-sm font-medium text-[#1C251E]">
-              <div className="w-5 h-5 rounded-full bg-[#45644F] text-white flex items-center justify-center flex-shrink-0">
+            <div className="flex items-center space-x-3 text-sm font-semibold text-[#173A2C]">
+              <div className="w-5 h-5 rounded-full bg-[#3F795F] text-white flex items-center justify-center flex-shrink-0 shadow-xs">
                 <Check className="w-3 h-3 stroke-[3]" />
               </div>
-              <span className="flex items-center space-x-1.5">
+              <span className="flex items-center space-x-2">
                 <span>🧠</span>
-                <span>AI Analysis</span>
+                <span>AI Agenda &amp; Decision Mapping</span>
               </span>
             </div>
 
-            <div className="flex items-center justify-between text-sm font-medium text-[#1C251E]">
+            <div className="flex items-center justify-between text-sm font-semibold text-[#173A2C]">
               <div className="flex items-center space-x-3">
-                <div className="w-5 h-5 rounded-full bg-[#45644F] text-white flex items-center justify-center flex-shrink-0">
+                <div className="w-5 h-5 rounded-full bg-[#3F795F] text-white flex items-center justify-center flex-shrink-0 shadow-xs">
                   <Check className="w-3 h-3 stroke-[3]" />
                 </div>
-                <span className="flex items-center space-x-1.5">
+                <span className="flex items-center space-x-2">
                   <span>✅</span>
-                  <span>Action Items Extracted</span>
+                  <span>Action Items &amp; Deadlines Assigned</span>
                 </span>
               </div>
-              <span className="px-2.5 py-0.5 bg-[#DCE7DC] text-[#2F4E36] rounded-full text-[11px] font-semibold animate-pulse">
-                Processing...
+              <span className="px-2.5 py-0.5 bg-[#D4E9DF] text-[#173A2C] rounded-full text-[11px] font-bold animate-pulse-soft">
+                Ready
               </span>
             </div>
 
@@ -135,63 +146,34 @@ export default function LoginPage() {
         </div>
 
         {/* Right Side Login Card */}
-        <div className="lg:col-span-5 w-full">
-          <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-sm border border-[#E8E5DA]">
+        <div className="lg:col-span-5 w-full animate-slide-up">
+          <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-sm border border-[#DCE7E2]">
             
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-[#1C251E] tracking-tight">
-                Welcome back
+              <h2 className="text-2xl font-bold text-[#173A2C] tracking-tight">
+                Institutional Access
               </h2>
-              <p className="text-sm text-[#6B7280] mt-1">
-                Select your institutional role to continue
+              <p className="text-sm text-[#667875] mt-1 font-medium">
+                Select your academic role to proceed with preloaded demo credentials
               </p>
             </div>
 
-            {/* Role Selection Container */}
-            <div className="bg-[#F3EFE6] p-1 rounded-xl grid grid-cols-3 gap-1 mb-6 text-xs font-semibold">
-              <button
-                type="button"
-                onClick={() => handleRoleSelect('Faculty')}
-                className={`py-2 rounded-lg transition-all flex items-center justify-center space-x-1.5 ${
-                  selectedRole === 'Faculty'
-                    ? 'bg-white text-[#1C251E] shadow-sm font-bold'
-                    : 'text-[#6B7280] hover:text-[#1C251E]'
-                }`}
-              >
-                <span>👤</span>
-                <span>Faculty</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleRoleSelect('HOD')}
-                className={`py-2 rounded-lg transition-all flex items-center justify-center space-x-1.5 ${
-                  selectedRole === 'HOD'
-                    ? 'bg-white text-[#1C251E] shadow-sm font-bold'
-                    : 'text-[#6B7280] hover:text-[#1C251E]'
-                }`}
-              >
-                <span>🏛</span>
-                <span>HOD</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleRoleSelect('Admin')}
-                className={`py-2 rounded-lg transition-all flex items-center justify-center space-x-1.5 ${
-                  selectedRole === 'Admin'
-                    ? 'bg-white text-[#1C251E] shadow-sm font-bold'
-                    : 'text-[#6B7280] hover:text-[#1C251E]'
-                }`}
-              >
-                <span>🔐</span>
-                <span>Admin</span>
-              </button>
+            {/* Role Selection via SegmentedControl */}
+            <div className="mb-6">
+              <SegmentedControl
+                className="w-full flex"
+                options={[
+                  { id: 'Faculty', label: 'Faculty' },
+                  { id: 'HOD', label: 'HOD' },
+                  { id: 'Admin', label: 'Admin' },
+                ]}
+                activeId={selectedRole}
+                onChange={handleRoleSelect}
+              />
             </div>
 
-
             {error && (
-              <div className="mb-5 p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 font-semibold flex items-center space-x-2">
+              <div className="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 font-semibold flex items-center space-x-2">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 <span>{error}</span>
               </div>
@@ -199,22 +181,22 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-[#4B5563] mb-1.5">
-                  Email address
+                <label className="block text-xs font-semibold text-[#173A2C] mb-1.5">
+                  Institutional Email
                 </label>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="rishabh@university.edu"
-                  className="w-full px-4 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm text-[#1C251E] focus:bg-white focus:ring-2 focus:ring-[#45644F] focus:border-[#45644F] outline-none transition-all"
+                  placeholder="name@converseiq.edu"
+                  className="w-full px-4 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#4B5563] mb-1.5">
-                  Password
+                <label className="block text-xs font-semibold text-[#173A2C] mb-1.5">
+                  Security Password
                 </label>
                 <input
                   type="password"
@@ -222,38 +204,35 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full px-4 py-2.5 bg-[#F3EFE6] border border-[#E5E0D5] rounded-xl text-sm text-[#1C251E] focus:bg-white focus:ring-2 focus:ring-[#45644F] focus:border-[#45644F] outline-none transition-all"
+                  className="w-full px-4 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
                 />
               </div>
 
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full py-3 bg-[#45644F] hover:bg-[#385240] text-white text-sm font-semibold rounded-xl shadow-sm transition-all flex items-center justify-center space-x-2 disabled:opacity-50 mt-2"
-              >
-                {isLoading ? (
-                  <span className="flex items-center space-x-2">
-                    <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
-                    <span>Signing in...</span>
-                  </span>
-                ) : (
-                  <span>Sign In</span>
-                )}
-              </button>
+              <div className="pt-2">
+                <AnimatedButton
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  isLoading={isLoading}
+                  className="w-full justify-center"
+                >
+                  Sign In as {selectedRole}
+                </AnimatedButton>
+              </div>
             </form>
 
             <div className="relative my-6 text-center">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#E8E5DA]"></div>
+                <div className="w-full border-t border-[#DCE7E2]"></div>
               </div>
-              <span className="relative px-3 bg-white text-xs text-[#9CA3AF]">or</span>
+              <span className="relative px-3 bg-white text-xs font-semibold text-[#667875]">or</span>
             </div>
 
-            {/* Google Login Button */}
+            {/* Institutional SSO / Google Login Button */}
             <button
               type="button"
               onClick={() => handleSubmit({ preventDefault: () => {} } as any)}
-              className="w-full py-2.5 px-4 bg-[#F3EFE6] hover:bg-[#EAE5D9] text-[#1C251E] text-xs font-semibold rounded-xl transition-all flex items-center justify-center space-x-2 border border-[#E5E0D5]"
+              className="w-full py-2.5 px-4 bg-[#F5FAF8] hover:bg-[#E4F2F4] text-[#173A2C] text-xs font-bold rounded-xl transition-all flex items-center justify-center space-x-2 border border-[#DCE7E2] cursor-pointer"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path
@@ -273,7 +252,7 @@ export default function LoginPage() {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                 />
               </svg>
-              <span>Continue with Google</span>
+              <span>Continue with Institutional Google ID</span>
             </button>
 
           </div>
