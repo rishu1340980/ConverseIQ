@@ -265,10 +265,10 @@ export default function SettingsPage() {
       
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#173A2C] tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#173A2C] dark:text-[#E8F0EC] tracking-tight">
           Settings &amp; Preferences
         </h1>
-        <p className="text-sm text-[#667875] mt-1 font-medium">
+        <p className="text-sm text-[#667875] dark:text-[#8FA89C] mt-1 font-medium">
           Manage your institutional profile, security credentials, and platform preferences.
         </p>
       </div>
@@ -292,7 +292,7 @@ export default function SettingsPage() {
         <div className="space-y-6">
           
           {/* Profile Card */}
-          <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DCE7E2] shadow-sm space-y-6">
+          <div className="bg-white dark:bg-[#1A2B24] rounded-2xl p-6 sm:p-8 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm space-y-6">
             
             {/* User Avatar Info */}
             <div className="flex items-center space-x-4">
@@ -300,13 +300,13 @@ export default function SettingsPage() {
                 {displayInitial}
               </div>
               <div>
-                <h3 className="text-base font-bold text-[#173A2C]">
+                <h3 className="text-base font-bold text-[#173A2C] dark:text-[#E8F0EC]">
                   {displayName}
                 </h3>
-                <p className="text-xs text-[#667875] mt-0.5 font-medium">
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-0.5 font-medium">
                   {displayRole} • {profile.department}
                 </p>
-                <span className="inline-block mt-1 px-2.5 py-0.5 bg-[#D4E9DF] text-[#173A2C] rounded-md text-[10px] font-bold">
+                <span className="inline-block mt-1 px-2.5 py-0.5 bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC] rounded-md text-[10px] font-bold">
                   Verified Institutional Account
                 </span>
               </div>
@@ -316,7 +316,7 @@ export default function SettingsPage() {
             <form onSubmit={handleSaveProfile} className="space-y-4 pt-2">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#173A2C] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
                     Full Name <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -324,19 +324,19 @@ export default function SettingsPage() {
                     required
                     value={profile.fullName}
                     onChange={(e) => setProfile({ ...profile, fullName: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
+                    className="w-full px-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:bg-white dark:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#173A2C] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
                     Email Address (Institutional ID)
                   </label>
                   <input
                     type="email"
                     disabled
                     value={profile.email}
-                    className="w-full px-4 py-2.5 bg-[#F5FAF8]/60 border border-[#DCE7E2] rounded-xl text-sm text-[#667875] cursor-not-allowed outline-none"
+                    className="w-full px-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15]/60 border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#667875] dark:text-[#8FA89C] cursor-not-allowed outline-none"
                     title="Institutional email address is managed by administrator."
                   />
                 </div>
@@ -344,20 +344,20 @@ export default function SettingsPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#173A2C] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
                     Academic Department
                   </label>
                   <input
                     type="text"
                     disabled
                     value={profile.department}
-                    className="w-full px-4 py-2.5 bg-[#F5FAF8]/60 border border-[#DCE7E2] rounded-xl text-sm text-[#667875] cursor-not-allowed outline-none"
+                    className="w-full px-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15]/60 border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#667875] dark:text-[#8FA89C] cursor-not-allowed outline-none"
                     title="Department is assigned by institution."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#173A2C] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
                     Academic Designation
                   </label>
                   <input
@@ -365,13 +365,13 @@ export default function SettingsPage() {
                     value={profile.designation}
                     onChange={(e) => setProfile({ ...profile, designation: e.target.value })}
                     placeholder="e.g. Assistant Professor"
-                    className="w-full px-4 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
+                    className="w-full px-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:bg-white dark:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#173A2C] mb-1.5">
+                <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
                   Phone Number
                 </label>
                 <input
@@ -379,20 +379,20 @@ export default function SettingsPage() {
                   value={profile.phone}
                   onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                   placeholder="+91 98765 43210"
-                  className="w-full px-4 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
+                  className="w-full px-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:bg-white dark:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
                 />
               </div>
 
               {profileError && (
-                <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-600 flex items-center space-x-2">
+                <div className="p-3 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 rounded-xl text-xs text-rose-600 flex items-center space-x-2">
                   <AlertCircle className="w-4 h-4 flex-shrink-0" />
                   <span>{profileError}</span>
                 </div>
               )}
 
               {profileSuccess && (
-                <div className="p-3 bg-[#D4E9DF]/60 border border-[#78A98F]/40 rounded-xl text-xs text-[#173A2C] font-bold flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-[#3F795F]" />
+                <div className="p-3 bg-[#D4E9DF] dark:bg-[#243D33]/60 border border-[#78A98F]/40 rounded-xl text-xs text-[#173A2C] dark:text-[#E8F0EC] font-bold flex items-center space-x-2">
+                  <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-[#3F795F] dark:text-[#78A98F]" />
                   <span>Profile updated successfully in database!</span>
                 </div>
               )}
@@ -411,17 +411,17 @@ export default function SettingsPage() {
           </div>
 
           {/* Change Password Card */}
-          <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DCE7E2] shadow-sm space-y-5">
+          <div className="bg-white dark:bg-[#1A2B24] rounded-2xl p-6 sm:p-8 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm space-y-5">
             <div className="flex items-center space-x-2">
-              <KeyRound className="w-4 h-4 text-[#3F795F]" />
-              <h3 className="text-sm font-bold text-[#173A2C]">
+              <KeyRound className="w-4 h-4 text-[#3F795F] dark:text-[#78A98F]" />
+              <h3 className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">
                 Security &amp; Change Password
               </h3>
             </div>
 
             <form onSubmit={handleChangePassword} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-[#173A2C] mb-1.5">
+                <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
                   Current Password <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -430,13 +430,13 @@ export default function SettingsPage() {
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="Enter current password"
-                  className="w-full px-4 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
+                  className="w-full px-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:bg-white dark:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#173A2C] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
                     New Password <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -445,12 +445,12 @@ export default function SettingsPage() {
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="Min. 6 characters"
-                    className="w-full px-4 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
+                    className="w-full px-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:bg-white dark:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#173A2C] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
                     Confirm New Password <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -459,21 +459,21 @@ export default function SettingsPage() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Re-type new password"
-                    className="w-full px-4 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
+                    className="w-full px-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:bg-white dark:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
                   />
                 </div>
               </div>
 
               {passwordError && (
-                <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-600 flex items-center space-x-2">
+                <div className="p-3 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 rounded-xl text-xs text-rose-600 flex items-center space-x-2">
                   <AlertCircle className="w-4 h-4 flex-shrink-0" />
                   <span>{passwordError}</span>
                 </div>
               )}
 
               {passwordSuccess && (
-                <div className="p-3 bg-[#D4E9DF]/60 border border-[#78A98F]/40 rounded-xl text-xs text-[#173A2C] font-bold flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-[#3F795F]" />
+                <div className="p-3 bg-[#D4E9DF] dark:bg-[#243D33]/60 border border-[#78A98F]/40 rounded-xl text-xs text-[#173A2C] dark:text-[#E8F0EC] font-bold flex items-center space-x-2">
+                  <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-[#3F795F] dark:text-[#78A98F]" />
                   <span>Password updated successfully!</span>
                 </div>
               )}
@@ -496,97 +496,97 @@ export default function SettingsPage() {
 
       {/* TAB 2: Notifications */}
       {activeTab === 'notifications' && (
-        <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DCE7E2] shadow-sm space-y-6">
+        <div className="bg-white dark:bg-[#1A2B24] rounded-2xl p-6 sm:p-8 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm space-y-6">
           <div className="flex items-center space-x-2">
-            <Bell className="w-4 h-4 text-[#3F795F]" />
-            <h3 className="text-sm font-bold text-[#173A2C]">
+            <Bell className="w-4 h-4 text-[#3F795F] dark:text-[#78A98F]" />
+            <h3 className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">
               Notification Preferences
             </h3>
           </div>
 
-          <div className="space-y-4 divide-y divide-[#DCE7E2]/60">
+          <div className="space-y-4 divide-y divide-[#DCE7E2] dark:divide-[#2D4A3E]/60">
             
             <div className="flex items-center justify-between pt-1">
               <div>
-                <p className="text-sm font-bold text-[#173A2C]">Daily Email Digest</p>
-                <p className="text-xs text-[#667875]">Receive a daily summary of meetings, decisions, and tasks</p>
+                <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">Daily Email Digest</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C]">Receive a daily summary of meetings, decisions, and tasks</p>
               </div>
               <button
                 type="button"
                 onClick={() => updateNotification('dailyDigest')}
                 className={`w-10 h-6 flex items-center rounded-full p-1 transition-colors cursor-pointer ${notifications.dailyDigest ? 'bg-[#3F795F]' : 'bg-[#DCE7E2]'}`}
               >
-                <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.dailyDigest ? 'translate-x-4' : 'translate-x-0'}`} />
+                <div className={`bg-white dark:bg-[#1A2B24] w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.dailyDigest ? 'translate-x-4' : 'translate-x-0'}`} />
               </button>
             </div>
 
             <div className="flex items-center justify-between pt-4">
               <div>
-                <p className="text-sm font-bold text-[#173A2C]">Action Item Reminders</p>
-                <p className="text-xs text-[#667875]">Get notified before action item deadlines</p>
+                <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">Action Item Reminders</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C]">Get notified before action item deadlines</p>
               </div>
               <button
                 type="button"
                 onClick={() => updateNotification('actionReminders')}
                 className={`w-10 h-6 flex items-center rounded-full p-1 transition-colors cursor-pointer ${notifications.actionReminders ? 'bg-[#3F795F]' : 'bg-[#DCE7E2]'}`}
               >
-                <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.actionReminders ? 'translate-x-4' : 'translate-x-0'}`} />
+                <div className={`bg-white dark:bg-[#1A2B24] w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.actionReminders ? 'translate-x-4' : 'translate-x-0'}`} />
               </button>
             </div>
 
             <div className="flex items-center justify-between pt-4">
               <div>
-                <p className="text-sm font-bold text-[#173A2C]">Meeting Upload Alerts</p>
-                <p className="text-xs text-[#667875]">Notify when AI analysis and MoM of a meeting is ready</p>
+                <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">Meeting Upload Alerts</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C]">Notify when AI analysis and MoM of a meeting is ready</p>
               </div>
               <button
                 type="button"
                 onClick={() => updateNotification('uploadAlerts')}
                 className={`w-10 h-6 flex items-center rounded-full p-1 transition-colors cursor-pointer ${notifications.uploadAlerts ? 'bg-[#3F795F]' : 'bg-[#DCE7E2]'}`}
               >
-                <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.uploadAlerts ? 'translate-x-4' : 'translate-x-0'}`} />
+                <div className={`bg-white dark:bg-[#1A2B24] w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.uploadAlerts ? 'translate-x-4' : 'translate-x-0'}`} />
               </button>
             </div>
 
             <div className="flex items-center justify-between pt-4">
               <div>
-                <p className="text-sm font-bold text-[#173A2C]">AI Insight Nudges</p>
-                <p className="text-xs text-[#667875]">Suggestions and proactive follow-ups from the AI assistant</p>
+                <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">AI Insight Nudges</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C]">Suggestions and proactive follow-ups from the AI assistant</p>
               </div>
               <button
                 type="button"
                 onClick={() => updateNotification('aiNudges')}
                 className={`w-10 h-6 flex items-center rounded-full p-1 transition-colors cursor-pointer ${notifications.aiNudges ? 'bg-[#3F795F]' : 'bg-[#DCE7E2]'}`}
               >
-                <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.aiNudges ? 'translate-x-4' : 'translate-x-0'}`} />
+                <div className={`bg-white dark:bg-[#1A2B24] w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.aiNudges ? 'translate-x-4' : 'translate-x-0'}`} />
               </button>
             </div>
 
             <div className="flex items-center justify-between pt-4">
               <div>
-                <p className="text-sm font-bold text-[#173A2C]">Weekly Progress Report</p>
-                <p className="text-xs text-[#667875]">Summary of completed and pending items across your department</p>
+                <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">Weekly Progress Report</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C]">Summary of completed and pending items across your department</p>
               </div>
               <button
                 type="button"
                 onClick={() => updateNotification('weeklyReport')}
                 className={`w-10 h-6 flex items-center rounded-full p-1 transition-colors cursor-pointer ${notifications.weeklyReport ? 'bg-[#3F795F]' : 'bg-[#DCE7E2]'}`}
               >
-                <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.weeklyReport ? 'translate-x-4' : 'translate-x-0'}`} />
+                <div className={`bg-white dark:bg-[#1A2B24] w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.weeklyReport ? 'translate-x-4' : 'translate-x-0'}`} />
               </button>
             </div>
 
             <div className="flex items-center justify-between pt-4">
               <div>
-                <p className="text-sm font-bold text-[#173A2C]">Deadline Alerts</p>
-                <p className="text-xs text-[#667875]">Alert 24 hours before key academic deliverables</p>
+                <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">Deadline Alerts</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C]">Alert 24 hours before key academic deliverables</p>
               </div>
               <button
                 type="button"
                 onClick={() => updateNotification('deadlineAlerts')}
                 className={`w-10 h-6 flex items-center rounded-full p-1 transition-colors cursor-pointer ${notifications.deadlineAlerts ? 'bg-[#3F795F]' : 'bg-[#DCE7E2]'}`}
               >
-                <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.deadlineAlerts ? 'translate-x-4' : 'translate-x-0'}`} />
+                <div className={`bg-white dark:bg-[#1A2B24] w-4 h-4 rounded-full shadow-md transform transition-transform ${notifications.deadlineAlerts ? 'translate-x-4' : 'translate-x-0'}`} />
               </button>
             </div>
 
@@ -597,64 +597,64 @@ export default function SettingsPage() {
       {/* TAB 3: Privacy */}
       {activeTab === 'privacy' && (
         <div className="space-y-6">
-          <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DCE7E2] shadow-sm space-y-6">
+          <div className="bg-white dark:bg-[#1A2B24] rounded-2xl p-6 sm:p-8 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm space-y-6">
             <div className="flex items-center space-x-2">
-              <Shield className="w-4 h-4 text-[#3F795F]" />
-              <h3 className="text-sm font-bold text-[#173A2C]">
+              <Shield className="w-4 h-4 text-[#3F795F] dark:text-[#78A98F]" />
+              <h3 className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">
                 Privacy &amp; Data Access Controls
               </h3>
             </div>
 
-            <div className="space-y-4 divide-y divide-[#DCE7E2]/60">
+            <div className="space-y-4 divide-y divide-[#DCE7E2] dark:divide-[#2D4A3E]/60">
               <div className="flex items-center justify-between pt-1">
                 <div>
-                  <p className="text-sm font-bold text-[#173A2C]">Share Transcripts with Department HOD</p>
-                  <p className="text-xs text-[#667875]">Allow department HOD to review full transcripts and MoM summaries</p>
+                  <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">Share Transcripts with Department HOD</p>
+                  <p className="text-xs text-[#667875] dark:text-[#8FA89C]">Allow department HOD to review full transcripts and MoM summaries</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => updatePrivacy('shareTranscripts')}
                   className={`w-10 h-6 flex items-center rounded-full p-1 transition-colors cursor-pointer ${privacy.shareTranscripts ? 'bg-[#3F795F]' : 'bg-[#DCE7E2]'}`}
                 >
-                  <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${privacy.shareTranscripts ? 'translate-x-4' : 'translate-x-0'}`} />
+                  <div className={`bg-white dark:bg-[#1A2B24] w-4 h-4 rounded-full shadow-md transform transition-transform ${privacy.shareTranscripts ? 'translate-x-4' : 'translate-x-0'}`} />
                 </button>
               </div>
 
               <div className="flex items-center justify-between pt-4">
                 <div>
-                  <p className="text-sm font-bold text-[#173A2C]">Institutional Faculty Directory Profile</p>
-                  <p className="text-xs text-[#667875]">Show profile information in the institution faculty directory</p>
+                  <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">Institutional Faculty Directory Profile</p>
+                  <p className="text-xs text-[#667875] dark:text-[#8FA89C]">Show profile information in the institution faculty directory</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => updatePrivacy('publicProfile')}
                   className={`w-10 h-6 flex items-center rounded-full p-1 transition-colors cursor-pointer ${privacy.publicProfile ? 'bg-[#3F795F]' : 'bg-[#DCE7E2]'}`}
                 >
-                  <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${privacy.publicProfile ? 'translate-x-4' : 'translate-x-0'}`} />
+                  <div className={`bg-white dark:bg-[#1A2B24] w-4 h-4 rounded-full shadow-md transform transition-transform ${privacy.publicProfile ? 'translate-x-4' : 'translate-x-0'}`} />
                 </button>
               </div>
 
               <div className="flex items-center justify-between pt-4">
                 <div>
-                  <p className="text-sm font-bold text-[#173A2C]">Academic Intelligence Analytics</p>
-                  <p className="text-xs text-[#667875]">Improve transcription accuracy with anonymized institutional vocabulary</p>
+                  <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">Academic Intelligence Analytics</p>
+                  <p className="text-xs text-[#667875] dark:text-[#8FA89C]">Improve transcription accuracy with anonymized institutional vocabulary</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => updatePrivacy('usageAnalytics')}
                   className={`w-10 h-6 flex items-center rounded-full p-1 transition-colors cursor-pointer ${privacy.usageAnalytics ? 'bg-[#3F795F]' : 'bg-[#DCE7E2]'}`}
                 >
-                  <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${privacy.usageAnalytics ? 'translate-x-4' : 'translate-x-0'}`} />
+                  <div className={`bg-white dark:bg-[#1A2B24] w-4 h-4 rounded-full shadow-md transform transition-transform ${privacy.usageAnalytics ? 'translate-x-4' : 'translate-x-0'}`} />
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DCE7E2] shadow-sm space-y-4">
-            <h3 className="text-sm font-bold text-[#173A2C]">
+          <div className="bg-white dark:bg-[#1A2B24] rounded-2xl p-6 sm:p-8 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm space-y-4">
+            <h3 className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">
               Data Management &amp; Export
             </h3>
-            <p className="text-xs text-[#667875] leading-relaxed">
+            <p className="text-xs text-[#667875] dark:text-[#8FA89C] leading-relaxed">
               Export all your recorded meetings, MoM summaries, action items, and transcripts as a structured JSON file.
             </p>
 
@@ -664,14 +664,14 @@ export default function SettingsPage() {
                 onClick={handleExportData}
                 variant="outline"
                 isLoading={exportLoading}
-                icon={<Download className="w-4 h-4 text-[#3F795F]" />}
+                icon={<Download className="w-4 h-4 text-[#3F795F] dark:text-[#78A98F]" />}
               >
                 Export My Meeting Data (JSON)
               </AnimatedButton>
 
               {exportSuccess && (
-                <span className="text-xs font-bold text-[#173A2C] bg-[#D4E9DF] border border-[#78A98F]/40 px-3 py-1.5 rounded-xl flex items-center space-x-1.5 animate-scale-in">
-                  <Check className="w-3.5 h-3.5 text-[#3F795F]" />
+                <span className="text-xs font-bold text-[#173A2C] dark:text-[#E8F0EC] bg-[#D4E9DF] dark:bg-[#243D33] border border-[#78A98F]/40 px-3 py-1.5 rounded-xl flex items-center space-x-1.5 animate-scale-in">
+                  <Check className="w-3.5 h-3.5 text-[#3F795F] dark:text-[#78A98F]" />
                   <span>Download completed!</span>
                 </span>
               )}
@@ -685,15 +685,15 @@ export default function SettingsPage() {
         <div className="space-y-3">
           
           {/* Google Calendar */}
-          <div className="bg-white rounded-2xl p-5 border border-[#DCE7E2] shadow-xs flex items-center justify-between">
+          <div className="bg-white dark:bg-[#1A2B24] rounded-2xl p-5 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-xs flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-xs flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950/30 text-rose-600 flex items-center justify-center font-bold text-xs flex-shrink-0">
                 17
               </div>
               <div>
-                <p className="text-sm font-bold text-[#173A2C]">Google Calendar</p>
-                <p className="text-xs text-[#667875]">Sync meeting schedules and deadlines to your Google Calendar.</p>
-                <p className="text-[11px] text-[#3F795F] font-semibold mt-0.5">
+                <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">Google Calendar</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C]">Sync meeting schedules and deadlines to your Google Calendar.</p>
+                <p className="text-[11px] text-[#3F795F] dark:text-[#78A98F] font-semibold mt-0.5">
                   {integrations.googleCalendar ? `Connected: ${profile.email || 'institutional account'}` : 'Not connected'}
                 </p>
               </div>
@@ -703,7 +703,7 @@ export default function SettingsPage() {
               onClick={() => updateIntegration('googleCalendar')}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
                 integrations.googleCalendar
-                  ? 'border border-rose-200 hover:bg-rose-50 text-rose-600'
+                  ? 'border border-rose-200 hover:bg-rose-50 dark:bg-rose-950/30 text-rose-600'
                   : 'bg-[#3F795F] text-white hover:bg-[#2F5E4A]'
               }`}
             >
@@ -712,14 +712,14 @@ export default function SettingsPage() {
           </div>
 
           {/* Google Meet */}
-          <div className="bg-white rounded-2xl p-5 border border-[#DCE7E2] shadow-xs flex items-center justify-between">
+          <div className="bg-white dark:bg-[#1A2B24] rounded-2xl p-5 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-xs flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 rounded-xl bg-[#E4F2F4] text-[#367C88] flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0] flex items-center justify-center flex-shrink-0">
                 <Video className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-bold text-[#173A2C]">Google Meet</p>
-                <p className="text-xs text-[#667875]">Auto-import recordings from Google Meet sessions.</p>
+                <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">Google Meet</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C]">Auto-import recordings from Google Meet sessions.</p>
               </div>
             </div>
             <button
@@ -727,8 +727,8 @@ export default function SettingsPage() {
               onClick={() => updateIntegration('googleMeet')}
               className={`px-4 py-1.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
                 integrations.googleMeet
-                  ? 'bg-[#D4E9DF] text-[#173A2C] font-bold border border-[#78A98F]/40'
-                  : 'bg-white hover:bg-[#F5FAF8] border border-[#DCE7E2] text-[#173A2C]'
+                  ? 'bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC] font-bold border border-[#78A98F]/40'
+                  : 'bg-white dark:bg-[#1A2B24] hover:bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] text-[#173A2C] dark:text-[#E8F0EC]'
               }`}
             >
               {integrations.googleMeet ? 'Connected' : 'Connect'}
@@ -736,14 +736,14 @@ export default function SettingsPage() {
           </div>
 
           {/* Microsoft Teams */}
-          <div className="bg-white rounded-2xl p-5 border border-[#DCE7E2] shadow-xs flex items-center justify-between">
+          <div className="bg-white dark:bg-[#1A2B24] rounded-2xl p-5 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-xs flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 rounded-xl bg-[#E4F2F4] text-[#367C88] flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0] flex items-center justify-center flex-shrink-0">
                 <Briefcase className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-bold text-[#173A2C]">Microsoft Teams</p>
-                <p className="text-xs text-[#667875]">Connect Teams meetings for automatic transcript import.</p>
+                <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">Microsoft Teams</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C]">Connect Teams meetings for automatic transcript import.</p>
               </div>
             </div>
             <button
@@ -751,8 +751,8 @@ export default function SettingsPage() {
               onClick={() => updateIntegration('teams')}
               className={`px-4 py-1.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
                 integrations.teams
-                  ? 'bg-[#D4E9DF] text-[#173A2C] font-bold border border-[#78A98F]/40'
-                  : 'bg-white hover:bg-[#F5FAF8] border border-[#DCE7E2] text-[#173A2C]'
+                  ? 'bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC] font-bold border border-[#78A98F]/40'
+                  : 'bg-white dark:bg-[#1A2B24] hover:bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] text-[#173A2C] dark:text-[#E8F0EC]'
               }`}
             >
               {integrations.teams ? 'Connected' : 'Connect'}
@@ -760,14 +760,14 @@ export default function SettingsPage() {
           </div>
 
           {/* Zoom */}
-          <div className="bg-white rounded-2xl p-5 border border-[#DCE7E2] shadow-xs flex items-center justify-between">
+          <div className="bg-white dark:bg-[#1A2B24] rounded-2xl p-5 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-xs flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 rounded-xl bg-[#E4F2F4] text-[#367C88] flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0] flex items-center justify-center flex-shrink-0">
                 <Mic className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-bold text-[#173A2C]">Zoom</p>
-                <p className="text-xs text-[#667875]">Pull recordings directly from Zoom cloud storage.</p>
+                <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">Zoom</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C]">Pull recordings directly from Zoom cloud storage.</p>
               </div>
             </div>
             <button
@@ -775,8 +775,8 @@ export default function SettingsPage() {
               onClick={() => updateIntegration('zoom')}
               className={`px-4 py-1.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
                 integrations.zoom
-                  ? 'bg-[#D4E9DF] text-[#173A2C] font-bold border border-[#78A98F]/40'
-                  : 'bg-white hover:bg-[#F5FAF8] border border-[#DCE7E2] text-[#173A2C]'
+                  ? 'bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC] font-bold border border-[#78A98F]/40'
+                  : 'bg-white dark:bg-[#1A2B24] hover:bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] text-[#173A2C] dark:text-[#E8F0EC]'
               }`}
             >
               {integrations.zoom ? 'Connected' : 'Connect'}
@@ -784,15 +784,15 @@ export default function SettingsPage() {
           </div>
 
           {/* Slack */}
-          <div className="bg-white rounded-2xl p-5 border border-[#DCE7E2] shadow-xs flex items-center justify-between">
+          <div className="bg-white dark:bg-[#1A2B24] rounded-2xl p-5 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-xs flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 rounded-xl bg-[#E4F2F4] text-[#367C88] flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0] flex items-center justify-center flex-shrink-0">
                 <MessageSquare className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-bold text-[#173A2C]">Slack</p>
-                <p className="text-xs text-[#667875]">Send meeting summaries and action item reminders to Slack channels.</p>
-                <p className="text-[11px] text-[#3F795F] font-semibold mt-0.5">
+                <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">Slack</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C]">Send meeting summaries and action item reminders to Slack channels.</p>
+                <p className="text-[11px] text-[#3F795F] dark:text-[#78A98F] font-semibold mt-0.5">
                   {integrations.slack ? 'Connected: #faculty-announcements' : 'Not connected'}
                 </p>
               </div>
@@ -802,7 +802,7 @@ export default function SettingsPage() {
               onClick={() => updateIntegration('slack')}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
                 integrations.slack
-                  ? 'border border-rose-200 hover:bg-rose-50 text-rose-600'
+                  ? 'border border-rose-200 hover:bg-rose-50 dark:bg-rose-950/30 text-rose-600'
                   : 'bg-[#3F795F] text-white hover:bg-[#2F5E4A]'
               }`}
             >

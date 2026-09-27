@@ -18,15 +18,15 @@ export default function Toast({
   onClose,
 }: ToastMessage) {
   const typeStyles = {
-    success: 'bg-[#D4E9DF] border-[#78A98F] text-[#173A2C]',
-    info: 'bg-[#E4F2F4] border-[#B9DDE3] text-[#132F34]',
+    success: 'bg-[#D4E9DF] dark:bg-[#243D33] border-[#78A98F] text-[#173A2C] dark:text-[#E8F0EC]',
+    info: 'bg-[#E4F2F4] dark:bg-[#1A3A3F] border-[#B9DDE3] dark:border-[#2A5A63] text-[#132F34]',
     error: 'bg-rose-50 border-rose-200 text-rose-900',
     warning: 'bg-amber-50 border-amber-200 text-amber-900',
   };
 
   const icons = {
-    success: <CheckCircle2 className="w-4 h-4 text-[#3F795F] flex-shrink-0" />,
-    info: <Info className="w-4 h-4 text-[#367C88] flex-shrink-0" />,
+    success: <CheckCircle2 className="w-4 h-4 text-[#3F795F] dark:text-[#78A98F] flex-shrink-0" />,
+    info: <Info className="w-4 h-4 text-[#367C88] dark:text-[#4DA3B0] flex-shrink-0" />,
     error: <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />,
     warning: <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />,
   };

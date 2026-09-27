@@ -53,7 +53,7 @@ export function BarChartVisualizer({
                 />
               )}
             </div>
-            <span className="text-[11px] font-semibold text-[#667875] mt-2 truncate w-full text-center">
+            <span className="text-[11px] font-semibold text-[#667875] dark:text-[#8FA89C] mt-2 truncate w-full text-center">
               {item.label}
             </span>
           </div>
@@ -109,8 +109,8 @@ export function DonutStatusMeter({
       </svg>
       {/* Center Label */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <span className="text-xl font-black text-[#173A2C] tracking-tight">{percentage}%</span>
-        <span className="text-[9px] font-bold text-[#667875] uppercase">{label}</span>
+        <span className="text-xl font-black text-[#173A2C] dark:text-[#E8F0EC] tracking-tight">{percentage}%</span>
+        <span className="text-[9px] font-bold text-[#667875] dark:text-[#8FA89C] uppercase">{label}</span>
       </div>
     </div>
   );

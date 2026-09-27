@@ -62,22 +62,22 @@ export default function HodDepartmentOverviewPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#D4E9DF] text-[#173A2C] uppercase tracking-wider">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC] uppercase tracking-wider">
               Department Governance
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#173A2C] tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#173A2C] dark:text-[#E8F0EC] tracking-tight mt-1">
             Good Morning, {displayName} 👋
           </h1>
-          <p className="text-sm text-[#667875] mt-1 font-medium">
-            Executive oversight &amp; academic productivity for <span className="font-bold text-[#173A2C]">{departmentName}</span>.
+          <p className="text-sm text-[#667875] dark:text-[#8FA89C] mt-1 font-medium">
+            Executive oversight &amp; academic productivity for <span className="font-bold text-[#173A2C] dark:text-[#E8F0EC]">{departmentName}</span>.
           </p>
         </div>
 
         <div className="flex items-center space-x-2.5">
           <Link
             href="/hod/schedule"
-            className="btn-interactive inline-flex items-center space-x-2 px-4 py-2.5 bg-white border border-[#DCE7E2] hover:bg-[#F5FAF8] text-[#173A2C] text-sm font-bold rounded-xl shadow-xs"
+            className="btn-interactive inline-flex items-center space-x-2 px-4 py-2.5 bg-white dark:bg-[#1A2B24] border border-[#DCE7E2] dark:border-[#2D4A3E] hover:bg-[#F5FAF8] dark:bg-[#0F1A15] text-[#173A2C] dark:text-[#E8F0EC] text-sm font-bold rounded-xl shadow-xs"
           >
             <Calendar className="w-4 h-4 text-[#78A98F]" />
             <span>Schedule Meeting</span>
@@ -128,18 +128,18 @@ export default function HodDepartmentOverviewPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Left: Faculty Action Completion */}
-        <div className="lg:col-span-6 bg-white rounded-2xl border border-[#DCE7E2] p-6 shadow-sm card-interactive flex flex-col justify-between">
+        <div className="lg:col-span-6 bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] p-6 shadow-sm card-interactive flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-5">
               <div>
-                <h2 className="text-base font-bold text-[#173A2C]">
+                <h2 className="text-base font-bold text-[#173A2C] dark:text-[#E8F0EC]">
                   Faculty Action Completion
                 </h2>
-                <p className="text-xs text-[#667875] mt-0.5">Individual task resolution efficiency</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-0.5">Individual task resolution efficiency</p>
               </div>
               <Link 
                 href="/hod/faculty"
-                className="text-xs font-bold text-[#3F795F] hover:text-[#173A2C] flex items-center space-x-1"
+                className="text-xs font-bold text-[#3F795F] dark:text-[#78A98F] hover:text-[#173A2C] dark:text-[#E8F0EC] flex items-center space-x-1"
               >
                 <span>View Details</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -151,8 +151,8 @@ export default function HodDepartmentOverviewPage() {
                 {facultyCompletions.map((item, idx) => (
                   <div key={idx} className="space-y-1.5">
                     <div className="flex items-center justify-between text-xs font-semibold">
-                      <span className="text-[#173A2C]">{item.name}</span>
-                      <span className="text-[#3F795F] font-bold">{item.rate}%</span>
+                      <span className="text-[#173A2C] dark:text-[#E8F0EC]">{item.name}</span>
+                      <span className="text-[#3F795F] dark:text-[#78A98F] font-bold">{item.rate}%</span>
                     </div>
                     <div className="w-full bg-[#EDF5F2] h-2.5 rounded-full overflow-hidden">
                       <div
@@ -164,7 +164,7 @@ export default function HodDepartmentOverviewPage() {
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-[#667875] py-8 text-center">
+              <p className="text-xs text-[#667875] dark:text-[#8FA89C] py-8 text-center">
                 No faculty task completions recorded yet.
               </p>
             )}
@@ -172,16 +172,16 @@ export default function HodDepartmentOverviewPage() {
         </div>
 
         {/* Right: Department Meetings Trend Visualizer */}
-        <div className="lg:col-span-6 bg-white rounded-2xl border border-[#DCE7E2] p-6 shadow-sm card-interactive flex flex-col justify-between">
+        <div className="lg:col-span-6 bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] p-6 shadow-sm card-interactive flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-2">
               <div>
-                <h2 className="text-base font-bold text-[#173A2C]">
+                <h2 className="text-base font-bold text-[#173A2C] dark:text-[#E8F0EC]">
                   Department Meetings Trend
                 </h2>
-                <p className="text-xs text-[#667875] mt-0.5">Weekly meeting cadence and duration</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-0.5">Weekly meeting cadence and duration</p>
               </div>
-              <span className="text-xs font-bold text-[#367C88] bg-[#E4F2F4] px-2.5 py-1 rounded-full">
+              <span className="text-xs font-bold text-[#367C88] dark:text-[#4DA3B0] bg-[#E4F2F4] dark:bg-[#1A3A3F] px-2.5 py-1 rounded-full">
                 Weekly Cadence
               </span>
             </div>
@@ -194,20 +194,20 @@ export default function HodDepartmentOverviewPage() {
                 secondaryColor="#B9DDE3"
               />
             ) : (
-              <p className="text-xs text-[#667875] py-12 text-center">
+              <p className="text-xs text-[#667875] dark:text-[#8FA89C] py-12 text-center">
                 No weekly meetings trend data available yet.
               </p>
             )}
           </div>
 
-          <div className="pt-4 mt-4 border-t border-[#DCE7E2] grid grid-cols-2 text-center divide-x divide-[#DCE7E2]">
+          <div className="pt-4 mt-4 border-t border-[#DCE7E2] dark:border-[#2D4A3E] grid grid-cols-2 text-center divide-x divide-[#DCE7E2] dark:divide-[#2D4A3E]">
             <div>
-              <p className="text-base font-black text-[#173A2C]">{stats?.avg_duration || '0m'}</p>
-              <p className="text-xs text-[#667875] font-semibold mt-0.5">Avg Duration</p>
+              <p className="text-base font-black text-[#173A2C] dark:text-[#E8F0EC]">{stats?.avg_duration || '0m'}</p>
+              <p className="text-xs text-[#667875] dark:text-[#8FA89C] font-semibold mt-0.5">Avg Duration</p>
             </div>
             <div>
-              <p className="text-base font-black text-[#173A2C]">{stats?.avg_participants || 0}</p>
-              <p className="text-xs text-[#667875] font-semibold mt-0.5">Avg Attendees</p>
+              <p className="text-base font-black text-[#173A2C] dark:text-[#E8F0EC]">{stats?.avg_participants || 0}</p>
+              <p className="text-xs text-[#667875] dark:text-[#8FA89C] font-semibold mt-0.5">Avg Attendees</p>
             </div>
           </div>
         </div>
@@ -215,17 +215,17 @@ export default function HodDepartmentOverviewPage() {
       </div>
 
       {/* Bottom Section: Urgent Department Actions */}
-      <div className="bg-white rounded-2xl border border-[#DCE7E2] p-6 shadow-sm card-interactive">
+      <div className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] p-6 shadow-sm card-interactive">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-base font-bold text-[#173A2C]">
+            <h2 className="text-base font-bold text-[#173A2C] dark:text-[#E8F0EC]">
               Urgent Department Actions
             </h2>
-            <p className="text-xs text-[#667875] mt-0.5">High-priority tasks requiring HOD oversight</p>
+            <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-0.5">High-priority tasks requiring HOD oversight</p>
           </div>
           <Link
             href="/hod/action-tracker"
-            className="text-xs font-bold text-[#3F795F] hover:text-[#173A2C] flex items-center space-x-1 transition-colors"
+            className="text-xs font-bold text-[#3F795F] dark:text-[#78A98F] hover:text-[#173A2C] dark:text-[#E8F0EC] flex items-center space-x-1 transition-colors"
           >
             <span>View All Tasks</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -233,29 +233,29 @@ export default function HodDepartmentOverviewPage() {
         </div>
 
         {urgentActions.length > 0 ? (
-          <div className="divide-y divide-[#DCE7E2]/70">
+          <div className="divide-y divide-[#DCE7E2] dark:divide-[#2D4A3E]/70">
             {urgentActions.map((action, idx) => (
               <div
                 key={idx}
-                className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[#F5FAF8] px-2 rounded-xl transition-colors"
+                className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[#F5FAF8] dark:bg-[#0F1A15] px-2 rounded-xl transition-colors"
               >
                 <div className="space-y-1">
-                  <p className="text-sm font-bold text-[#173A2C]">
+                  <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">
                     {action.task}
                   </p>
-                  <p className="text-xs text-[#667875]">
-                    Assigned to: <span className="font-semibold text-[#173A2C]">{action.assignedTo}</span> • {action.deadline}
+                  <p className="text-xs text-[#667875] dark:text-[#8FA89C]">
+                    Assigned to: <span className="font-semibold text-[#173A2C] dark:text-[#E8F0EC]">{action.assignedTo}</span> • {action.deadline}
                   </p>
                 </div>
 
-                <span className="inline-flex items-center px-3 py-1 bg-rose-50 text-rose-700 rounded-full text-xs font-bold self-start sm:self-center">
+                <span className="inline-flex items-center px-3 py-1 bg-rose-50 dark:bg-rose-950/30 text-rose-700 rounded-full text-xs font-bold self-start sm:self-center">
                   {action.priority}
                 </span>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-xs text-[#667875] py-6 text-center">
+          <p className="text-xs text-[#667875] dark:text-[#8FA89C] py-6 text-center">
             No urgent department action items pending at this time.
           </p>
         )}

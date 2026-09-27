@@ -97,14 +97,14 @@ export default function DashboardPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#E4F2F4] text-[#367C88] uppercase tracking-wider">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0] uppercase tracking-wider">
               Faculty Workspace
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#173A2C] tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#173A2C] dark:text-[#E8F0EC] tracking-tight mt-1">
             Good Morning, {displayName} 👋
           </h1>
-          <p className="text-sm text-[#667875] mt-1 font-medium">
+          <p className="text-sm text-[#667875] dark:text-[#8FA89C] mt-1 font-medium">
             Here is your academic intelligence overview, pending tasks, and recent sessions.
           </p>
         </div>
@@ -154,18 +154,18 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Left: Meeting Activity Trend */}
-        <div className="lg:col-span-8 bg-white rounded-2xl p-6 border border-[#DCE7E2] shadow-sm card-interactive flex flex-col justify-between">
+        <div className="lg:col-span-8 bg-white dark:bg-[#1A2B24] rounded-2xl p-6 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm card-interactive flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-base font-bold text-[#173A2C] flex items-center space-x-2">
+              <h3 className="text-base font-bold text-[#173A2C] dark:text-[#E8F0EC] flex items-center space-x-2">
                 <TrendingUp className="w-4 h-4 text-[#78A98F]" />
                 <span>Meeting Activity &amp; Cadence</span>
               </h3>
-              <p className="text-xs text-[#667875] mt-0.5">
+              <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-0.5">
                 Session volume recorded across recent calendar intervals
               </p>
             </div>
-            <span className="text-xs font-bold text-[#3F795F] bg-[#D4E9DF] px-2.5 py-1 rounded-full">
+            <span className="text-xs font-bold text-[#3F795F] dark:text-[#78A98F] bg-[#D4E9DF] dark:bg-[#243D33] px-2.5 py-1 rounded-full">
               Live Cadence
             </span>
           </div>
@@ -179,13 +179,13 @@ export default function DashboardPage() {
         </div>
 
         {/* Right: Action Items Health */}
-        <div className="lg:col-span-4 bg-white rounded-2xl p-6 border border-[#DCE7E2] shadow-sm card-interactive flex flex-col items-center justify-between text-center">
+        <div className="lg:col-span-4 bg-white dark:bg-[#1A2B24] rounded-2xl p-6 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm card-interactive flex flex-col items-center justify-between text-center">
           <div className="w-full text-left">
-            <h3 className="text-base font-bold text-[#173A2C] flex items-center space-x-2">
-              <CheckSquare className="w-4 h-4 text-[#367C88]" />
+            <h3 className="text-base font-bold text-[#173A2C] dark:text-[#E8F0EC] flex items-center space-x-2">
+              <CheckSquare className="w-4 h-4 text-[#367C88] dark:text-[#4DA3B0]" />
               <span>Action Health</span>
             </h3>
-            <p className="text-xs text-[#667875] mt-0.5">Completed vs active tasks</p>
+            <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-0.5">Completed vs active tasks</p>
           </div>
 
           <div className="my-2">
@@ -197,14 +197,14 @@ export default function DashboardPage() {
             />
           </div>
 
-          <div className="w-full grid grid-cols-2 gap-2 text-xs pt-3 border-t border-[#DCE7E2]">
-            <div className="p-2 rounded-xl bg-[#F5FAF8]">
-              <span className="block font-black text-[#173A2C]">{completedActions}</span>
-              <span className="text-[10px] text-[#667875] font-semibold uppercase">Done</span>
+          <div className="w-full grid grid-cols-2 gap-2 text-xs pt-3 border-t border-[#DCE7E2] dark:border-[#2D4A3E]">
+            <div className="p-2 rounded-xl bg-[#F5FAF8] dark:bg-[#0F1A15]">
+              <span className="block font-black text-[#173A2C] dark:text-[#E8F0EC]">{completedActions}</span>
+              <span className="text-[10px] text-[#667875] dark:text-[#8FA89C] font-semibold uppercase">Done</span>
             </div>
-            <div className="p-2 rounded-xl bg-[#E4F2F4]">
-              <span className="block font-black text-[#367C88]">{pendingActions}</span>
-              <span className="text-[10px] text-[#667875] font-semibold uppercase">Pending</span>
+            <div className="p-2 rounded-xl bg-[#E4F2F4] dark:bg-[#1A3A3F]">
+              <span className="block font-black text-[#367C88] dark:text-[#4DA3B0]">{pendingActions}</span>
+              <span className="text-[10px] text-[#667875] dark:text-[#8FA89C] font-semibold uppercase">Pending</span>
             </div>
           </div>
         </div>
@@ -212,18 +212,18 @@ export default function DashboardPage() {
       </div>
 
       {/* Row 3: Recent Meetings List */}
-      <div className="bg-white rounded-2xl p-6 border border-[#DCE7E2] shadow-sm card-interactive space-y-5">
+      <div className="bg-white dark:bg-[#1A2B24] rounded-2xl p-6 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm card-interactive space-y-5">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-base font-bold text-[#173A2C] tracking-tight flex items-center space-x-2">
+            <h2 className="text-base font-bold text-[#173A2C] dark:text-[#E8F0EC] tracking-tight flex items-center space-x-2">
               <Clock className="w-4 h-4 text-[#78A98F]" />
               <span>Recent Academic Meetings</span>
             </h2>
-            <p className="text-xs text-[#667875] mt-0.5">Sessions with generated transcripts and action points</p>
+            <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-0.5">Sessions with generated transcripts and action points</p>
           </div>
           <Link
             href="/meetings"
-            className="text-xs font-bold text-[#3F795F] hover:text-[#173A2C] flex items-center space-x-1 transition-colors"
+            className="text-xs font-bold text-[#3F795F] dark:text-[#78A98F] hover:text-[#173A2C] dark:text-[#E8F0EC] flex items-center space-x-1 transition-colors"
           >
             <span>View All</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -231,7 +231,7 @@ export default function DashboardPage() {
         </div>
 
         {recentMeetings.length > 0 ? (
-          <div className="divide-y divide-[#DCE7E2]/70">
+          <div className="divide-y divide-[#DCE7E2] dark:divide-[#2D4A3E]/70">
             {recentMeetings.map((m: any) => (
               <div key={m.id} className="py-3.5 first:pt-0 last:pb-0 flex items-center justify-between">
                 <div className="flex items-center space-x-3.5">
@@ -241,26 +241,26 @@ export default function DashboardPage() {
                   <div>
                     <Link
                       href={`/meetings/${m.id}`}
-                      className="text-sm font-bold text-[#173A2C] hover:text-[#3F795F] transition-colors block"
+                      className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC] hover:text-[#3F795F] dark:text-[#78A98F] transition-colors block"
                     >
                       {m.title}
                     </Link>
-                    <p className="text-xs text-[#667875] mt-0.5">
+                    <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-0.5">
                       {new Date(m.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} • {m.participant_count || 1} Participants
                     </p>
                   </div>
                 </div>
-                <span className="px-3 py-1 bg-[#D4E9DF] text-[#173A2C] rounded-full text-xs font-bold">
+                <span className="px-3 py-1 bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC] rounded-full text-xs font-bold">
                   {m.status || 'Analysis Complete'}
                 </span>
               </div>
             ))}
           </div>
         ) : (
-          <div className="py-10 text-center text-xs text-[#667875]">
+          <div className="py-10 text-center text-xs text-[#667875] dark:text-[#8FA89C]">
             <Video className="w-8 h-8 mx-auto text-[#B9DDE3] mb-2" />
-            <p className="font-bold text-[#173A2C]">No meetings analyzed yet</p>
-            <p className="text-[#667875] mt-0.5">Start a live meeting or upload an audio recording to begin.</p>
+            <p className="font-bold text-[#173A2C] dark:text-[#E8F0EC]">No meetings analyzed yet</p>
+            <p className="text-[#667875] dark:text-[#8FA89C] mt-0.5">Start a live meeting or upload an audio recording to begin.</p>
           </div>
         )}
       </div>
@@ -269,12 +269,12 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Left: Upcoming Events */}
-        <div className="bg-white rounded-2xl p-6 border border-[#DCE7E2] shadow-sm card-interactive space-y-4">
+        <div className="bg-white dark:bg-[#1A2B24] rounded-2xl p-6 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm card-interactive space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-base font-bold text-[#173A2C] tracking-tight">
+            <h3 className="text-base font-bold text-[#173A2C] dark:text-[#E8F0EC] tracking-tight">
               Upcoming This Week
             </h3>
-            <Link href="/schedule" className="text-xs font-semibold text-[#667875] hover:text-[#173A2C]">
+            <Link href="/schedule" className="text-xs font-semibold text-[#667875] dark:text-[#8FA89C] hover:text-[#173A2C] dark:text-[#E8F0EC]">
               Calendar
             </Link>
           </div>
@@ -282,37 +282,37 @@ export default function DashboardPage() {
           {upcomingEvents.length > 0 ? (
             <div className="space-y-3">
               {upcomingEvents.map((evt: any, i: number) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-[#F5FAF8] border border-[#DCE7E2]/50 hover:bg-[#EDF5F2] transition-colors">
+                <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E]/50 hover:bg-[#EDF5F2] transition-colors">
                   <div>
-                    <p className="text-sm font-bold text-[#173A2C]">
+                    <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">
                       {evt.title}
                     </p>
-                    <p className="text-xs text-[#667875] mt-0.5 font-medium">
+                    <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-0.5 font-medium">
                       {evt.date_info}
                     </p>
                   </div>
-                  <span className="px-2.5 py-0.5 bg-[#D4E9DF] text-[#173A2C] rounded-full text-xs font-bold">
+                  <span className="px-2.5 py-0.5 bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC] rounded-full text-xs font-bold">
                     {evt.type || 'Event'}
                   </span>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="py-8 text-center text-xs text-[#667875]">
+            <div className="py-8 text-center text-xs text-[#667875] dark:text-[#8FA89C]">
               <Calendar className="w-7 h-7 mx-auto text-[#B9DDE3] mb-2" />
-              <p className="font-bold text-[#173A2C]">No upcoming events scheduled</p>
-              <p className="text-[#667875] mt-0.5">Scheduled meetings and deadlines will show up here.</p>
+              <p className="font-bold text-[#173A2C] dark:text-[#E8F0EC]">No upcoming events scheduled</p>
+              <p className="text-[#667875] dark:text-[#8FA89C] mt-0.5">Scheduled meetings and deadlines will show up here.</p>
             </div>
           )}
         </div>
 
         {/* Right: Priority Action Items */}
-        <div className="bg-white rounded-2xl p-6 border border-[#DCE7E2] shadow-sm card-interactive space-y-4">
+        <div className="bg-white dark:bg-[#1A2B24] rounded-2xl p-6 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm card-interactive space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-base font-bold text-[#173A2C] tracking-tight">
+            <h3 className="text-base font-bold text-[#173A2C] dark:text-[#E8F0EC] tracking-tight">
               Priority Action Items
             </h3>
-            <Link href="/action-items" className="text-xs font-semibold text-[#667875] hover:text-[#173A2C]">
+            <Link href="/action-items" className="text-xs font-semibold text-[#667875] dark:text-[#8FA89C] hover:text-[#173A2C] dark:text-[#E8F0EC]">
               All Tasks
             </Link>
           </div>
@@ -322,22 +322,22 @@ export default function DashboardPage() {
               {actionItems.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between p-3 rounded-xl bg-[#F5FAF8] border border-[#DCE7E2]/50 hover:bg-[#EDF5F2] transition-colors"
+                  className="flex items-center justify-between p-3 rounded-xl bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E]/50 hover:bg-[#EDF5F2] transition-colors"
                 >
                   <div className="flex items-center space-x-3">
                     <input
                       type="checkbox"
                       checked={item.completed}
                       onChange={() => toggleAction(item.id)}
-                      className="w-4 h-4 rounded border-gray-300 text-[#78A98F] focus:ring-[#78A98F] cursor-pointer transition-transform duration-150 active:scale-90"
+                      className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-[#78A98F] focus:ring-[#78A98F] cursor-pointer transition-transform duration-150 active:scale-90"
                     />
-                    <span className={`text-sm font-medium transition-colors ${item.completed ? 'line-through text-gray-400' : 'text-[#173A2C]'}`}>
+                    <span className={`text-sm font-medium transition-colors ${item.completed ? 'line-through text-gray-400' : 'text-[#173A2C] dark:text-[#E8F0EC]'}`}>
                       {item.title}
                     </span>
                   </div>
 
                   <div className="flex items-center space-x-2.5 text-xs">
-                    <span className="text-[#667875] font-medium">{item.date}</span>
+                    <span className="text-[#667875] dark:text-[#8FA89C] font-medium">{item.date}</span>
                     <span className={`font-bold px-2 py-0.5 rounded text-[10px] uppercase ${item.priority === 'High' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800'}`}>
                       {item.priority}
                     </span>
@@ -346,10 +346,10 @@ export default function DashboardPage() {
               ))}
             </div>
           ) : (
-            <div className="py-8 text-center text-xs text-[#667875]">
+            <div className="py-8 text-center text-xs text-[#667875] dark:text-[#8FA89C]">
               <CheckSquare className="w-7 h-7 mx-auto text-[#B9DDE3] mb-2" />
-              <p className="font-bold text-[#173A2C]">No pending action items</p>
-              <p className="text-[#667875] mt-0.5">Tasks extracted from meetings will appear here.</p>
+              <p className="font-bold text-[#173A2C] dark:text-[#E8F0EC]">No pending action items</p>
+              <p className="text-[#667875] dark:text-[#8FA89C] mt-0.5">Tasks extracted from meetings will appear here.</p>
             </div>
           )}
         </div>

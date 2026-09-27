@@ -217,10 +217,10 @@ export default function LiveMeetingPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#173A2C]">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#173A2C] dark:text-[#E8F0EC]">
             Live Video Conferencing
           </h1>
-          <p className="text-sm text-[#667875] mt-1">
+          <p className="text-sm text-[#667875] dark:text-[#8FA89C] mt-1">
             Launch a Jitsi Meet session with real-time mic recording and automated MoM generation.
           </p>
         </div>
@@ -234,7 +234,7 @@ export default function LiveMeetingPage() {
             }`}>
               {micActive ? <Mic className="w-3.5 h-3.5" /> : <MicOff className="w-3.5 h-3.5" />}
               <span>{micActive ? 'REC' : 'NO MIC'}</span>
-              <span className="font-mono text-[11px] bg-white/70 px-1.5 py-0.5 rounded">
+              <span className="font-mono text-[11px] bg-white dark:bg-[#1A2B24]/70 px-1.5 py-0.5 rounded">
                 {formatTimer(elapsedSeconds)}
               </span>
             </div>
@@ -254,15 +254,15 @@ export default function LiveMeetingPage() {
 
       {/* Multi-Stage Pipeline Progress Overlay */}
       {isProcessingMoM && (
-        <div className="bg-white rounded-3xl border border-[#DCE7E2] p-8 text-center space-y-6 shadow-xl max-w-2xl mx-auto animate-fade-in">
+        <div className="bg-white dark:bg-[#1A2B24] rounded-3xl border border-[#DCE7E2] dark:border-[#2D4A3E] p-8 text-center space-y-6 shadow-xl max-w-2xl mx-auto animate-fade-in">
           <div className="relative w-16 h-16 mx-auto">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#D4E9DF] border-t-[#3F795F]"></div>
-            <Sparkles className="w-6 h-6 text-[#3F795F] absolute inset-0 m-auto animate-pulse" />
+            <Sparkles className="w-6 h-6 text-[#3F795F] dark:text-[#78A98F] absolute inset-0 m-auto animate-pulse" />
           </div>
 
           <div>
-            <h3 className="text-xl font-bold text-[#173A2C]">AI Processing Pipeline Active</h3>
-            <p className="text-xs text-[#3F795F] font-semibold mt-1 animate-pulse">{processingStatus}</p>
+            <h3 className="text-xl font-bold text-[#173A2C] dark:text-[#E8F0EC]">AI Processing Pipeline Active</h3>
+            <p className="text-xs text-[#3F795F] dark:text-[#78A98F] font-semibold mt-1 animate-pulse">{processingStatus}</p>
           </div>
 
           {/* Stepper Pipeline Indicator */}
@@ -276,15 +276,15 @@ export default function LiveMeetingPage() {
                     key={step}
                     className={`p-2 rounded-xl text-center border transition-all duration-300 flex flex-col items-center justify-between ${
                       isCompleted
-                        ? 'bg-[#D4E9DF]/70 border-[#78A98F] text-[#3F795F]'
+                        ? 'bg-[#D4E9DF] dark:bg-[#243D33]/70 border-[#78A98F] text-[#3F795F] dark:text-[#78A98F]'
                         : isCurrent
-                        ? 'bg-[#E4F2F4] border-[#367C88] text-[#367C88] shadow-xs scale-102 ring-1 ring-[#367C88]/30'
-                        : 'bg-[#F5FAF8] border-[#DCE7E2] text-[#667875]/50'
+                        ? 'bg-[#E4F2F4] dark:bg-[#1A3A3F] border-[#367C88] text-[#367C88] dark:text-[#4DA3B0] shadow-xs scale-102 ring-1 ring-[#367C88]/30'
+                        : 'bg-[#F5FAF8] dark:bg-[#0F1A15] border-[#DCE7E2] dark:border-[#2D4A3E] text-[#667875] dark:text-[#8FA89C]/50'
                     }`}
                   >
                     <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold mb-1">
                       {isCompleted ? (
-                        <Check className="w-3.5 h-3.5 stroke-[3] text-[#3F795F]" />
+                        <Check className="w-3.5 h-3.5 stroke-[3] text-[#3F795F] dark:text-[#78A98F]" />
                       ) : isCurrent ? (
                         <span className="w-2 h-2 rounded-full bg-[#367C88] animate-ping" />
                       ) : (
@@ -298,7 +298,7 @@ export default function LiveMeetingPage() {
             </div>
           </div>
 
-          <p className="text-[11px] text-[#667875]">
+          <p className="text-[11px] text-[#667875] dark:text-[#8FA89C]">
             Gemini 3.6 Flash engine is ingesting multimodal audio signals to formulate decisions, action assignments, and formal minutes.
           </p>
         </div>
@@ -306,20 +306,20 @@ export default function LiveMeetingPage() {
 
       {/* Setup Form */}
       {!isLive && !isProcessingMoM && (
-        <div className="bg-white rounded-3xl border border-[#DCE7E2] shadow-sm p-8 max-w-xl mx-auto space-y-6">
+        <div className="bg-white dark:bg-[#1A2B24] rounded-3xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm p-8 max-w-xl mx-auto space-y-6">
           <div className="text-center space-y-2">
-            <div className="w-16 h-16 bg-[#E4F2F4] text-[#367C88] rounded-2xl mx-auto flex items-center justify-center shadow-xs">
+            <div className="w-16 h-16 bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0] rounded-2xl mx-auto flex items-center justify-center shadow-xs">
               <Video className="w-8 h-8" />
             </div>
-            <h2 className="text-xl font-bold text-[#173A2C]">Start an Instant Academic Meeting</h2>
-            <p className="text-xs text-[#667875] max-w-sm mx-auto leading-relaxed">
+            <h2 className="text-xl font-bold text-[#173A2C] dark:text-[#E8F0EC]">Start an Instant Academic Meeting</h2>
+            <p className="text-xs text-[#667875] dark:text-[#8FA89C] max-w-sm mx-auto leading-relaxed">
               A private Jitsi Meet room opens in this page. Your microphone is captured in real time and converted into Minutes of Meeting when you conclude.
             </p>
           </div>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-[#173A2C] mb-1.5">
+              <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
                 Meeting Topic / Title <span className="text-red-500">*</span>
               </label>
               <input
@@ -327,17 +327,17 @@ export default function LiveMeetingPage() {
                 value={meetingTitle}
                 onChange={(e) => { setMeetingTitle(e.target.value); setTitleError(''); }}
                 placeholder="e.g. Curriculum Review, Faculty Sync, Research Discussion"
-                className={`w-full px-4 py-2.5 bg-white border rounded-xl text-sm text-[#173A2C] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all placeholder:text-[#667875]/60 ${
-                  titleError ? 'border-red-400' : 'border-[#DCE7E2]'
+                className={`w-full px-4 py-2.5 bg-white dark:bg-[#1A2B24] border rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all placeholder:text-[#667875] dark:text-[#8FA89C]/60 ${
+                  titleError ? 'border-red-400' : 'border-[#DCE7E2] dark:border-[#2D4A3E]'
                 }`}
               />
               {titleError && <p className="text-[11px] text-red-500 mt-1">{titleError}</p>}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#173A2C] mb-1.5 flex items-center justify-between">
+              <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5 flex items-center justify-between">
                 <span>Attendees (Optional)</span>
-                <span className="text-[10px] bg-[#D4E9DF] text-[#3F795F] font-bold px-2 py-0.5 rounded-full">
+                <span className="text-[10px] bg-[#D4E9DF] dark:bg-[#243D33] text-[#3F795F] dark:text-[#78A98F] font-bold px-2 py-0.5 rounded-full">
                   Helps Speaker Mapping
                 </span>
               </label>
@@ -346,15 +346,15 @@ export default function LiveMeetingPage() {
                 value={attendeeNames}
                 onChange={(e) => setAttendeeNames(e.target.value)}
                 placeholder="Comma-separated names, e.g. Prof. Sharma, Dr. Mehta"
-                className="w-full px-4 py-2.5 bg-white border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all placeholder:text-[#667875]/60"
+                className="w-full px-4 py-2.5 bg-white dark:bg-[#1A2B24] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all placeholder:text-[#667875] dark:text-[#8FA89C]/60"
               />
-              <p className="text-[11px] text-[#667875] mt-1">
+              <p className="text-[11px] text-[#667875] dark:text-[#8FA89C] mt-1">
                 Leave blank — Gemini will auto-detect speakers from audio diarization.
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#173A2C] mb-1.5">
+              <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
                 Share Link with Attendees
               </label>
               <div className="flex gap-2">
@@ -362,7 +362,7 @@ export default function LiveMeetingPage() {
                   type="text"
                   readOnly
                   value={jitsiDirectLink}
-                  className="flex-1 px-3 py-2 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-xs text-[#667875] outline-none font-mono truncate"
+                  className="flex-1 px-3 py-2 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-xs text-[#667875] dark:text-[#8FA89C] outline-none font-mono truncate"
                 />
                 <button
                   type="button"
@@ -371,20 +371,20 @@ export default function LiveMeetingPage() {
                     setCopied(true);
                     setTimeout(() => setCopied(false), 2000);
                   }}
-                  className="px-3.5 py-2 bg-white hover:bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-xs font-semibold text-[#173A2C] flex items-center space-x-1 cursor-pointer flex-shrink-0 transition-colors shadow-2xs"
+                  className="px-3.5 py-2 bg-white dark:bg-[#1A2B24] hover:bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] flex items-center space-x-1 cursor-pointer flex-shrink-0 transition-colors shadow-2xs"
                 >
-                  {copied ? <Check className="w-3.5 h-3.5 text-[#3F795F]" /> : <Copy className="w-3.5 h-3.5 text-[#667875]" />}
+                  {copied ? <Check className="w-3.5 h-3.5 text-[#3F795F] dark:text-[#78A98F]" /> : <Copy className="w-3.5 h-3.5 text-[#667875] dark:text-[#8FA89C]" />}
                   <span>{copied ? 'Copied!' : 'Copy'}</span>
                 </button>
               </div>
-              <p className="text-[11px] text-[#667875] mt-1">
+              <p className="text-[11px] text-[#667875] dark:text-[#8FA89C] mt-1">
                 Anyone with this link can join instantly — no credentials required.
               </p>
             </div>
 
-            <div className="flex items-start space-x-2.5 p-3.5 bg-[#E4F2F4]/50 border border-[#B9DDE3] rounded-2xl">
-              <Info className="w-4 h-4 text-[#367C88] flex-shrink-0 mt-0.5" />
-              <div className="text-[11px] text-[#173A2C] leading-relaxed">
+            <div className="flex items-start space-x-2.5 p-3.5 bg-[#E4F2F4] dark:bg-[#1A3A3F]/50 border border-[#B9DDE3] dark:border-[#2A5A63] rounded-2xl">
+              <Info className="w-4 h-4 text-[#367C88] dark:text-[#4DA3B0] flex-shrink-0 mt-0.5" />
+              <div className="text-[11px] text-[#173A2C] dark:text-[#E8F0EC] leading-relaxed">
                 <strong>How recording works:</strong> Audio captured from your browser microphone is fed to the Gemini AI pipeline when you click &quot;End &amp; Generate MoM&quot;. Remote participants join via the Jitsi URL.
               </div>
             </div>
@@ -405,13 +405,13 @@ export default function LiveMeetingPage() {
       {isLive && !isProcessingMoM && (
         <div className="space-y-4 animate-fade-in">
           {micError && (
-            <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-2xl text-xs text-amber-800 flex items-start space-x-2">
+            <div className="p-3.5 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 rounded-2xl text-xs text-amber-800 flex items-start space-x-2">
               <AlertCircle className="w-4 h-4 flex-shrink-0 text-amber-600 mt-0.5" />
               <span>{micError}</span>
             </div>
           )}
 
-          <div className="bg-white rounded-3xl border border-[#DCE7E2] shadow-sm overflow-hidden h-[620px]">
+          <div className="bg-white dark:bg-[#1A2B24] rounded-3xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm overflow-hidden h-[620px]">
             <iframe
               src={`https://meet.jit.si/${roomName}#config.prejoinPageEnabled=false&config.startWithAudioMuted=false&config.startWithVideoMuted=false`}
               allow="camera; microphone; fullscreen; display-capture; autoplay"
@@ -420,9 +420,9 @@ export default function LiveMeetingPage() {
             />
           </div>
 
-          <div className="p-4 bg-[#D4E9DF]/60 border border-[#78A98F]/30 rounded-2xl text-xs text-[#173A2C] flex items-center justify-between gap-4">
+          <div className="p-4 bg-[#D4E9DF] dark:bg-[#243D33]/60 border border-[#78A98F]/30 rounded-2xl text-xs text-[#173A2C] dark:text-[#E8F0EC] flex items-center justify-between gap-4">
             <div className="flex items-center space-x-2">
-              <Sparkles className="w-4 h-4 text-[#3F795F] flex-shrink-0" />
+              <Sparkles className="w-4 h-4 text-[#3F795F] dark:text-[#78A98F] flex-shrink-0" />
               <span>
                 {micActive
                   ? <>Microphone stream is actively recording. Click <strong>&quot;End &amp; Generate MoM&quot;</strong> when the session finishes to trigger multi-speaker transcription &amp; MoM distillation.</>
@@ -430,7 +430,7 @@ export default function LiveMeetingPage() {
                 }
               </span>
             </div>
-            <div className="flex items-center space-x-1.5 font-mono text-xs font-bold text-[#3F795F] flex-shrink-0 bg-white/70 px-2.5 py-1 rounded-lg border border-[#78A98F]/20">
+            <div className="flex items-center space-x-1.5 font-mono text-xs font-bold text-[#3F795F] dark:text-[#78A98F] flex-shrink-0 bg-white dark:bg-[#1A2B24]/70 px-2.5 py-1 rounded-lg border border-[#78A98F]/20">
               <Clock className="w-3.5 h-3.5" />
               <span>{formatTimer(elapsedSeconds)}</span>
             </div>

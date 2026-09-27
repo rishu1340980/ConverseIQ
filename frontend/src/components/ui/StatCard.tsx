@@ -24,15 +24,15 @@ export default function StatCard({
   className = '',
 }: StatCardProps) {
   const iconContainerStyles = {
-    sage: 'bg-[#D4E9DF] text-[#173A2C]',
-    softblue: 'bg-[#E4F2F4] text-[#367C88]',
-    light: 'bg-[#F5FAF8] text-[#3F795F]',
-    amber: 'bg-[#FEF3C7] text-[#B45309]',
+    sage: 'bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC]',
+    softblue: 'bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0]',
+    light: 'bg-[#F5FAF8] dark:bg-[#0F1A15] text-[#3F795F] dark:text-[#78A98F]',
+    amber: 'bg-[#FEF3C7] dark:bg-amber-950/30 text-[#B45309] dark:text-amber-400',
   };
 
   return (
     <div
-      className={`card-interactive bg-white rounded-2xl p-5 border border-[#DCE7E2] shadow-sm flex flex-col justify-between space-y-3 select-none ${className}`}
+      className={`card-interactive bg-white dark:bg-[#1A2B24] rounded-2xl p-5 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm flex flex-col justify-between space-y-3 select-none ${className}`}
     >
       <div className="flex items-center justify-between">
         <div
@@ -44,8 +44,8 @@ export default function StatCard({
           <span
             className={`text-xs font-bold px-2 py-0.5 rounded-full ${
               trendPositive
-                ? 'bg-[#D4E9DF] text-[#173A2C]'
-                : 'bg-rose-50 text-rose-700'
+                ? 'bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC]'
+                : 'bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400'
             }`}
           >
             {trend}
@@ -54,14 +54,14 @@ export default function StatCard({
       </div>
 
       <div>
-        <div className="text-3xl font-black text-[#173A2C] tracking-tight leading-none">
+        <div className="text-3xl font-black text-[#173A2C] dark:text-[#E8F0EC] tracking-tight leading-none">
           {value}
         </div>
-        <p className="text-xs font-semibold text-[#667875] mt-1.5 uppercase tracking-wide">
+        <p className="text-xs font-semibold text-[#667875] dark:text-[#8FA89C] mt-1.5 uppercase tracking-wide">
           {label}
         </p>
         {subtitle && (
-          <p className="text-[11px] text-[#667875]/80 mt-0.5">{subtitle}</p>
+          <p className="text-[11px] text-[#667875] dark:text-[#8FA89C]/80 dark:text-[#8FA89C]/80 mt-0.5">{subtitle}</p>
         )}
       </div>
     </div>

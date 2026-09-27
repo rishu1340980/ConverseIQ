@@ -123,14 +123,14 @@ export default function UploadRecordingModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#173A2C]/40 p-4 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-6 sm:p-8 relative border border-[#DCE7E2]">
+      <div className="bg-white dark:bg-[#1A2B24] w-full max-w-lg rounded-3xl shadow-2xl p-6 sm:p-8 relative border border-[#DCE7E2] dark:border-[#2D4A3E]">
         
         {!isProcessing && (
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="absolute top-6 right-6 text-[#667875] hover:text-[#173A2C] p-2 rounded-full hover:bg-[#F5FAF8] transition-colors"
+            className="absolute top-6 right-6 text-[#667875] dark:text-[#8FA89C] hover:text-[#173A2C] dark:hover:text-[#E8F0EC] p-2 rounded-full hover:bg-[#F5FAF8] dark:hover:bg-[#1A2B24] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -139,20 +139,20 @@ export default function UploadRecordingModal({
         {isProcessing ? (
           <div className="py-12 text-center space-y-5 animate-fade-in">
             <div className="relative w-16 h-16 mx-auto">
-              <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#D4E9DF] border-t-[#3F795F]"></div>
-              <Sparkles className="w-6 h-6 text-[#3F795F] absolute inset-0 m-auto animate-pulse" />
+              <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#D4E9DF] dark:border-[#243D33] border-t-[#3F795F] dark:border-t-[#78A98F]"></div>
+              <Sparkles className="w-6 h-6 text-[#3F795F] dark:text-[#78A98F] absolute inset-0 m-auto animate-pulse" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-[#173A2C]">Processing Meeting Intelligence</h3>
-              <p className="text-xs text-[#3F795F] font-semibold mt-1 animate-pulse">{statusMsg}</p>
+              <h3 className="text-xl font-bold text-[#173A2C] dark:text-[#E8F0EC]">Processing Meeting Intelligence</h3>
+              <p className="text-xs text-[#3F795F] dark:text-[#78A98F] font-semibold mt-1 animate-pulse">{statusMsg}</p>
             </div>
-            <div className="p-3.5 bg-[#E4F2F4]/60 border border-[#B9DDE3] rounded-xl max-w-xs mx-auto text-left space-y-2">
-              <div className="flex items-center space-x-2 text-xs text-[#367C88] font-medium">
-                <span className="w-2 h-2 rounded-full bg-[#367C88] animate-ping"></span>
+            <div className="p-3.5 bg-[#E4F2F4] dark:bg-[#1A3A3F]/60 dark:bg-[#1A3A3F]/50 border border-[#B9DDE3] dark:border-[#2A5A63] rounded-xl max-w-xs mx-auto text-left space-y-2">
+              <div className="flex items-center space-x-2 text-xs text-[#367C88] dark:text-[#4DA3B0] font-medium">
+                <span className="w-2 h-2 rounded-full bg-[#367C88] dark:bg-[#4DA3B0] animate-ping"></span>
                 <span>Speaker Diarization (Multi-Speaker Attribution)</span>
               </div>
-              <div className="flex items-center space-x-2 text-xs text-[#3F795F] font-medium">
-                <span className="w-2 h-2 rounded-full bg-[#3F795F]"></span>
+              <div className="flex items-center space-x-2 text-xs text-[#3F795F] dark:text-[#78A98F] font-medium">
+                <span className="w-2 h-2 rounded-full bg-[#3F795F] dark:bg-[#78A98F]"></span>
                 <span>Gemini MoM &amp; Action Items Distillation</span>
               </div>
             </div>
@@ -160,21 +160,21 @@ export default function UploadRecordingModal({
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="flex items-center space-x-3">
-              <div className="w-11 h-11 bg-[#E4F2F4] text-[#367C88] rounded-2xl flex items-center justify-center shadow-xs">
+              <div className="w-11 h-11 bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0] rounded-2xl flex items-center justify-center shadow-xs">
                 <UploadCloud className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-[#173A2C] tracking-tight">
+                <h3 className="text-xl font-bold text-[#173A2C] dark:text-[#E8F0EC] tracking-tight">
                   Upload Meeting Recording
                 </h3>
-                <p className="text-xs text-[#667875]">
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C]">
                   Transcribe multi-speaker audio and extract automated Minutes of Meeting.
                 </p>
               </div>
             </div>
 
             {errorMsg && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 font-semibold flex items-center space-x-2">
+              <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-xl text-xs text-red-700 dark:text-red-400 font-semibold flex items-center space-x-2">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 <span>{errorMsg}</span>
               </div>
@@ -182,7 +182,7 @@ export default function UploadRecordingModal({
 
             {/* Drag & Drop Audio Upload Box */}
             <div>
-              <label className="block text-xs font-semibold text-[#173A2C] mb-1.5">
+              <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
                 Recording Audio / Video File <span className="text-red-500">*</span>
               </label>
               <div
@@ -192,10 +192,10 @@ export default function UploadRecordingModal({
                 onClick={() => fileInputRef.current?.click()}
                 className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all duration-200 cursor-pointer select-none ${
                   isDragging 
-                    ? 'border-[#78A98F] bg-[#E4F2F4]/40 scale-[1.01]' 
+                    ? 'border-[#78A98F] bg-[#E4F2F4] dark:bg-[#1A3A3F]/40 dark:bg-[#1A3A3F]/40 scale-[1.01]' 
                     : file
-                    ? 'border-[#78A98F] bg-[#D4E9DF]/30'
-                    : 'border-[#DCE7E2] hover:border-[#78A98F] bg-[#F5FAF8] hover:bg-[#E4F2F4]/20'
+                    ? 'border-[#78A98F] bg-[#D4E9DF] dark:bg-[#243D33]/30 dark:bg-[#243D33]/30'
+                    : 'border-[#DCE7E2] dark:border-[#2D4A3E] hover:border-[#78A98F] bg-[#F5FAF8] dark:bg-[#0F1A15] hover:bg-[#E4F2F4] dark:bg-[#1A3A3F]/20 dark:hover:bg-[#1A3A3F]/20'
                 }`}
               >
                 <input
@@ -208,35 +208,35 @@ export default function UploadRecordingModal({
 
                 {file ? (
                   <div className="space-y-2">
-                    <div className="w-12 h-12 bg-[#D4E9DF] text-[#3F795F] rounded-2xl flex items-center justify-center mx-auto shadow-xs">
+                    <div className="w-12 h-12 bg-[#D4E9DF] dark:bg-[#243D33] text-[#3F795F] dark:text-[#78A98F] rounded-2xl flex items-center justify-center mx-auto shadow-xs">
                       <FileCheck className="w-6 h-6" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-[#173A2C] truncate max-w-xs mx-auto">
+                      <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC] truncate max-w-xs mx-auto">
                         {file.name}
                       </p>
-                      <p className="text-xs text-[#3F795F] font-semibold mt-0.5">
+                      <p className="text-xs text-[#3F795F] dark:text-[#78A98F] font-semibold mt-0.5">
                         ✓ Ready to analyze • {(file.size / (1024 * 1024)).toFixed(2)} MB
                       </p>
                     </div>
-                    <p className="text-[11px] text-[#667875] underline decoration-dotted hover:text-[#173A2C]">
+                    <p className="text-[11px] text-[#667875] dark:text-[#8FA89C] underline decoration-dotted hover:text-[#173A2C] dark:hover:text-[#E8F0EC]">
                       Click or drag to choose a different file
                     </p>
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    <div className="w-12 h-12 bg-[#E4F2F4] text-[#367C88] rounded-2xl flex items-center justify-center mx-auto">
+                    <div className="w-12 h-12 bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0] rounded-2xl flex items-center justify-center mx-auto">
                       <FileAudio className="w-6 h-6" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-[#173A2C]">
+                      <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">
                         Click here to browse or drag file
                       </p>
-                      <p className="text-xs text-[#667875] mt-0.5">
+                      <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-0.5">
                         Supports MP3, WAV, M4A, WebM, MP4 audio
                       </p>
                     </div>
-                    <p className="text-[11px] text-[#3F795F] font-semibold">
+                    <p className="text-[11px] text-[#3F795F] dark:text-[#78A98F] font-semibold">
                       Supports meetings up to 3 hours
                     </p>
                   </div>
@@ -246,7 +246,7 @@ export default function UploadRecordingModal({
 
             {/* Title */}
             <div>
-              <label className="block text-xs font-semibold text-[#173A2C] mb-1">
+              <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1">
                 Meeting Title <span className="text-red-500">*</span>
               </label>
               <input
@@ -255,24 +255,24 @@ export default function UploadRecordingModal({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Project Review, Curriculum Sync, or Department Meeting"
-                className="w-full px-4 py-2.5 bg-white border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all placeholder:text-[#667875]/60"
+                className="w-full px-4 py-2.5 bg-white dark:bg-[#1A2B24] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all placeholder:text-[#667875] dark:text-[#8FA89C]/60 dark:placeholder:text-[#8FA89C]/60"
               />
             </div>
 
             {/* Participants Field for Diarization Mapping */}
             <div>
-              <label className="block text-xs font-semibold text-[#173A2C] mb-1 flex items-center justify-between">
+              <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1 flex items-center justify-between">
                 <span>Attendee Names (Optional)</span>
-                <span className="text-[10px] bg-[#D4E9DF] text-[#3F795F] font-bold px-2 py-0.5 rounded-full">Speaker Attribution</span>
+                <span className="text-[10px] bg-[#D4E9DF] dark:bg-[#243D33] text-[#3F795F] dark:text-[#78A98F] font-bold px-2 py-0.5 rounded-full">Speaker Attribution</span>
               </label>
               <textarea
                 rows={2}
                 value={participants}
                 onChange={(e) => setParticipants(e.target.value)}
                 placeholder="Optional: leave blank to auto-detect speakers from audio, or enter comma-separated names"
-                className="w-full px-4 py-2.5 bg-white border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all placeholder:text-[#667875]/60"
+                className="w-full px-4 py-2.5 bg-white dark:bg-[#1A2B24] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all placeholder:text-[#667875] dark:text-[#8FA89C]/60 dark:placeholder:text-[#8FA89C]/60"
               />
-              <p className="text-[11px] text-[#667875] mt-1">
+              <p className="text-[11px] text-[#667875] dark:text-[#8FA89C] mt-1">
                 Leave blank for automatic speaker detection from the recording.
               </p>
             </div>
@@ -281,7 +281,7 @@ export default function UploadRecordingModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2.5 border border-[#DCE7E2] bg-white hover:bg-[#F5FAF8] rounded-xl text-xs font-semibold text-[#173A2C] transition-colors"
+                className="px-4 py-2.5 border border-[#DCE7E2] dark:border-[#2D4A3E] bg-white dark:bg-[#1A2B24] hover:bg-[#F5FAF8] dark:hover:bg-[#1A2B24] rounded-xl text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] transition-colors"
               >
                 Cancel
               </button>
@@ -291,7 +291,7 @@ export default function UploadRecordingModal({
                 className={`px-6 py-2.5 rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center space-x-2 ${
                   file
                     ? 'bg-[#3F795F] hover:bg-[#34654F] text-white cursor-pointer hover:shadow-md hover:-translate-y-0.5'
-                    : 'bg-[#DCE7E2] text-gray-400 cursor-not-allowed shadow-none'
+                    : 'bg-[#DCE7E2] dark:bg-[#2D4A3E] text-gray-400 dark:text-gray-500 cursor-not-allowed shadow-none'
                 }`}
               >
                 <Sparkles className="w-3.5 h-3.5" />
@@ -305,4 +305,3 @@ export default function UploadRecordingModal({
     </div>
   );
 }
-

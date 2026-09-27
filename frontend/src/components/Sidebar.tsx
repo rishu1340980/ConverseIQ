@@ -15,14 +15,18 @@ import {
   Users, 
   Folder, 
   LogOut, 
-  ShieldCheck 
+  ShieldCheck,
+  Moon,
+  Sun,
 } from 'lucide-react';
 import { getCurrentStoredUser, removeAuthToken } from '@/lib/api';
+import { useTheme } from '@/components/ThemeProvider';
 import AddMeetingModal from './AddMeetingModal';
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { theme, toggleTheme } = useTheme();
   const [isAddMeetingOpen, setIsAddMeetingOpen] = useState(false);
   const [user, setUser] = useState<{ name?: string; full_name?: string; email?: string; role?: string; department_name?: string } | null>(null);
 
@@ -84,29 +88,44 @@ export default function Sidebar() {
 
   return (
     <>
-      <aside className="w-64 bg-white border-r border-[#DCE7E2] h-screen sticky top-0 flex flex-col justify-between p-5 select-none z-30 transition-all duration-200">
+      <aside className="w-64 bg-white dark:bg-[#141F1A] border-r border-[#DCE7E2] dark:border-[#2D4A3E] h-screen sticky top-0 flex flex-col justify-between p-5 select-none z-30 transition-colors duration-200">
         
         {/* Brand Header */}
         <div>
           <div className="px-2 py-2.5 mb-2">
-            <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-xl bg-[#78A98F] text-white flex items-center justify-center font-bold text-lg shadow-sm">
-                C
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-9 h-9 rounded-xl bg-[#78A98F] text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                  C
+                </div>
+                <span className="font-bold text-xl text-[#173A2C] dark:text-[#E8F0EC] tracking-tight">
+                  ConverseIQ
+                </span>
               </div>
-              <span className="font-bold text-xl text-[#173A2C] tracking-tight">
-                ConverseIQ
-              </span>
+
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-xl text-[#667875] dark:text-[#8FA89C] hover:bg-[#F5FAF8] dark:hover:bg-[#1A2B24] hover:text-[#173A2C] dark:hover:text-[#E8F0EC] transition-all duration-200"
+                title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              >
+                {theme === 'dark' ? (
+                  <Sun className="w-4.5 h-4.5" />
+                ) : (
+                  <Moon className="w-4.5 h-4.5" />
+                )}
+              </button>
             </div>
 
             {/* Role & Department Info Badge */}
-            <div className="mt-3.5 px-3 py-2 bg-[#E4F2F4]/70 border border-[#B9DDE3] rounded-xl flex items-center space-x-2.5">
-              <div className="w-2 h-2 rounded-full bg-[#367C88] flex-shrink-0"></div>
+            <div className="mt-3.5 px-3 py-2 bg-[#E4F2F4] dark:bg-[#1A3A3F]/70 dark:bg-[#1A3A3F]/50 border border-[#B9DDE3] dark:border-[#2A5A63] rounded-xl flex items-center space-x-2.5">
+              <div className="w-2 h-2 rounded-full bg-[#367C88] dark:bg-[#4DA3B0] flex-shrink-0"></div>
               <div className="truncate">
-                <p className="text-[11px] font-bold text-[#173A2C] uppercase tracking-wider truncate">
+                <p className="text-[11px] font-bold text-[#173A2C] dark:text-[#E8F0EC] uppercase tracking-wider truncate">
                   {displayRole}
                 </p>
                 {user?.department_name && (
-                  <p className="text-[10px] text-[#667875] truncate mt-0.5 font-medium">
+                  <p className="text-[10px] text-[#667875] dark:text-[#8FA89C] truncate mt-0.5 font-medium">
                     {user.department_name}
                   </p>
                 )}
@@ -120,16 +139,16 @@ export default function Sidebar() {
               const Icon = item.icon;
               const isActive = pathname === item.href || (item.href !== '/dashboard' && item.href !== '/hod/overview' && item.href !== '/admin' && pathname.startsWith(item.href));
 
-              let activeClasses = 'bg-[#D4E9DF] text-[#173A2C] font-bold shadow-xs';
-              let iconColor = 'text-[#3F795F]';
+              let activeClasses = 'bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC] font-bold shadow-xs';
+              let iconColor = 'text-[#3F795F] dark:text-[#78A98F]';
 
               if (item.isAi && isActive) {
-                activeClasses = 'bg-[#E4F2F4] text-[#132F34] font-bold shadow-xs border border-[#B9DDE3]';
-                iconColor = 'text-[#367C88]';
+                activeClasses = 'bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#132F34] dark:text-[#B9DDE3] font-bold shadow-xs border border-[#B9DDE3] dark:border-[#2A5A63]';
+                iconColor = 'text-[#367C88] dark:text-[#4DA3B0]';
               } else if (item.isAi && !isActive) {
-                iconColor = 'text-[#367C88]';
+                iconColor = 'text-[#367C88] dark:text-[#4DA3B0]';
               } else if (!isActive) {
-                iconColor = 'text-[#667875]';
+                iconColor = 'text-[#667875] dark:text-[#8FA89C]';
               }
 
               return (
@@ -139,7 +158,7 @@ export default function Sidebar() {
                   className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                     isActive
                       ? activeClasses
-                      : 'text-[#667875] hover:text-[#173A2C] hover:bg-[#F5FAF8]'
+                      : 'text-[#667875] dark:text-[#8FA89C] hover:text-[#173A2C] dark:hover:text-[#E8F0EC] hover:bg-[#F5FAF8] dark:hover:bg-[#1A2B24]'
                   }`}
                 >
                   <Icon className={`w-4 h-4 flex-shrink-0 ${iconColor}`} />
@@ -151,7 +170,7 @@ export default function Sidebar() {
         </div>
 
         {/* Bottom Section */}
-        <div className="space-y-3 pt-4 border-t border-[#DCE7E2]">
+        <div className="space-y-3 pt-4 border-t border-[#DCE7E2] dark:border-[#2D4A3E]">
           
           {/* + New Meeting Button (Faculty View) */}
           {isFacultyMode && (
@@ -166,16 +185,16 @@ export default function Sidebar() {
           )}
 
           {/* User Profile Bar */}
-          <div className="flex items-center justify-between px-2 py-2 rounded-xl hover:bg-[#F5FAF8] border border-transparent hover:border-[#DCE7E2] transition-colors">
+          <div className="flex items-center justify-between px-2 py-2 rounded-xl hover:bg-[#F5FAF8] dark:hover:bg-[#1A2B24] border border-transparent hover:border-[#DCE7E2] dark:hover:border-[#2D4A3E] transition-colors">
             <div className="flex items-center space-x-3 truncate">
               <div className="w-9 h-9 rounded-full bg-[#3F795F] text-white flex items-center justify-center font-bold text-sm flex-shrink-0 shadow-xs">
                 {initial}
               </div>
               <div className="truncate">
-                <p className="text-sm font-bold text-[#173A2C] truncate leading-tight">
+                <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC] truncate leading-tight">
                   {displayName}
                 </p>
-                <p className="text-xs text-[#667875] truncate leading-tight mt-0.5">
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C] truncate leading-tight mt-0.5">
                   {displayRole}
                 </p>
               </div>
@@ -184,7 +203,7 @@ export default function Sidebar() {
             <button
               onClick={handleLogout}
               title="Logout"
-              className="p-1.5 text-[#667875] hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors ml-1"
+              className="p-1.5 text-[#667875] dark:text-[#8FA89C] hover:text-rose-600 dark:hover:text-rose-400 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors ml-1"
             >
               <LogOut className="w-4 h-4" />
             </button>

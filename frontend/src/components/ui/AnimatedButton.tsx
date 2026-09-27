@@ -34,10 +34,10 @@ export default function AnimatedButton({
 
   const variantClasses = {
     primary: 'bg-[#78A98F] hover:bg-[#5A9175] text-white shadow-sm hover:shadow active:bg-[#3F795F]',
-    secondary: 'bg-[#E4F2F4] hover:bg-[#B9DDE3] text-[#173A2C] active:bg-[#91CAD4]',
-    softblue: 'bg-[#B9DDE3] hover:bg-[#91CAD4] text-[#132F34] font-bold shadow-sm',
-    outline: 'border border-[#DCE7E2] bg-white hover:bg-[#F5FAF8] text-[#173A2C] active:bg-[#EDF5F2]',
-    ghost: 'text-[#667875] hover:text-[#173A2C] hover:bg-[#D4E9DF]/30',
+    secondary: 'bg-[#E4F2F4] dark:bg-[#1A3A3F] hover:bg-[#B9DDE3] dark:hover:bg-[#2A5A63] text-[#173A2C] dark:text-[#E8F0EC] active:bg-[#91CAD4] dark:active:bg-[#2A5A63]',
+    softblue: 'bg-[#B9DDE3] dark:bg-[#2A5A63] hover:bg-[#91CAD4] dark:hover:bg-[#367C88]/70 text-[#132F34] dark:text-[#B9DDE3] font-bold shadow-sm',
+    outline: 'border border-[#DCE7E2] dark:border-[#2D4A3E] bg-white dark:bg-[#1A2B24] hover:bg-[#F5FAF8] dark:hover:bg-[#1A2B24] text-[#173A2C] dark:text-[#E8F0EC] active:bg-[#EDF5F2] dark:active:bg-[#243D33]',
+    ghost: 'text-[#667875] dark:text-[#8FA89C] hover:text-[#173A2C] dark:hover:text-[#E8F0EC] hover:bg-[#D4E9DF] dark:bg-[#243D33]/30 dark:hover:bg-[#243D33]/30',
     danger: 'bg-rose-500 hover:bg-rose-600 text-white shadow-sm',
   };
 

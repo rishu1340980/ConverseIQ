@@ -32,7 +32,7 @@ export default function SegmentedControl({
 
   return (
     <div
-      className={`inline-flex items-center bg-[#EDF5F2] border border-[#DCE7E2] rounded-xl relative ${sizeClasses} ${className}`}
+      className={`inline-flex items-center bg-[#EDF5F2] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl relative ${sizeClasses} ${className}`}
       role="tablist"
     >
       {options.map((opt) => {
@@ -46,8 +46,8 @@ export default function SegmentedControl({
             onClick={() => onChange(opt.id)}
             className={`relative z-10 flex items-center space-x-1.5 font-bold rounded-lg transition-all duration-200 select-none ${itemPadding} ${
               isActive
-                ? 'bg-white text-[#173A2C] shadow-sm'
-                : 'text-[#667875] hover:text-[#173A2C]'
+                ? 'bg-white dark:bg-[#1A2B24] text-[#173A2C] dark:text-[#E8F0EC] shadow-sm'
+                : 'text-[#667875] dark:text-[#8FA89C] hover:text-[#173A2C] dark:hover:text-[#E8F0EC]'
             }`}
           >
             {opt.icon && <span className="flex-shrink-0">{opt.icon}</span>}
@@ -56,8 +56,8 @@ export default function SegmentedControl({
               <span
                 className={`ml-1.5 px-1.5 py-0.2 text-[10px] font-extrabold rounded-full ${
                   isActive
-                    ? 'bg-[#D4E9DF] text-[#173A2C]'
-                    : 'bg-[#DCE7E2]/70 text-[#667875]'
+                    ? 'bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC]'
+                    : 'bg-[#DCE7E2]/70 dark:bg-[#2D4A3E]/70 text-[#667875] dark:text-[#8FA89C]'
                 }`}
               >
                 {opt.count}

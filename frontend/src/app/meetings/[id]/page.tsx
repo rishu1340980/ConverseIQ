@@ -283,8 +283,8 @@ export default function MeetingDetailPage() {
   if (!meeting) {
     return (
       <div className="text-center py-16">
-        <h2 className="text-xl font-bold text-[#173A2C]">Meeting not found</h2>
-        <Link href="/meetings" className="mt-4 inline-block text-sm text-[#3F795F] font-semibold underline hover:text-[#34654F]">
+        <h2 className="text-xl font-bold text-[#173A2C] dark:text-[#E8F0EC]">Meeting not found</h2>
+        <Link href="/meetings" className="mt-4 inline-block text-sm text-[#3F795F] dark:text-[#78A98F] font-semibold underline hover:text-[#34654F]">
           Back to Meetings
         </Link>
       </div>
@@ -300,7 +300,7 @@ export default function MeetingDetailPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <Link
           href="/meetings"
-          className="inline-flex items-center text-xs font-semibold text-[#667875] hover:text-[#173A2C] space-x-1 transition-colors"
+          className="inline-flex items-center text-xs font-semibold text-[#667875] dark:text-[#8FA89C] hover:text-[#173A2C] dark:text-[#E8F0EC] space-x-1 transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to All Meetings</span>
@@ -308,8 +308,8 @@ export default function MeetingDetailPage() {
 
         {/* Actions Bar */}
         <div className="flex flex-wrap items-center gap-2">
-          <label className="inline-flex items-center space-x-1.5 px-3.5 py-2 bg-white hover:bg-[#F5FAF8] text-[#173A2C] text-xs font-bold rounded-xl border border-[#DCE7E2] shadow-xs hover:border-[#78A98F] transition-all cursor-pointer">
-            <UploadCloud className="w-3.5 h-3.5 text-[#3F795F]" />
+          <label className="inline-flex items-center space-x-1.5 px-3.5 py-2 bg-white dark:bg-[#1A2B24] hover:bg-[#F5FAF8] dark:bg-[#0F1A15] text-[#173A2C] dark:text-[#E8F0EC] text-xs font-bold rounded-xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-xs hover:border-[#78A98F] transition-all cursor-pointer">
+            <UploadCloud className="w-3.5 h-3.5 text-[#3F795F] dark:text-[#78A98F]" />
             <span>{isUploading ? 'Processing Audio...' : 'Upload Recording'}</span>
             <input
               type="file"
@@ -332,7 +332,7 @@ export default function MeetingDetailPage() {
           <AnimatedButton
             variant="outline"
             size="sm"
-            icon={<FileDown className="w-3.5 h-3.5 text-[#367C88]" />}
+            icon={<FileDown className="w-3.5 h-3.5 text-[#367C88] dark:text-[#4DA3B0]" />}
             onClick={() => downloadExport('docx')}
           >
             Export Word
@@ -341,27 +341,27 @@ export default function MeetingDetailPage() {
       </div>
 
       {/* Meeting Header Card */}
-      <div className="bg-white p-6 rounded-2xl border border-[#DCE7E2] shadow-sm">
+      <div className="bg-white dark:bg-[#1A2B24] p-6 rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <div className="flex items-center space-x-2">
               <span
                 className={`px-3 py-1 rounded-full text-xs font-semibold ${
                   meeting.status === 'Completed'
-                    ? 'bg-[#D4E9DF] text-[#3F795F]'
+                    ? 'bg-[#D4E9DF] dark:bg-[#243D33] text-[#3F795F] dark:text-[#78A98F]'
                     : 'bg-[#FEF3C7] text-[#92400E]'
                 }`}
               >
                 {meeting.status}
               </span>
               {isFinalized && (
-                <span className="inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-semibold bg-[#D4E9DF] text-[#3F795F] border border-[#78A98F]/30">
+                <span className="inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-semibold bg-[#D4E9DF] dark:bg-[#243D33] text-[#3F795F] dark:text-[#78A98F] border border-[#78A98F]/30">
                   <FileCheck className="w-3.5 h-3.5" />
                   <span>Officially Finalized</span>
                 </span>
               )}
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#173A2C] tracking-tight mt-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#173A2C] dark:text-[#E8F0EC] tracking-tight mt-2">
               {meeting.title}
             </h1>
           </div>
@@ -379,23 +379,23 @@ export default function MeetingDetailPage() {
         </div>
 
         {/* Metadata Details */}
-        <div className="mt-4 pt-4 border-t border-[#DCE7E2] grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs text-[#667875]">
+        <div className="mt-4 pt-4 border-t border-[#DCE7E2] dark:border-[#2D4A3E] grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs text-[#667875] dark:text-[#8FA89C]">
           <div className="flex items-center space-x-2">
             <Calendar className="w-4 h-4 text-[#78A98F]" />
             <span>
-              <strong className="text-[#173A2C]">Date:</strong> {new Date(meeting.date).toLocaleDateString([], { dateStyle: 'long' })}
+              <strong className="text-[#173A2C] dark:text-[#E8F0EC]">Date:</strong> {new Date(meeting.date).toLocaleDateString([], { dateStyle: 'long' })}
             </span>
           </div>
           <div className="flex items-center space-x-2">
             <Clock className="w-4 h-4 text-[#78A98F]" />
             <span>
-              <strong className="text-[#173A2C]">Duration:</strong> {meeting.duration_minutes} mins
+              <strong className="text-[#173A2C] dark:text-[#E8F0EC]">Duration:</strong> {meeting.duration_minutes} mins
             </span>
           </div>
           <div className="flex items-center space-x-2">
             <Users className="w-4 h-4 text-[#78A98F]" />
             <span>
-              <strong className="text-[#173A2C]">Attendees:</strong> {meeting.participants?.length || 0}
+              <strong className="text-[#173A2C] dark:text-[#E8F0EC]">Attendees:</strong> {meeting.participants?.length || 0}
             </span>
           </div>
         </div>
@@ -418,11 +418,11 @@ export default function MeetingDetailPage() {
 
       {/* Tab 1: Minutes of Meeting */}
       {activeTab === 'mom' && (
-        <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm p-6 space-y-6">
-          <div className="flex items-center justify-between pb-4 border-b border-[#DCE7E2]">
+        <div className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm p-6 space-y-6">
+          <div className="flex items-center justify-between pb-4 border-b border-[#DCE7E2] dark:border-[#2D4A3E]">
             <div>
-              <h3 className="font-bold text-[#173A2C] text-lg">Structured Minutes of Meeting</h3>
-              <p className="text-xs text-[#667875] mt-0.5">Formal institutional record distilled by Gemini 3.6 Flash</p>
+              <h3 className="font-bold text-[#173A2C] dark:text-[#E8F0EC] text-lg">Structured Minutes of Meeting</h3>
+              <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-0.5">Formal institutional record distilled by Gemini 3.6 Flash</p>
             </div>
             {!isEditing ? (
               <AnimatedButton
@@ -457,7 +457,7 @@ export default function MeetingDetailPage() {
 
           {/* Executive Summary */}
           <div>
-            <h4 className="text-xs font-bold text-[#667875] uppercase tracking-wider mb-2">
+            <h4 className="text-xs font-bold text-[#667875] dark:text-[#8FA89C] uppercase tracking-wider mb-2">
               Executive Summary
             </h4>
             {isEditing ? (
@@ -465,44 +465,44 @@ export default function MeetingDetailPage() {
                 rows={4}
                 value={summary}
                 onChange={(e) => setSummary(e.target.value)}
-                className="w-full p-3.5 border border-[#DCE7E2] rounded-xl text-sm focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none text-[#173A2C]"
+                className="w-full p-3.5 border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none text-[#173A2C] dark:text-[#E8F0EC]"
               />
             ) : (
-              <p className="text-sm text-[#173A2C] leading-relaxed bg-[#F5FAF8] p-4 rounded-xl border border-[#DCE7E2]">
+              <p className="text-sm text-[#173A2C] dark:text-[#E8F0EC] leading-relaxed bg-[#F5FAF8] dark:bg-[#0F1A15] p-4 rounded-xl border border-[#DCE7E2] dark:border-[#2D4A3E]">
                 {summary || 'No summary recorded yet. Upload a recording to extract MoM.'}
               </p>
             )}
           </div>
 
           {/* Key Decisions Agreed (Highlighted Section) */}
-          <div className="bg-[#F5FAF8] border border-[#DCE7E2] rounded-2xl p-5 space-y-4">
+          <div className="bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-2xl p-5 space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#D4E9DF] flex items-center justify-center text-[#3F795F]">
+                <div className="w-8 h-8 rounded-lg bg-[#D4E9DF] dark:bg-[#243D33] flex items-center justify-center text-[#3F795F] dark:text-[#78A98F]">
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-[#173A2C] uppercase tracking-wide">
+                  <h4 className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC] uppercase tracking-wide">
                     Formal Decisions &amp; Resolutions
                   </h4>
-                  <p className="text-[11px] text-[#667875]">
+                  <p className="text-[11px] text-[#667875] dark:text-[#8FA89C]">
                     Official resolutions voted or unanimously agreed upon during this session
                   </p>
                 </div>
               </div>
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#D4E9DF] text-[#3F795F] border border-[#78A98F]/30">
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#D4E9DF] dark:bg-[#243D33] text-[#3F795F] dark:text-[#78A98F] border border-[#78A98F]/30">
                 {meeting.mom?.decisions?.length || 0} Ratified
               </span>
             </div>
 
             {isEditing ? (
               <div>
-                <p className="text-[11px] text-[#667875] mb-1">Enter each formal decision on a new line:</p>
+                <p className="text-[11px] text-[#667875] dark:text-[#8FA89C] mb-1">Enter each formal decision on a new line:</p>
                 <textarea
                   rows={4}
                   value={decisionsText}
                   onChange={(e) => setDecisionsText(e.target.value)}
-                  className="w-full p-3.5 border border-[#DCE7E2] rounded-xl text-sm focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none text-[#173A2C]"
+                  className="w-full p-3.5 border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none text-[#173A2C] dark:text-[#E8F0EC]"
                 />
               </div>
             ) : (
@@ -511,16 +511,16 @@ export default function MeetingDetailPage() {
                   meeting.mom.decisions.map((d, i) => (
                     <div
                       key={i}
-                      className="flex items-start space-x-3 p-3.5 bg-white rounded-xl border border-[#DCE7E2] shadow-xs hover:border-[#78A98F] transition-colors"
+                      className="flex items-start space-x-3 p-3.5 bg-white dark:bg-[#1A2B24] rounded-xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-xs hover:border-[#78A98F] transition-colors"
                     >
                       <div className="w-6 h-6 rounded-full bg-[#3F795F] text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
                         {i + 1}
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-semibold text-[#173A2C] leading-snug">
+                        <p className="text-sm font-semibold text-[#173A2C] dark:text-[#E8F0EC] leading-snug">
                           {d}
                         </p>
-                        <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-[#3F795F] mt-1">
+                        <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-[#3F795F] dark:text-[#78A98F] mt-1">
                           <Check className="w-3 h-3 stroke-[3]" />
                           <span>Institutional Consensus</span>
                         </span>
@@ -528,7 +528,7 @@ export default function MeetingDetailPage() {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-6 text-xs text-[#667875] bg-white rounded-xl border border-dashed border-[#DCE7E2]">
+                  <div className="text-center py-6 text-xs text-[#667875] dark:text-[#8FA89C] bg-white dark:bg-[#1A2B24] rounded-xl border border-dashed border-[#DCE7E2] dark:border-[#2D4A3E]">
                     No formal decisions recorded yet.
                   </div>
                 )}
@@ -539,16 +539,16 @@ export default function MeetingDetailPage() {
           {/* Discussion Topics */}
           {meeting.mom?.topics_discussed && meeting.mom.topics_discussed.length > 0 && (
             <div>
-              <h4 className="text-xs font-bold text-[#667875] uppercase tracking-wider mb-3">
+              <h4 className="text-xs font-bold text-[#667875] dark:text-[#8FA89C] uppercase tracking-wider mb-3">
                 Key Agenda Topics &amp; Discussion Points
               </h4>
               <div className="space-y-3">
                 {meeting.mom.topics_discussed.map((topic: any, idx: number) => (
-                  <div key={idx} className="p-4 bg-[#E4F2F4]/40 rounded-xl border border-[#B9DDE3]">
-                    <h5 className="font-bold text-sm text-[#173A2C]">
+                  <div key={idx} className="p-4 bg-[#E4F2F4] dark:bg-[#1A3A3F]/40 rounded-xl border border-[#B9DDE3] dark:border-[#2A5A63]">
+                    <h5 className="font-bold text-sm text-[#173A2C] dark:text-[#E8F0EC]">
                       {topic.topic || 'Discussion Topic'}
                     </h5>
-                    <ul className="mt-2 list-disc list-inside text-xs text-[#667875] space-y-1">
+                    <ul className="mt-2 list-disc list-inside text-xs text-[#667875] dark:text-[#8FA89C] space-y-1">
                       {topic.points?.map((pt: string, pIdx: number) => (
                         <li key={pIdx} className="leading-relaxed">{pt}</li>
                       ))}
@@ -563,17 +563,17 @@ export default function MeetingDetailPage() {
 
       {/* Tab 2: Bilingual Transcript & Diarization */}
       {activeTab === 'transcript' && (
-        <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm p-6 space-y-6">
+        <div className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm p-6 space-y-6">
           {/* Header Banner */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-[#DCE7E2] gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-[#DCE7E2] dark:border-[#2D4A3E] gap-4">
             <div>
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-lg bg-[#E4F2F4] flex items-center justify-center text-[#367C88]">
+                <div className="w-8 h-8 rounded-lg bg-[#E4F2F4] dark:bg-[#1A3A3F] flex items-center justify-center text-[#367C88] dark:text-[#4DA3B0]">
                   <Languages className="w-4 h-4" />
                 </div>
-                <h3 className="font-bold text-[#173A2C] text-lg">Bilingual Transcript &amp; Automatic Faculty Diarization</h3>
+                <h3 className="font-bold text-[#173A2C] dark:text-[#E8F0EC] text-lg">Bilingual Transcript &amp; Automatic Faculty Diarization</h3>
               </div>
-              <p className="text-xs text-[#667875] mt-1">
+              <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-1">
                 Audio is transcribed verbatim in Hindi &amp; English with voices automatically attributed to faculty members without manual host mapping.
               </p>
             </div>
@@ -583,8 +583,8 @@ export default function MeetingDetailPage() {
               onClick={() => setShowTranslations(!showTranslations)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all self-start sm:self-auto cursor-pointer ${
                 showTranslations 
-                  ? 'bg-[#D4E9DF] text-[#3F795F] border-[#78A98F]/40 shadow-xs' 
-                  : 'bg-white text-[#667875] border-[#DCE7E2] hover:bg-[#F5FAF8]'
+                  ? 'bg-[#D4E9DF] dark:bg-[#243D33] text-[#3F795F] dark:text-[#78A98F] border-[#78A98F]/40 shadow-xs' 
+                  : 'bg-white dark:bg-[#1A2B24] text-[#667875] dark:text-[#8FA89C] border-[#DCE7E2] dark:border-[#2D4A3E] hover:bg-[#F5FAF8] dark:bg-[#0F1A15]'
               }`}
             >
               <Globe className="w-3.5 h-3.5 inline mr-1" />
@@ -593,16 +593,16 @@ export default function MeetingDetailPage() {
           </div>
 
           {/* Search & Language Filters Bar */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#F5FAF8] p-3 rounded-xl border border-[#DCE7E2]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#F5FAF8] dark:bg-[#0F1A15] p-3 rounded-xl border border-[#DCE7E2] dark:border-[#2D4A3E]">
             {/* Search Input */}
             <div className="relative flex-1 max-w-sm">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#667875]" />
+              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#667875] dark:text-[#8FA89C]" />
               <input
                 type="text"
                 value={transcriptSearch}
                 onChange={(e) => setTranscriptSearch(e.target.value)}
                 placeholder="Search spoken dialogue or faculty name..."
-                className="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-[#DCE7E2] rounded-lg focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none text-[#173A2C] placeholder:text-[#667875]/60"
+                className="w-full pl-9 pr-3 py-1.5 text-xs bg-white dark:bg-[#1A2B24] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-lg focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none text-[#173A2C] dark:text-[#E8F0EC] placeholder:text-[#667875] dark:text-[#8FA89C]/60"
               />
             </div>
 
@@ -615,7 +615,7 @@ export default function MeetingDetailPage() {
                   className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                     languageFilter === lang
                       ? 'bg-[#3F795F] text-white shadow-xs'
-                      : 'bg-white text-[#667875] border border-[#DCE7E2] hover:text-[#173A2C]'
+                      : 'bg-white dark:bg-[#1A2B24] text-[#667875] dark:text-[#8FA89C] border border-[#DCE7E2] dark:border-[#2D4A3E] hover:text-[#173A2C] dark:text-[#E8F0EC]'
                   }`}
                 >
                   {lang}
@@ -626,12 +626,12 @@ export default function MeetingDetailPage() {
 
           {/* Audio recording badge if available */}
           {meeting.audio_file_path && (
-            <div className="p-3 bg-[#E4F2F4]/60 rounded-xl border border-[#B9DDE3] flex items-center justify-between text-xs text-[#173A2C]">
+            <div className="p-3 bg-[#E4F2F4] dark:bg-[#1A3A3F]/60 rounded-xl border border-[#B9DDE3] dark:border-[#2A5A63] flex items-center justify-between text-xs text-[#173A2C] dark:text-[#E8F0EC]">
               <div className="flex items-center space-x-2">
-                <Volume2 className="w-4 h-4 text-[#367C88]" />
+                <Volume2 className="w-4 h-4 text-[#367C88] dark:text-[#4DA3B0]" />
                 <span className="font-semibold">Meeting Audio Ingested &amp; Verified</span>
               </div>
-              <span className="text-[11px] text-[#367C88] font-medium">
+              <span className="text-[11px] text-[#367C88] dark:text-[#4DA3B0] font-medium">
                 Multimodal Gemini 3.6 Flash Engine
               </span>
             </div>
@@ -643,7 +643,7 @@ export default function MeetingDetailPage() {
               filteredUtterances.map((u, idx) => (
                 <div 
                   key={idx} 
-                  className="p-4 rounded-xl bg-[#E4F2F4]/25 border border-[#B9DDE3]/70 hover:border-[#78A98F] transition-all duration-150 space-y-2.5 shadow-2xs"
+                  className="p-4 rounded-xl bg-[#E4F2F4] dark:bg-[#1A3A3F]/25 border border-[#B9DDE3] dark:border-[#2A5A63]/70 hover:border-[#78A98F] transition-all duration-150 space-y-2.5 shadow-2xs"
                 >
                   {/* Header: Faculty Avatar, Name, Diarization Badge, Language Badge, Timestamp */}
                   <div className="flex flex-wrap items-center justify-between gap-2">
@@ -652,8 +652,8 @@ export default function MeetingDetailPage() {
                         {u.speaker ? u.speaker.charAt(0) : 'F'}
                       </div>
                       <div>
-                        <span className="font-bold text-sm text-[#173A2C]">{u.speaker}</span>
-                        <span className="ml-2 px-2 py-0.5 text-[10px] font-bold rounded-full bg-[#D4E9DF] text-[#3F795F] border border-[#78A98F]/30">
+                        <span className="font-bold text-sm text-[#173A2C] dark:text-[#E8F0EC]">{u.speaker}</span>
+                        <span className="ml-2 px-2 py-0.5 text-[10px] font-bold rounded-full bg-[#D4E9DF] dark:bg-[#243D33] text-[#3F795F] dark:text-[#78A98F] border border-[#78A98F]/30">
                           Auto-Identified Faculty
                         </span>
                       </div>
@@ -663,30 +663,30 @@ export default function MeetingDetailPage() {
                       {/* Language Badge */}
                       <span className={`px-2.5 py-0.5 text-[10px] font-bold rounded-full uppercase border ${
                         u.language === 'Hindi'
-                          ? 'bg-[#B9DDE3] text-[#173A2C] border-[#78A98F]/40'
+                          ? 'bg-[#B9DDE3] text-[#173A2C] dark:text-[#E8F0EC] border-[#78A98F]/40'
                           : u.language === 'Hinglish'
-                          ? 'bg-[#D4E9DF] text-[#3F795F] border-[#3F795F]/20'
-                          : 'bg-[#E4F2F4] text-[#367C88] border-[#367C88]/30'
+                          ? 'bg-[#D4E9DF] dark:bg-[#243D33] text-[#3F795F] dark:text-[#78A98F] border-[#3F795F]/20'
+                          : 'bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0] border-[#367C88]/30'
                       }`}>
                         {u.language || 'English'}
                       </span>
-                      <span className="text-xs text-[#667875] font-mono">
+                      <span className="text-xs text-[#667875] dark:text-[#8FA89C] font-mono">
                         {formatTimestamp(u.timestamp, u.start)}
                       </span>
                     </div>
                   </div>
 
                   {/* Original Spoken Text */}
-                  <p className="text-sm text-[#173A2C] leading-relaxed pl-9">
+                  <p className="text-sm text-[#173A2C] dark:text-[#E8F0EC] leading-relaxed pl-9">
                     {u.text}
                   </p>
 
                   {/* English Translation Callout (if Hindi/Hinglish) */}
                   {showTranslations && u.translation && u.translation !== u.text && (
-                    <div className="ml-9 p-3 bg-white rounded-lg border border-[#DCE7E2] text-xs text-[#667875] flex items-start space-x-2 shadow-2xs">
-                      <Globe className="w-3.5 h-3.5 text-[#367C88] shrink-0 mt-0.5" />
+                    <div className="ml-9 p-3 bg-white dark:bg-[#1A2B24] rounded-lg border border-[#DCE7E2] dark:border-[#2D4A3E] text-xs text-[#667875] dark:text-[#8FA89C] flex items-start space-x-2 shadow-2xs">
+                      <Globe className="w-3.5 h-3.5 text-[#367C88] dark:text-[#4DA3B0] shrink-0 mt-0.5" />
                       <div>
-                        <strong className="text-[#173A2C] font-semibold mr-1">English Translation:</strong>
+                        <strong className="text-[#173A2C] dark:text-[#E8F0EC] font-semibold mr-1">English Translation:</strong>
                         <span>{u.translation}</span>
                       </div>
                     </div>
@@ -694,10 +694,10 @@ export default function MeetingDetailPage() {
                 </div>
               ))
             ) : (
-              <div className="text-center py-12 text-[#667875] bg-[#F5FAF8] rounded-xl border border-dashed border-[#DCE7E2]">
-                <Languages className="w-8 h-8 mx-auto text-[#667875]/40 mb-2" />
-                <p className="text-sm font-semibold text-[#173A2C]">No matching utterances found</p>
-                <p className="text-xs text-[#667875] mt-1">Upload a recording to generate a bilingual diarized transcript.</p>
+              <div className="text-center py-12 text-[#667875] dark:text-[#8FA89C] bg-[#F5FAF8] dark:bg-[#0F1A15] rounded-xl border border-dashed border-[#DCE7E2] dark:border-[#2D4A3E]">
+                <Languages className="w-8 h-8 mx-auto text-[#667875] dark:text-[#8FA89C]/40 mb-2" />
+                <p className="text-sm font-semibold text-[#173A2C] dark:text-[#E8F0EC]">No matching utterances found</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-1">Upload a recording to generate a bilingual diarized transcript.</p>
               </div>
             )}
           </div>
@@ -706,48 +706,48 @@ export default function MeetingDetailPage() {
 
       {/* Tab 3: Action Items */}
       {activeTab === 'actions' && (
-        <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-[#DCE7E2] gap-2 mb-4">
+        <div className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-[#DCE7E2] dark:border-[#2D4A3E] gap-2 mb-4">
             <div>
-              <h3 className="font-bold text-[#173A2C] text-lg">Faculty Action Tracker</h3>
-              <p className="text-xs text-[#667875]">
+              <h3 className="font-bold text-[#173A2C] dark:text-[#E8F0EC] text-lg">Faculty Action Tracker</h3>
+              <p className="text-xs text-[#667875] dark:text-[#8FA89C]">
                 Deliverables automatically assigned to faculty members with priorities and deadlines.
               </p>
             </div>
-            <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#D4E9DF] text-[#3F795F] self-start sm:self-auto border border-[#78A98F]/30">
+            <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#D4E9DF] dark:bg-[#243D33] text-[#3F795F] dark:text-[#78A98F] self-start sm:self-auto border border-[#78A98F]/30">
               {meeting.action_items?.filter(a => a.status === 'Completed').length || 0} / {meeting.action_items?.length || 0} Completed
             </span>
           </div>
 
-          <div className="divide-y divide-[#DCE7E2]/60">
+          <div className="divide-y divide-[#DCE7E2] dark:divide-[#2D4A3E]/60">
             {meeting.action_items && meeting.action_items.length > 0 ? (
               meeting.action_items.map((item) => (
-                <div key={item.id} className="py-4 flex items-start space-x-3.5 hover:bg-[#F5FAF8] px-2 rounded-xl transition-colors">
+                <div key={item.id} className="py-4 flex items-start space-x-3.5 hover:bg-[#F5FAF8] dark:bg-[#0F1A15] px-2 rounded-xl transition-colors">
                   <button
                     onClick={() => handleToggleAction(item.id)}
                     className={`mt-1 w-5 h-5 rounded-md border flex items-center justify-center transition-all cursor-pointer ${
                       item.status === 'Completed'
                         ? 'bg-[#3F795F] border-[#3F795F] text-white shadow-xs'
-                        : 'border-[#DCE7E2] hover:border-[#78A98F] bg-white'
+                        : 'border-[#DCE7E2] dark:border-[#2D4A3E] hover:border-[#78A98F] bg-white dark:bg-[#1A2B24]'
                     }`}
                   >
                     {item.status === 'Completed' && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                   </button>
                   <div className="flex-1">
-                    <p className={`text-sm font-semibold ${item.status === 'Completed' ? 'line-through text-[#667875]/60' : 'text-[#173A2C]'}`}>
+                    <p className={`text-sm font-semibold ${item.status === 'Completed' ? 'line-through text-[#667875] dark:text-[#8FA89C]/60' : 'text-[#173A2C] dark:text-[#E8F0EC]'}`}>
                       {item.task}
                     </p>
-                    <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-[#667875]">
+                    <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-[#667875] dark:text-[#8FA89C]">
                       {/* Faculty Owner Pill with Avatar */}
-                      <div className="inline-flex items-center space-x-1.5 px-2.5 py-1 bg-white border border-[#DCE7E2] rounded-lg shadow-2xs font-semibold text-[#173A2C]">
-                        <div className="w-4 h-4 rounded-full bg-[#E4F2F4] text-[#367C88] text-[10px] font-bold flex items-center justify-center">
+                      <div className="inline-flex items-center space-x-1.5 px-2.5 py-1 bg-white dark:bg-[#1A2B24] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-lg shadow-2xs font-semibold text-[#173A2C] dark:text-[#E8F0EC]">
+                        <div className="w-4 h-4 rounded-full bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0] text-[10px] font-bold flex items-center justify-center">
                           {item.owner_name.charAt(0)}
                         </div>
                         <span>{item.owner_name}</span>
                       </div>
 
                       {item.due_date && (
-                        <span className="inline-flex items-center space-x-1 text-xs text-[#667875]">
+                        <span className="inline-flex items-center space-x-1 text-xs text-[#667875] dark:text-[#8FA89C]">
                           <Calendar className="w-3.5 h-3.5 text-[#78A98F]" />
                           <span>Due: <strong>{new Date(item.due_date).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}</strong></span>
                         </span>
@@ -760,7 +760,7 @@ export default function MeetingDetailPage() {
                         ? 'bg-rose-100 text-rose-800 border border-rose-200'
                         : item.priority === 'Medium'
                         ? 'bg-amber-100 text-amber-800 border border-amber-200'
-                        : 'bg-[#E4F2F4] text-[#367C88] border border-[#B9DDE3]'
+                        : 'bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0] border border-[#B9DDE3] dark:border-[#2A5A63]'
                     }`}
                   >
                     {item.priority}
@@ -768,7 +768,7 @@ export default function MeetingDetailPage() {
                 </div>
               ))
             ) : (
-              <p className="text-xs text-[#667875] py-8 text-center">No action items assigned for this meeting.</p>
+              <p className="text-xs text-[#667875] dark:text-[#8FA89C] py-8 text-center">No action items assigned for this meeting.</p>
             )}
           </div>
         </div>
@@ -776,30 +776,30 @@ export default function MeetingDetailPage() {
 
       {/* Tab 4: Speaker Name Mapping */}
       {activeTab === 'mapping' && (
-        <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm p-6 space-y-6">
+        <div className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm p-6 space-y-6">
           <div>
             <div className="flex items-center space-x-2">
-              <UserCheck className="w-5 h-5 text-[#3F795F]" />
-              <h3 className="font-bold text-[#173A2C] text-lg">Speaker Diarization Mapping</h3>
+              <UserCheck className="w-5 h-5 text-[#3F795F] dark:text-[#78A98F]" />
+              <h3 className="font-bold text-[#173A2C] dark:text-[#E8F0EC] text-lg">Speaker Diarization Mapping</h3>
             </div>
-            <p className="text-xs text-[#667875] mt-1">
+            <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-1">
               Zero-Manual Diarization is active: Gemini automatically identifies speakers by name. You can use this section if you wish to override or remap any speaker tag.
             </p>
           </div>
 
           {mappingSuccess && (
-            <div className="p-3 bg-[#D4E9DF] text-[#3F795F] border border-[#78A98F]/30 rounded-xl text-xs font-semibold">
+            <div className="p-3 bg-[#D4E9DF] dark:bg-[#243D33] text-[#3F795F] dark:text-[#78A98F] border border-[#78A98F]/30 rounded-xl text-xs font-semibold">
               {mappingSuccess}
             </div>
           )}
 
           <form onSubmit={handleUpdateSpeakerMapping} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-bold text-[#173A2C] uppercase mb-1">Speaker Tag</label>
+              <label className="block text-xs font-bold text-[#173A2C] dark:text-[#E8F0EC] uppercase mb-1">Speaker Tag</label>
               <select
                 value={speakerLabel}
                 onChange={(e) => setSpeakerLabel(e.target.value)}
-                className="w-full px-3 py-2 border border-[#DCE7E2] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#78A98F] text-[#173A2C] bg-white"
+                className="w-full px-3 py-2 border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#78A98F] text-[#173A2C] dark:text-[#E8F0EC] bg-white dark:bg-[#1A2B24]"
               >
                 <option value="Speaker A">Speaker A</option>
                 <option value="Speaker B">Speaker B</option>
@@ -808,14 +808,14 @@ export default function MeetingDetailPage() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold text-[#173A2C] uppercase mb-1">Target Faculty Name</label>
+              <label className="block text-xs font-bold text-[#173A2C] dark:text-[#E8F0EC] uppercase mb-1">Target Faculty Name</label>
               <input
                 type="text"
                 required
                 value={realName}
                 onChange={(e) => setRealName(e.target.value)}
                 placeholder="e.g., Dr. Ananya Sharma"
-                className="w-full px-3 py-2 border border-[#DCE7E2] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#78A98F] text-[#173A2C] bg-white"
+                className="w-full px-3 py-2 border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#78A98F] text-[#173A2C] dark:text-[#E8F0EC] bg-white dark:bg-[#1A2B24]"
               />
             </div>
             <div className="flex items-end">
@@ -830,18 +830,18 @@ export default function MeetingDetailPage() {
           </form>
 
           {/* Current Attendees */}
-          <div className="pt-4 border-t border-[#DCE7E2]">
-            <h4 className="text-xs font-bold text-[#173A2C] uppercase mb-3">Meeting Attendees &amp; Diarization Tags</h4>
+          <div className="pt-4 border-t border-[#DCE7E2] dark:border-[#2D4A3E]">
+            <h4 className="text-xs font-bold text-[#173A2C] dark:text-[#E8F0EC] uppercase mb-3">Meeting Attendees &amp; Diarization Tags</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {meeting.participants?.map((p, i) => (
-                <div key={i} className="p-3 rounded-xl bg-[#F5FAF8] border border-[#DCE7E2] flex items-center justify-between">
+                <div key={i} className="p-3 rounded-xl bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <div className="w-6 h-6 rounded-full bg-[#E4F2F4] text-[#367C88] text-xs font-bold flex items-center justify-center">
+                    <div className="w-6 h-6 rounded-full bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0] text-xs font-bold flex items-center justify-center">
                       {p.name.charAt(0)}
                     </div>
-                    <span className="font-semibold text-sm text-[#173A2C]">{p.name}</span>
+                    <span className="font-semibold text-sm text-[#173A2C] dark:text-[#E8F0EC]">{p.name}</span>
                   </div>
-                  <span className="px-2 py-0.5 bg-[#D4E9DF] text-[#3F795F] text-xs font-bold rounded">
+                  <span className="px-2 py-0.5 bg-[#D4E9DF] dark:bg-[#243D33] text-[#3F795F] dark:text-[#78A98F] text-xs font-bold rounded">
                     {p.speaker_label || 'Auto-Diarized'}
                   </span>
                 </div>
@@ -853,12 +853,12 @@ export default function MeetingDetailPage() {
 
       {/* Tab 5: AI Meeting Q&A */}
       {activeTab === 'ai' && (
-        <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm p-6 space-y-4">
+        <div className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm p-6 space-y-4">
           <div className="flex items-center space-x-2">
-            <Bot className="w-5 h-5 text-[#367C88]" />
-            <h3 className="font-bold text-[#173A2C] text-lg">AI Meeting Assistant</h3>
+            <Bot className="w-5 h-5 text-[#367C88] dark:text-[#4DA3B0]" />
+            <h3 className="font-bold text-[#173A2C] dark:text-[#E8F0EC] text-lg">AI Meeting Assistant</h3>
           </div>
-          <p className="text-xs text-[#667875]">
+          <p className="text-xs text-[#667875] dark:text-[#8FA89C]">
             Ask questions about decisions, discussion topics, or assigned action items from this meeting.
           </p>
 
@@ -868,7 +868,7 @@ export default function MeetingDetailPage() {
               value={aiQuery}
               onChange={(e) => setAiQuery(e.target.value)}
               placeholder="e.g., 'What decisions were agreed upon regarding the examination timetable?'"
-              className="flex-1 px-4 py-2 text-sm border border-[#DCE7E2] rounded-xl focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none text-[#173A2C] placeholder:text-[#667875]/60"
+              className="flex-1 px-4 py-2 text-sm border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none text-[#173A2C] dark:text-[#E8F0EC] placeholder:text-[#667875] dark:text-[#8FA89C]/60"
             />
             <AnimatedButton
               type="submit"
@@ -880,9 +880,9 @@ export default function MeetingDetailPage() {
           </form>
 
           {aiAnswer && (
-            <div className="mt-4 p-4 rounded-xl bg-[#E4F2F4]/50 border border-[#B9DDE3] text-sm text-[#173A2C] whitespace-pre-line animate-fade-in">
-              <div className="font-semibold text-[#367C88] mb-1 flex items-center space-x-1.5">
-                <Sparkles className="w-4 h-4 text-[#367C88]" />
+            <div className="mt-4 p-4 rounded-xl bg-[#E4F2F4] dark:bg-[#1A3A3F]/50 border border-[#B9DDE3] dark:border-[#2A5A63] text-sm text-[#173A2C] dark:text-[#E8F0EC] whitespace-pre-line animate-fade-in">
+              <div className="font-semibold text-[#367C88] dark:text-[#4DA3B0] mb-1 flex items-center space-x-1.5">
+                <Sparkles className="w-4 h-4 text-[#367C88] dark:text-[#4DA3B0]" />
                 <span>AI Assistant Response:</span>
               </div>
               {aiAnswer}

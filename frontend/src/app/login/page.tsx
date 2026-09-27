@@ -59,10 +59,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5FAF8] flex items-center justify-center p-6 lg:p-12 relative overflow-hidden">
+    <div className="min-h-screen bg-[#F5FAF8] dark:bg-[#0F1A15] flex items-center justify-center p-6 lg:p-12 relative overflow-hidden">
       {/* Decorative ambient background accents */}
       <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-[#B9DDE3]/30 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[-5%] w-96 h-96 bg-[#D4E9DF]/40 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-5%] w-96 h-96 bg-[#D4E9DF] dark:bg-[#243D33]/40 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center relative z-10">
         
@@ -74,29 +74,29 @@ export default function LoginPage() {
             <div className="w-11 h-11 rounded-2xl bg-[#3F795F] text-white flex items-center justify-center font-black text-2xl shadow-sm tracking-tight">
               c
             </div>
-            <span className="font-extrabold text-2xl text-[#173A2C] tracking-tight">
+            <span className="font-extrabold text-2xl text-[#173A2C] dark:text-[#E8F0EC] tracking-tight">
               ConverseIQ
             </span>
-            <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-[#E4F2F4] text-[#367C88] text-xs font-bold border border-[#B9DDE3]/60">
-              <Sparkles className="w-3 h-3 text-[#367C88]" />
+            <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0] text-xs font-bold border border-[#B9DDE3] dark:border-[#2A5A63]/60">
+              <Sparkles className="w-3 h-3 text-[#367C88] dark:text-[#4DA3B0]" />
               <span>Academic Intelligence</span>
             </span>
           </div>
 
           {/* Headline & Subtitle */}
           <div className="space-y-4 max-w-xl">
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-[#173A2C] tracking-tight leading-[1.15]">
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-[#173A2C] dark:text-[#E8F0EC] tracking-tight leading-[1.15]">
               Turn Conversations into Actionable Intelligence
             </h1>
-            <p className="text-base sm:text-lg text-[#667875] leading-relaxed font-medium">
+            <p className="text-base sm:text-lg text-[#667875] dark:text-[#8FA89C] leading-relaxed font-medium">
               Transform academic and departmental meetings into structured MoM summaries, verified decisions, action trackers, and multilingual transcripts using AI.
             </p>
           </div>
 
           {/* Floating Pipeline Progress Card */}
-          <div className="bg-white/90 backdrop-blur-md border border-[#DCE7E2] rounded-2xl p-6 max-w-md shadow-sm space-y-3.5 card-interactive">
+          <div className="bg-white dark:bg-[#1A2B24]/90 backdrop-blur-md border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-2xl p-6 max-w-md shadow-sm space-y-3.5 card-interactive">
             
-            <div className="flex items-center space-x-3 text-sm font-semibold text-[#173A2C]">
+            <div className="flex items-center space-x-3 text-sm font-semibold text-[#173A2C] dark:text-[#E8F0EC]">
               <div className="w-5 h-5 rounded-full bg-[#3F795F] text-white flex items-center justify-center flex-shrink-0 shadow-xs">
                 <Check className="w-3 h-3 stroke-[3]" />
               </div>
@@ -106,7 +106,7 @@ export default function LoginPage() {
               </span>
             </div>
 
-            <div className="flex items-center space-x-3 text-sm font-semibold text-[#173A2C]">
+            <div className="flex items-center space-x-3 text-sm font-semibold text-[#173A2C] dark:text-[#E8F0EC]">
               <div className="w-5 h-5 rounded-full bg-[#3F795F] text-white flex items-center justify-center flex-shrink-0 shadow-xs">
                 <Check className="w-3 h-3 stroke-[3]" />
               </div>
@@ -116,7 +116,7 @@ export default function LoginPage() {
               </span>
             </div>
 
-            <div className="flex items-center space-x-3 text-sm font-semibold text-[#173A2C]">
+            <div className="flex items-center space-x-3 text-sm font-semibold text-[#173A2C] dark:text-[#E8F0EC]">
               <div className="w-5 h-5 rounded-full bg-[#3F795F] text-white flex items-center justify-center flex-shrink-0 shadow-xs">
                 <Check className="w-3 h-3 stroke-[3]" />
               </div>
@@ -126,7 +126,7 @@ export default function LoginPage() {
               </span>
             </div>
 
-            <div className="flex items-center justify-between text-sm font-semibold text-[#173A2C]">
+            <div className="flex items-center justify-between text-sm font-semibold text-[#173A2C] dark:text-[#E8F0EC]">
               <div className="flex items-center space-x-3">
                 <div className="w-5 h-5 rounded-full bg-[#3F795F] text-white flex items-center justify-center flex-shrink-0 shadow-xs">
                   <Check className="w-3 h-3 stroke-[3]" />
@@ -136,7 +136,7 @@ export default function LoginPage() {
                   <span>Action Items &amp; Deadlines Assigned</span>
                 </span>
               </div>
-              <span className="px-2.5 py-0.5 bg-[#D4E9DF] text-[#173A2C] rounded-full text-[11px] font-bold animate-pulse-soft">
+              <span className="px-2.5 py-0.5 bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC] rounded-full text-[11px] font-bold animate-pulse-soft">
                 Ready
               </span>
             </div>
@@ -147,13 +147,13 @@ export default function LoginPage() {
 
         {/* Right Side Login Card */}
         <div className="lg:col-span-5 w-full animate-slide-up">
-          <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-sm border border-[#DCE7E2]">
+          <div className="bg-white dark:bg-[#1A2B24] rounded-3xl p-8 sm:p-10 shadow-sm border border-[#DCE7E2] dark:border-[#2D4A3E]">
             
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-[#173A2C] tracking-tight">
+              <h2 className="text-2xl font-bold text-[#173A2C] dark:text-[#E8F0EC] tracking-tight">
                 Institutional Access
               </h2>
-              <p className="text-sm text-[#667875] mt-1 font-medium">
+              <p className="text-sm text-[#667875] dark:text-[#8FA89C] mt-1 font-medium">
                 Select your academic role to proceed with preloaded demo credentials
               </p>
             </div>
@@ -173,7 +173,7 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div className="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 font-semibold flex items-center space-x-2">
+              <div className="mb-5 p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 text-xs text-rose-700 font-semibold flex items-center space-x-2">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 <span>{error}</span>
               </div>
@@ -181,7 +181,7 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-[#173A2C] mb-1.5">
+                <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
                   Institutional Email
                 </label>
                 <input
@@ -190,12 +190,12 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@converseiq.edu"
-                  className="w-full px-4 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
+                  className="w-full px-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:bg-white dark:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#173A2C] mb-1.5">
+                <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
                   Security Password
                 </label>
                 <input
@@ -204,7 +204,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full px-4 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
+                  className="w-full px-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:bg-white dark:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none transition-all"
                 />
               </div>
 
@@ -223,16 +223,16 @@ export default function LoginPage() {
 
             <div className="relative my-6 text-center">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#DCE7E2]"></div>
+                <div className="w-full border-t border-[#DCE7E2] dark:border-[#2D4A3E]"></div>
               </div>
-              <span className="relative px-3 bg-white text-xs font-semibold text-[#667875]">or</span>
+              <span className="relative px-3 bg-white dark:bg-[#1A2B24] text-xs font-semibold text-[#667875] dark:text-[#8FA89C]">or</span>
             </div>
 
             {/* Institutional SSO / Google Login Button */}
             <button
               type="button"
               onClick={() => handleSubmit({ preventDefault: () => {} } as any)}
-              className="w-full py-2.5 px-4 bg-[#F5FAF8] hover:bg-[#E4F2F4] text-[#173A2C] text-xs font-bold rounded-xl transition-all flex items-center justify-center space-x-2 border border-[#DCE7E2] cursor-pointer"
+              className="w-full py-2.5 px-4 bg-[#F5FAF8] dark:bg-[#0F1A15] hover:bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#173A2C] dark:text-[#E8F0EC] text-xs font-bold rounded-xl transition-all flex items-center justify-center space-x-2 border border-[#DCE7E2] dark:border-[#2D4A3E] cursor-pointer"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path

@@ -104,23 +104,23 @@ export default function ActionItemsPage() {
       
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#173A2C] tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#173A2C] dark:text-[#E8F0EC] tracking-tight">
           Action Items
         </h1>
-        <p className="text-sm text-[#667875] mt-1">
+        <p className="text-sm text-[#667875] dark:text-[#8FA89C] mt-1">
           Track deliverables and deadlines distilled from institutional meetings.
         </p>
       </div>
 
       {/* Top 3 Summary Pills */}
       <div className="flex flex-wrap items-center gap-2.5">
-        <span className="px-4 py-1.5 bg-[#E4F2F4] text-[#367C88] border border-[#B9DDE3] rounded-xl text-xs font-semibold shadow-2xs">
+        <span className="px-4 py-1.5 bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0] border border-[#B9DDE3] dark:border-[#2A5A63] rounded-xl text-xs font-semibold shadow-2xs">
           {pendingCount} Pending Tasks
         </span>
         <span className="px-4 py-1.5 bg-rose-100 text-rose-800 border border-rose-200 rounded-xl text-xs font-semibold shadow-2xs">
           {highPriorityCount} High Priority
         </span>
-        <span className="px-4 py-1.5 bg-[#D4E9DF] text-[#3F795F] border border-[#78A98F]/30 rounded-xl text-xs font-semibold shadow-2xs">
+        <span className="px-4 py-1.5 bg-[#D4E9DF] dark:bg-[#243D33] text-[#3F795F] dark:text-[#78A98F] border border-[#78A98F]/30 rounded-xl text-xs font-semibold shadow-2xs">
           {upcomingCount} Upcoming Deadlines
         </span>
       </div>
@@ -141,13 +141,13 @@ export default function ActionItemsPage() {
         </div>
 
         <div className="relative w-full sm:w-72">
-          <Search className="w-4 h-4 text-[#667875] absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#667875] dark:text-[#8FA89C] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search tasks or faculty..."
-            className="w-full pl-9 pr-4 py-2 bg-white border border-[#DCE7E2] rounded-xl text-xs text-[#173A2C] placeholder:text-[#667875]/60 focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none shadow-2xs transition-all"
+            className="w-full pl-9 pr-4 py-2 bg-white dark:bg-[#1A2B24] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-xs text-[#173A2C] dark:text-[#E8F0EC] placeholder:text-[#667875] dark:text-[#8FA89C]/60 focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none shadow-2xs transition-all"
           />
         </div>
       </div>
@@ -155,7 +155,7 @@ export default function ActionItemsPage() {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-white rounded-2xl p-5 border border-[#DCE7E2] flex items-center justify-between space-x-4">
+            <div key={i} className="bg-white dark:bg-[#1A2B24] rounded-2xl p-5 border border-[#DCE7E2] dark:border-[#2D4A3E] flex items-center justify-between space-x-4">
               <div className="flex items-center space-x-3.5 flex-1">
                 <Skeleton className="w-5 h-5 rounded-md" />
                 <div className="space-y-1.5 flex-1">
@@ -168,10 +168,10 @@ export default function ActionItemsPage() {
           ))}
         </div>
       ) : filteredTasks.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-[#DCE7E2] p-12 text-center space-y-3 shadow-sm">
-          <CheckSquare className="w-10 h-10 text-[#667875]/30 mx-auto" />
-          <h3 className="text-base font-bold text-[#173A2C]">No action items found</h3>
-          <p className="text-xs text-[#667875] max-w-sm mx-auto">
+        <div className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] p-12 text-center space-y-3 shadow-sm">
+          <CheckSquare className="w-10 h-10 text-[#667875] dark:text-[#8FA89C]/30 mx-auto" />
+          <h3 className="text-base font-bold text-[#173A2C] dark:text-[#E8F0EC]">No action items found</h3>
+          <p className="text-xs text-[#667875] dark:text-[#8FA89C] max-w-sm mx-auto">
             Tasks extracted from your institutional sessions will be displayed here automatically.
           </p>
         </div>
@@ -181,7 +181,7 @@ export default function ActionItemsPage() {
           {urgentTasks.length > 0 && (
             <div className="space-y-3 pt-2">
               <div className="flex items-center space-x-2 text-xs font-bold text-rose-700 tracking-wider uppercase">
-                <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                <span className="w-2 h-2 rounded-full bg-rose-50 dark:bg-rose-950/300 animate-ping"></span>
                 <span>Urgent Actions ({urgentTasks.length})</span>
               </div>
 
@@ -189,7 +189,7 @@ export default function ActionItemsPage() {
                 {urgentTasks.map((task) => (
                   <div
                     key={task.id}
-                    className="bg-white rounded-2xl p-4 sm:p-5 border border-[#DCE7E2] shadow-sm flex items-center justify-between space-x-4 hover:border-[#78A98F] transition-all hover:shadow-md"
+                    className="bg-white dark:bg-[#1A2B24] rounded-2xl p-4 sm:p-5 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm flex items-center justify-between space-x-4 hover:border-[#78A98F] transition-all hover:shadow-md"
                   >
                     <div className="flex items-center space-x-3.5 min-w-0">
                       <button
@@ -198,16 +198,16 @@ export default function ActionItemsPage() {
                         className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all cursor-pointer flex-shrink-0 ${
                           task.status === 'Completed'
                             ? 'bg-[#3F795F] border-[#3F795F] text-white shadow-xs'
-                            : 'border-[#DCE7E2] hover:border-[#78A98F] bg-white'
+                            : 'border-[#DCE7E2] dark:border-[#2D4A3E] hover:border-[#78A98F] bg-white dark:bg-[#1A2B24]'
                         }`}
                       >
                         {task.status === 'Completed' && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                       </button>
                       <div className="min-w-0">
-                        <p className="text-sm font-bold text-[#173A2C] truncate">
+                        <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC] truncate">
                           {task.title}
                         </p>
-                        <p className="text-xs text-[#667875] mt-0.5 truncate">
+                        <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-0.5 truncate">
                           {task.assignee} • {task.dueDate}
                         </p>
                       </div>
@@ -220,7 +220,7 @@ export default function ActionItemsPage() {
                       <span className={`px-3 py-1 rounded-full text-[11px] font-medium border ${
                         task.status === 'In Progress'
                           ? 'bg-[#FEF3C7] text-[#92400E] border-amber-200'
-                          : 'bg-[#F5FAF8] text-[#667875] border-[#DCE7E2]'
+                          : 'bg-[#F5FAF8] dark:bg-[#0F1A15] text-[#667875] dark:text-[#8FA89C] border-[#DCE7E2] dark:border-[#2D4A3E]'
                       }`}>
                         {task.status}
                       </span>
@@ -235,7 +235,7 @@ export default function ActionItemsPage() {
           {upcomingTasks.length > 0 && (
             <div className="space-y-3 pt-4">
               <div className="flex items-center space-x-2 text-xs font-bold text-amber-800 tracking-wider uppercase">
-                <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                <span className="w-2 h-2 rounded-full bg-amber-50 dark:bg-amber-950/300"></span>
                 <span>Upcoming Deadlines ({upcomingTasks.length})</span>
               </div>
 
@@ -243,7 +243,7 @@ export default function ActionItemsPage() {
                 {upcomingTasks.map((task) => (
                   <div
                     key={task.id}
-                    className="bg-white rounded-2xl p-4 sm:p-5 border border-[#DCE7E2] shadow-sm flex items-center justify-between space-x-4 hover:border-[#78A98F] transition-all hover:shadow-md"
+                    className="bg-white dark:bg-[#1A2B24] rounded-2xl p-4 sm:p-5 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm flex items-center justify-between space-x-4 hover:border-[#78A98F] transition-all hover:shadow-md"
                   >
                     <div className="flex items-center space-x-3.5 min-w-0">
                       <button
@@ -252,16 +252,16 @@ export default function ActionItemsPage() {
                         className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all cursor-pointer flex-shrink-0 ${
                           task.status === 'Completed'
                             ? 'bg-[#3F795F] border-[#3F795F] text-white shadow-xs'
-                            : 'border-[#DCE7E2] hover:border-[#78A98F] bg-white'
+                            : 'border-[#DCE7E2] dark:border-[#2D4A3E] hover:border-[#78A98F] bg-white dark:bg-[#1A2B24]'
                         }`}
                       >
                         {task.status === 'Completed' && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                       </button>
                       <div className="min-w-0">
-                        <p className="text-sm font-bold text-[#173A2C] truncate">
+                        <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC] truncate">
                           {task.title}
                         </p>
-                        <p className="text-xs text-[#667875] mt-0.5 truncate">
+                        <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-0.5 truncate">
                           {task.assignee} • {task.dueDate}
                         </p>
                       </div>
@@ -271,14 +271,14 @@ export default function ActionItemsPage() {
                       <span className={`px-3 py-1 rounded-full text-[11px] font-bold border ${
                         task.priority === 'Medium'
                           ? 'bg-amber-100 text-amber-800 border-amber-200'
-                          : 'bg-[#D4E9DF] text-[#3F795F] border-[#78A98F]/30'
+                          : 'bg-[#D4E9DF] dark:bg-[#243D33] text-[#3F795F] dark:text-[#78A98F] border-[#78A98F]/30'
                       }`}>
                         {task.priority}
                       </span>
                       <span className={`px-3 py-1 rounded-full text-[11px] font-medium border ${
                         task.status === 'In Progress'
                           ? 'bg-[#FEF3C7] text-[#92400E] border-amber-200'
-                          : 'bg-[#F5FAF8] text-[#667875] border-[#DCE7E2]'
+                          : 'bg-[#F5FAF8] dark:bg-[#0F1A15] text-[#667875] dark:text-[#8FA89C] border-[#DCE7E2] dark:border-[#2D4A3E]'
                       }`}>
                         {task.status}
                       </span>
@@ -292,7 +292,7 @@ export default function ActionItemsPage() {
           {/* Group 3: 🟢 COMPLETED */}
           {completedTasks.length > 0 && (
             <div className="space-y-3 pt-4">
-              <div className="flex items-center space-x-2 text-xs font-bold text-[#3F795F] tracking-wider uppercase">
+              <div className="flex items-center space-x-2 text-xs font-bold text-[#3F795F] dark:text-[#78A98F] tracking-wider uppercase">
                 <span className="w-2 h-2 rounded-full bg-[#3F795F]"></span>
                 <span>Completed Tasks ({completedTasks.length})</span>
               </div>
@@ -301,7 +301,7 @@ export default function ActionItemsPage() {
                 {completedTasks.map((task) => (
                   <div
                     key={task.id}
-                    className="bg-white rounded-2xl p-4 sm:p-5 border border-[#DCE7E2] shadow-xs flex items-center justify-between space-x-4 opacity-80 hover:opacity-100 transition-opacity"
+                    className="bg-white dark:bg-[#1A2B24] rounded-2xl p-4 sm:p-5 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-xs flex items-center justify-between space-x-4 opacity-80 hover:opacity-100 transition-opacity"
                   >
                     <div className="flex items-center space-x-3.5 min-w-0">
                       <button
@@ -312,17 +312,17 @@ export default function ActionItemsPage() {
                         <Check className="w-3.5 h-3.5 stroke-[3]" />
                       </button>
                       <div className="min-w-0">
-                        <p className="text-sm font-bold text-[#667875] line-through truncate">
+                        <p className="text-sm font-bold text-[#667875] dark:text-[#8FA89C] line-through truncate">
                           {task.title}
                         </p>
-                        <p className="text-xs text-[#667875]/70 mt-0.5 truncate">
+                        <p className="text-xs text-[#667875] dark:text-[#8FA89C]/70 mt-0.5 truncate">
                           {task.assignee} • {task.dueDate}
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-center space-x-2 flex-shrink-0">
-                      <span className="px-3 py-1 bg-[#D4E9DF] text-[#3F795F] rounded-full text-[11px] font-bold border border-[#78A98F]/30">
+                      <span className="px-3 py-1 bg-[#D4E9DF] dark:bg-[#243D33] text-[#3F795F] dark:text-[#78A98F] rounded-full text-[11px] font-bold border border-[#78A98F]/30">
                         Completed
                       </span>
                     </div>

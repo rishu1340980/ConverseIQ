@@ -120,10 +120,10 @@ export default function HodFacultyPerformancePage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#173A2C] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#173A2C] dark:text-[#E8F0EC] tracking-tight">
             Faculty Performance
           </h1>
-          <p className="text-sm text-[#667875] mt-1 font-medium">
+          <p className="text-sm text-[#667875] dark:text-[#8FA89C] mt-1 font-medium">
             {facultyList.length} faculty member{facultyList.length !== 1 ? 's' : ''} in your department
           </p>
         </div>
@@ -139,8 +139,8 @@ export default function HodFacultyPerformancePage() {
 
       {/* Faculty List */}
       {loading ? (
-        <div className="py-16 text-center text-xs text-[#667875]">
-          <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#DCE7E2] border-t-[#3F795F] mx-auto mb-3"></div>
+        <div className="py-16 text-center text-xs text-[#667875] dark:text-[#8FA89C]">
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#DCE7E2] dark:border-[#2D4A3E] border-t-[#3F795F] mx-auto mb-3"></div>
           <span>Loading faculty directory...</span>
         </div>
       ) : facultyList.length > 0 ? (
@@ -148,8 +148,8 @@ export default function HodFacultyPerformancePage() {
           {facultyList.map((faculty) => (
             <div
               key={faculty.id}
-              className={`bg-white rounded-2xl border p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-200 card-interactive ${
-                faculty.is_active ? 'border-[#DCE7E2] hover:border-[#78A98F]/50' : 'border-gray-200 opacity-60'
+              className={`bg-white dark:bg-[#1A2B24] rounded-2xl border p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-200 card-interactive ${
+                faculty.is_active ? 'border-[#DCE7E2] dark:border-[#2D4A3E] hover:border-[#78A98F]/50' : 'border-gray-200 dark:border-gray-700 opacity-60'
               }`}
             >
               {/* Left: Avatar + Details */}
@@ -158,12 +158,12 @@ export default function HodFacultyPerformancePage() {
                   {faculty.initial}
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-[#173A2C]">{faculty.name}</p>
-                  <p className="text-xs text-[#667875] font-medium mt-0.5">{faculty.designation}</p>
+                  <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC]">{faculty.name}</p>
+                  <p className="text-xs text-[#667875] dark:text-[#8FA89C] font-medium mt-0.5">{faculty.designation}</p>
                   <div className="flex items-center gap-3 mt-1">
-                    <span className="text-[11px] text-[#667875]">{faculty.meeting_count} meeting{faculty.meeting_count !== 1 ? 's' : ''}</span>
+                    <span className="text-[11px] text-[#667875] dark:text-[#8FA89C]">{faculty.meeting_count} meeting{faculty.meeting_count !== 1 ? 's' : ''}</span>
                     {faculty.actions_total > 0 && (
-                      <span className="text-[11px] text-[#367C88] font-medium">{faculty.actions_done}/{faculty.actions_total} actions done</span>
+                      <span className="text-[11px] text-[#367C88] dark:text-[#4DA3B0] font-medium">{faculty.actions_done}/{faculty.actions_total} actions done</span>
                     )}
                   </div>
                 </div>
@@ -172,8 +172,8 @@ export default function HodFacultyPerformancePage() {
               {/* Middle: Action completion rate */}
               <div className="flex-1 max-w-xs">
                 <div className="flex items-center justify-between text-xs mb-1.5">
-                  <span className="text-[#667875] font-medium">Action Completion</span>
-                  <span className="font-bold text-[#173A2C]">
+                  <span className="text-[#667875] dark:text-[#8FA89C] font-medium">Action Completion</span>
+                  <span className="font-bold text-[#173A2C] dark:text-[#E8F0EC]">
                     {faculty.actions_total > 0 ? `${faculty.completion_rate}%` : '—'}
                   </span>
                 </div>
@@ -186,7 +186,7 @@ export default function HodFacultyPerformancePage() {
                   )}
                 </div>
                 {faculty.actions_total === 0 && (
-                  <p className="text-[11px] text-[#667875] mt-1">No action items recorded yet</p>
+                  <p className="text-[11px] text-[#667875] dark:text-[#8FA89C] mt-1">No action items recorded yet</p>
                 )}
               </div>
 
@@ -194,15 +194,15 @@ export default function HodFacultyPerformancePage() {
               <div className="flex items-center gap-3">
                 <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${
                   faculty.is_active
-                    ? 'bg-[#D4E9DF] text-[#173A2C]'
-                    : 'bg-gray-100 text-gray-500'
+                    ? 'bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC]'
+                    : 'bg-gray-100 dark:bg-gray-800/40 text-gray-500 dark:text-gray-400'
                 }`}>
                   {faculty.is_active ? 'Active' : 'Inactive'}
                 </span>
                 <button
                   onClick={() => handleToggleActive(faculty)}
                   title={faculty.is_active ? 'Deactivate faculty' : 'Activate faculty'}
-                  className="text-gray-400 hover:text-[#3F795F] transition-colors cursor-pointer"
+                  className="text-gray-400 hover:text-[#3F795F] dark:text-[#78A98F] transition-colors cursor-pointer"
                 >
                   {faculty.is_active
                     ? <XCircle className="w-4 h-4 text-rose-400 hover:text-rose-600" />
@@ -221,10 +221,10 @@ export default function HodFacultyPerformancePage() {
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-[#DCE7E2] py-16 text-center space-y-3 shadow-xs">
+        <div className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] py-16 text-center space-y-3 shadow-xs">
           <Users className="w-10 h-10 text-gray-300 mx-auto" />
-          <h3 className="text-base font-bold text-[#173A2C]">No faculty members yet</h3>
-          <p className="text-xs text-[#667875] max-w-sm mx-auto">
+          <h3 className="text-base font-bold text-[#173A2C] dark:text-[#E8F0EC]">No faculty members yet</h3>
+          <p className="text-xs text-[#667875] dark:text-[#8FA89C] max-w-sm mx-auto">
             Use the &quot;Add Faculty&quot; button above to add faculty members to your department.
           </p>
         </div>
@@ -233,51 +233,51 @@ export default function HodFacultyPerformancePage() {
       {/* Add Faculty Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center px-4 animate-fade-in">
-          <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-xl w-full max-w-md p-6 space-y-5 animate-scale-in">
+          <div className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-xl w-full max-w-md p-6 space-y-5 animate-scale-in">
             <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-[#173A2C]">Add Faculty Member</h2>
-              <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-[#173A2C] cursor-pointer">
+              <h2 className="text-base font-bold text-[#173A2C] dark:text-[#E8F0EC]">Add Faculty Member</h2>
+              <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-[#173A2C] dark:text-[#E8F0EC] cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-semibold text-[#173A2C] mb-1">Full Name *</label>
+                <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1">Full Name *</label>
                 <input
                   type="text"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   placeholder="e.g. Dr. Priya Nair"
-                  className="w-full px-3 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none"
+                  className="w-full px-3 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:bg-white dark:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#173A2C] mb-1">Email *</label>
+                <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1">Email *</label>
                 <input
                   type="email"
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
                   placeholder="e.g. priya.nair@converseiq.edu"
-                  className="w-full px-3 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none"
+                  className="w-full px-3 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:bg-white dark:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#173A2C] mb-1">Temporary Password *</label>
+                <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1">Temporary Password *</label>
                 <input
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Min. 8 characters"
-                  className="w-full px-3 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none"
+                  className="w-full px-3 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:bg-white dark:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#173A2C] mb-1">Designation</label>
+                <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1">Designation</label>
                 <select
                   value={newDesignation}
                   onChange={(e) => setNewDesignation(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none"
+                  className="w-full px-3 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:bg-white dark:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none"
                 >
                   <option>Assistant Professor</option>
                   <option>Associate Professor</option>
@@ -287,18 +287,18 @@ export default function HodFacultyPerformancePage() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#173A2C] mb-1">Phone (Optional)</label>
+                <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1">Phone (Optional)</label>
                 <input
                   type="text"
                   value={newPhone}
                   onChange={(e) => setNewPhone(e.target.value)}
                   placeholder="+91 98765 43210"
-                  className="w-full px-3 py-2.5 bg-[#F5FAF8] border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] focus:bg-white focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none"
+                  className="w-full px-3 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:bg-white dark:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none"
                 />
               </div>
 
               {addError && (
-                <p className="text-xs text-rose-600 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2">{addError}</p>
+                <p className="text-xs text-rose-600 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 rounded-xl px-3 py-2">{addError}</p>
               )}
             </div>
 

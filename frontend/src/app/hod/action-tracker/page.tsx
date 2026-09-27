@@ -53,22 +53,22 @@ export default function HodActionTrackerPage() {
   const getPriorityBadgeClass = (priority: ActionItem['priority']) => {
     switch (priority) {
       case 'High':
-        return 'bg-rose-50 text-rose-600 border border-rose-200';
+        return 'bg-rose-50 dark:bg-rose-950/30 text-rose-600 border border-rose-200';
       case 'Medium':
-        return 'bg-amber-50 text-amber-700 border border-amber-200';
+        return 'bg-amber-50 dark:bg-amber-950/30 text-amber-700 border border-amber-200';
       case 'Low':
-        return 'bg-[#D4E9DF] text-[#173A2C] border border-[#78A98F]/40';
+        return 'bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC] border border-[#78A98F]/40';
     }
   };
 
   const getStatusBadgeClass = (status: ActionItem['status']) => {
     switch (status) {
       case 'Completed':
-        return 'bg-[#D4E9DF] text-[#173A2C] font-bold border border-[#78A98F]/40';
+        return 'bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC] font-bold border border-[#78A98F]/40';
       case 'In Progress':
-        return 'bg-[#E4F2F4] text-[#367C88] font-bold border border-[#B9DDE3]/60';
+        return 'bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0] font-bold border border-[#B9DDE3] dark:border-[#2A5A63]/60';
       case 'Pending':
-        return 'bg-[#F5FAF8] text-[#667875] border border-[#DCE7E2] font-semibold';
+        return 'bg-[#F5FAF8] dark:bg-[#0F1A15] text-[#667875] dark:text-[#8FA89C] border border-[#DCE7E2] dark:border-[#2D4A3E] font-semibold';
     }
   };
 
@@ -76,10 +76,10 @@ export default function HodActionTrackerPage() {
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#173A2C] tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#173A2C] dark:text-[#E8F0EC] tracking-tight">
           Department Action Tracker
         </h1>
-        <p className="text-sm text-[#667875] mt-1 font-medium">
+        <p className="text-sm text-[#667875] dark:text-[#8FA89C] mt-1 font-medium">
           All action items assigned across department members
         </p>
       </div>
@@ -99,17 +99,17 @@ export default function HodActionTrackerPage() {
       </div>
 
       {/* Table Card */}
-      <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-xs overflow-hidden card-interactive">
+      <div className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-xs overflow-hidden card-interactive">
         {loading ? (
-          <div className="py-16 text-center text-xs text-[#667875]">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#DCE7E2] border-t-[#3F795F] mx-auto mb-3"></div>
+          <div className="py-16 text-center text-xs text-[#667875] dark:text-[#8FA89C]">
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#DCE7E2] dark:border-[#2D4A3E] border-t-[#3F795F] mx-auto mb-3"></div>
             <span>Loading department action items...</span>
           </div>
         ) : filteredItems.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-[#DCE7E2] bg-[#F5FAF8]/60 text-xs font-semibold text-[#667875]">
+                <tr className="border-b border-[#DCE7E2] dark:border-[#2D4A3E] bg-[#F5FAF8] dark:bg-[#0F1A15]/60 text-xs font-semibold text-[#667875] dark:text-[#8FA89C]">
                   <th className="py-3.5 px-6 font-semibold">Task</th>
                   <th className="py-3.5 px-6 font-semibold">Assigned To</th>
                   <th className="py-3.5 px-6 font-semibold">Deadline</th>
@@ -117,19 +117,19 @@ export default function HodActionTrackerPage() {
                   <th className="py-3.5 px-6 font-semibold">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#DCE7E2] text-sm">
+              <tbody className="divide-y divide-[#DCE7E2] dark:divide-[#2D4A3E] text-sm">
                 {filteredItems.map((item) => (
                   <tr 
                     key={item.id}
-                    className="hover:bg-[#F5FAF8] transition-colors"
+                    className="hover:bg-[#F5FAF8] dark:bg-[#0F1A15] transition-colors"
                   >
-                    <td className="py-4 px-6 font-semibold text-[#173A2C]">
+                    <td className="py-4 px-6 font-semibold text-[#173A2C] dark:text-[#E8F0EC]">
                       {item.task}
                     </td>
-                    <td className="py-4 px-6 text-[#667875] font-medium">
+                    <td className="py-4 px-6 text-[#667875] dark:text-[#8FA89C] font-medium">
                       {item.assignedTo}
                     </td>
-                    <td className="py-4 px-6 text-[#667875] font-medium">
+                    <td className="py-4 px-6 text-[#667875] dark:text-[#8FA89C] font-medium">
                       {item.deadline}
                     </td>
                     <td className="py-4 px-6">
@@ -150,8 +150,8 @@ export default function HodActionTrackerPage() {
         ) : (
           <div className="py-16 text-center space-y-3">
             <CheckSquare className="w-10 h-10 text-gray-300 mx-auto" />
-            <h3 className="text-base font-bold text-[#173A2C]">No action items found</h3>
-            <p className="text-xs text-[#667875] max-w-sm mx-auto">
+            <h3 className="text-base font-bold text-[#173A2C] dark:text-[#E8F0EC]">No action items found</h3>
+            <p className="text-xs text-[#667875] dark:text-[#8FA89C] max-w-sm mx-auto">
               Department action items will be automatically listed here once meetings are analyzed.
             </p>
           </div>

@@ -97,24 +97,24 @@ export default function MoMSummariesPage() {
       {/* Header Row & View Switcher */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#173A2C] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#173A2C] dark:text-[#E8F0EC] tracking-tight">
             MoM &amp; Summaries
           </h1>
-          <p className="text-sm text-[#667875] mt-1">
+          <p className="text-sm text-[#667875] dark:text-[#8FA89C] mt-1">
             Minutes of meeting and AI-generated summaries from all analyzed sessions.
           </p>
         </div>
 
         {/* View Switcher Toggle */}
-        <div className="bg-[#F5FAF8] p-1 rounded-xl flex items-center space-x-1 border border-[#DCE7E2] self-start sm:self-auto shadow-2xs">
+        <div className="bg-[#F5FAF8] dark:bg-[#0F1A15] p-1 rounded-xl flex items-center space-x-1 border border-[#DCE7E2] dark:border-[#2D4A3E] self-start sm:self-auto shadow-2xs">
           <button
             type="button"
             onClick={() => setViewMode('grid')}
             title="Grid View"
             className={`p-2 rounded-lg transition-all cursor-pointer ${
               viewMode === 'grid'
-                ? 'bg-white text-[#173A2C] shadow-sm font-bold'
-                : 'text-[#667875] hover:text-[#173A2C]'
+                ? 'bg-white dark:bg-[#1A2B24] text-[#173A2C] dark:text-[#E8F0EC] shadow-sm font-bold'
+                : 'text-[#667875] dark:text-[#8FA89C] hover:text-[#173A2C] dark:text-[#E8F0EC]'
             }`}
           >
             <LayoutGrid className="w-4 h-4" />
@@ -125,8 +125,8 @@ export default function MoMSummariesPage() {
             title="Table View"
             className={`p-2 rounded-lg transition-all cursor-pointer ${
               viewMode === 'table'
-                ? 'bg-white text-[#173A2C] shadow-sm font-bold'
-                : 'text-[#667875] hover:text-[#173A2C]'
+                ? 'bg-white dark:bg-[#1A2B24] text-[#173A2C] dark:text-[#E8F0EC] shadow-sm font-bold'
+                : 'text-[#667875] dark:text-[#8FA89C] hover:text-[#173A2C] dark:text-[#E8F0EC]'
             }`}
           >
             <List className="w-4 h-4" />
@@ -136,36 +136,36 @@ export default function MoMSummariesPage() {
 
       {/* Top 3 Stat Counter Pills */}
       <div className="flex flex-wrap items-center gap-3">
-        <div className="bg-white rounded-xl px-4 py-2 border border-[#DCE7E2] shadow-2xs text-sm">
-          <span className="font-bold text-[#173A2C]">{momList.length}</span>{' '}
-          <span className="text-[#667875]">Total MoMs</span>
+        <div className="bg-white dark:bg-[#1A2B24] rounded-xl px-4 py-2 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-2xs text-sm">
+          <span className="font-bold text-[#173A2C] dark:text-[#E8F0EC]">{momList.length}</span>{' '}
+          <span className="text-[#667875] dark:text-[#8FA89C]">Total MoMs</span>
         </div>
-        <div className="bg-[#D4E9DF]/50 rounded-xl px-4 py-2 border border-[#78A98F]/30 shadow-2xs text-sm">
-          <span className="font-bold text-[#3F795F]">{totalDecisions}</span>{' '}
-          <span className="text-[#3F795F]">Total Decisions</span>
+        <div className="bg-[#D4E9DF] dark:bg-[#243D33]/50 rounded-xl px-4 py-2 border border-[#78A98F]/30 shadow-2xs text-sm">
+          <span className="font-bold text-[#3F795F] dark:text-[#78A98F]">{totalDecisions}</span>{' '}
+          <span className="text-[#3F795F] dark:text-[#78A98F]">Total Decisions</span>
         </div>
-        <div className="bg-[#E4F2F4]/60 rounded-xl px-4 py-2 border border-[#B9DDE3] shadow-2xs text-sm">
-          <span className="font-bold text-[#367C88]">{totalActions}</span>{' '}
-          <span className="text-[#367C88]">Total Action Items</span>
+        <div className="bg-[#E4F2F4] dark:bg-[#1A3A3F]/60 rounded-xl px-4 py-2 border border-[#B9DDE3] dark:border-[#2A5A63] shadow-2xs text-sm">
+          <span className="font-bold text-[#367C88] dark:text-[#4DA3B0]">{totalActions}</span>{' '}
+          <span className="text-[#367C88] dark:text-[#4DA3B0]">Total Action Items</span>
         </div>
       </div>
 
       {/* Search Input */}
       <div className="relative w-full">
-        <Search className="w-4 h-4 text-[#667875] absolute left-3.5 top-1/2 -translate-y-1/2" />
+        <Search className="w-4 h-4 text-[#667875] dark:text-[#8FA89C] absolute left-3.5 top-1/2 -translate-y-1/2" />
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by meeting, department, or topic..."
-          className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#DCE7E2] rounded-xl text-sm text-[#173A2C] placeholder:text-[#667875]/60 focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none shadow-2xs transition-all"
+          className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-[#1A2B24] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] placeholder:text-[#667875] dark:text-[#8FA89C]/60 focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none shadow-2xs transition-all"
         />
       </div>
 
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-white rounded-2xl p-6 border border-[#DCE7E2] space-y-4">
+            <div key={i} className="bg-white dark:bg-[#1A2B24] rounded-2xl p-6 border border-[#DCE7E2] dark:border-[#2D4A3E] space-y-4">
               <div className="flex items-center space-x-3">
                 <Skeleton className="w-9 h-9 rounded-xl" />
                 <div className="space-y-1.5 flex-1">
@@ -182,10 +182,10 @@ export default function MoMSummariesPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-[#DCE7E2] p-12 text-center space-y-3 shadow-sm">
-          <FileText className="w-10 h-10 text-[#667875]/30 mx-auto" />
-          <h3 className="text-base font-bold text-[#173A2C]">No Minutes of Meeting generated yet</h3>
-          <p className="text-xs text-[#667875] max-w-sm mx-auto">
+        <div className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] p-12 text-center space-y-3 shadow-sm">
+          <FileText className="w-10 h-10 text-[#667875] dark:text-[#8FA89C]/30 mx-auto" />
+          <h3 className="text-base font-bold text-[#173A2C] dark:text-[#E8F0EC]">No Minutes of Meeting generated yet</h3>
+          <p className="text-xs text-[#667875] dark:text-[#8FA89C] max-w-sm mx-auto">
             Once meetings are processed, structured executive summaries, formal resolutions, and action items will appear here.
           </p>
           <div className="pt-2">
@@ -205,7 +205,7 @@ export default function MoMSummariesPage() {
           {filtered.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-2xl p-6 border border-[#DCE7E2] shadow-sm space-y-4 hover:border-[#78A98F] transition-all flex flex-col justify-between hover:shadow-md card-interactive"
+              className="bg-white dark:bg-[#1A2B24] rounded-2xl p-6 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm space-y-4 hover:border-[#78A98F] transition-all flex flex-col justify-between hover:shadow-md card-interactive"
             >
               <div>
                 <div className="flex items-start justify-between">
@@ -216,24 +216,24 @@ export default function MoMSummariesPage() {
                     <div>
                       <Link
                         href={`/meetings/${item.id}`}
-                        className="text-sm font-bold text-[#173A2C] hover:text-[#3F795F] transition-colors line-clamp-1"
+                        className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC] hover:text-[#3F795F] dark:text-[#78A98F] transition-colors line-clamp-1"
                       >
                         {item.title}
                       </Link>
-                      <p className="text-xs text-[#667875] mt-0.5">
+                      <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-0.5">
                         {item.date} • {item.department}
                       </p>
                     </div>
                   </div>
                   <Link
                     href={`/meetings/${item.id}`}
-                    className="text-[#667875] hover:text-[#3F795F] p-1 rounded-lg hover:bg-[#F5FAF8] transition-colors"
+                    className="text-[#667875] dark:text-[#8FA89C] hover:text-[#3F795F] dark:text-[#78A98F] p-1 rounded-lg hover:bg-[#F5FAF8] dark:bg-[#0F1A15] transition-colors"
                   >
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
 
-                <p className="text-xs text-[#667875] leading-relaxed mt-3.5 line-clamp-3 bg-[#F5FAF8] p-3 rounded-xl border border-[#DCE7E2]/50">
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C] leading-relaxed mt-3.5 line-clamp-3 bg-[#F5FAF8] dark:bg-[#0F1A15] p-3 rounded-xl border border-[#DCE7E2] dark:border-[#2D4A3E]/50">
                   {item.summary}
                 </p>
 
@@ -241,7 +241,7 @@ export default function MoMSummariesPage() {
                   {item.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="px-2.5 py-0.5 bg-[#E4F2F4] text-[#367C88] border border-[#B9DDE3] rounded-full text-[11px] font-semibold"
+                      className="px-2.5 py-0.5 bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0] border border-[#B9DDE3] dark:border-[#2A5A63] rounded-full text-[11px] font-semibold"
                     >
                       {tag}
                     </span>
@@ -249,7 +249,7 @@ export default function MoMSummariesPage() {
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-[#DCE7E2] flex items-center justify-between text-[11px] text-[#667875] font-medium">
+              <div className="pt-3 border-t border-[#DCE7E2] dark:border-[#2D4A3E] flex items-center justify-between text-[11px] text-[#667875] dark:text-[#8FA89C] font-medium">
                 <div className="flex items-center space-x-3">
                   <span className="flex items-center space-x-1">
                     <Users className="w-3.5 h-3.5 text-[#78A98F]" />
@@ -261,11 +261,11 @@ export default function MoMSummariesPage() {
                   </span>
                 </div>
                 <div className="flex items-center space-x-2.5">
-                  <span className="flex items-center space-x-1 text-[#3F795F] font-semibold bg-[#D4E9DF]/60 px-2 py-0.5 rounded-md border border-[#78A98F]/20">
+                  <span className="flex items-center space-x-1 text-[#3F795F] dark:text-[#78A98F] font-semibold bg-[#D4E9DF] dark:bg-[#243D33]/60 px-2 py-0.5 rounded-md border border-[#78A98F]/20">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     <span>{item.decisionsCount} decisions</span>
                   </span>
-                  <span className="flex items-center space-x-1 text-[#367C88] font-semibold bg-[#E4F2F4] px-2 py-0.5 rounded-md border border-[#B9DDE3]">
+                  <span className="flex items-center space-x-1 text-[#367C88] dark:text-[#4DA3B0] font-semibold bg-[#E4F2F4] dark:bg-[#1A3A3F] px-2 py-0.5 rounded-md border border-[#B9DDE3] dark:border-[#2A5A63]">
                     <ListTodo className="w-3.5 h-3.5" />
                     <span>{item.actionsCount} actions</span>
                   </span>
@@ -275,11 +275,11 @@ export default function MoMSummariesPage() {
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-[#DCE7E2] text-[12px] font-semibold text-[#667875] bg-[#F5FAF8]/50">
+                <tr className="border-b border-[#DCE7E2] dark:border-[#2D4A3E] text-[12px] font-semibold text-[#667875] dark:text-[#8FA89C] bg-[#F5FAF8] dark:bg-[#0F1A15]/50">
                   <th className="py-4 px-6">Meeting</th>
                   <th className="py-4 px-6">Department</th>
                   <th className="py-4 px-6">Date</th>
@@ -288,11 +288,11 @@ export default function MoMSummariesPage() {
                   <th className="py-4 px-6 text-right">View</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#DCE7E2]/60 text-sm">
+              <tbody className="divide-y divide-[#DCE7E2] dark:divide-[#2D4A3E]/60 text-sm">
                 {filtered.map((item) => (
                   <tr
                     key={item.id}
-                    className="hover:bg-[#F5FAF8] transition-colors group"
+                    className="hover:bg-[#F5FAF8] dark:bg-[#0F1A15] transition-colors group"
                   >
                     <td className="py-4 px-6">
                       <Link
@@ -302,31 +302,31 @@ export default function MoMSummariesPage() {
                         <div className={`w-8 h-8 rounded-xl ${item.badgeBg} flex items-center justify-center font-bold text-xs flex-shrink-0`}>
                           {item.badge}
                         </div>
-                        <span className="font-bold text-[#173A2C] group-hover:text-[#3F795F] transition-colors">
+                        <span className="font-bold text-[#173A2C] dark:text-[#E8F0EC] group-hover:text-[#3F795F] dark:text-[#78A98F] transition-colors">
                           {item.title}
                         </span>
                       </Link>
                     </td>
-                    <td className="py-4 px-6 text-[#667875] text-xs">
+                    <td className="py-4 px-6 text-[#667875] dark:text-[#8FA89C] text-xs">
                       {item.department}
                     </td>
-                    <td className="py-4 px-6 text-[#667875] text-xs">
+                    <td className="py-4 px-6 text-[#667875] dark:text-[#8FA89C] text-xs">
                       {item.date}
                     </td>
                     <td className="py-4 px-4 text-center">
-                      <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full bg-[#D4E9DF] text-[#3F795F] font-bold text-xs border border-[#78A98F]/30">
+                      <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full bg-[#D4E9DF] dark:bg-[#243D33] text-[#3F795F] dark:text-[#78A98F] font-bold text-xs border border-[#78A98F]/30">
                         {item.decisionsCount}
                       </span>
                     </td>
                     <td className="py-4 px-4 text-center">
-                      <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full bg-[#E4F2F4] text-[#367C88] font-bold text-xs border border-[#B9DDE3]">
+                      <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#367C88] dark:text-[#4DA3B0] font-bold text-xs border border-[#B9DDE3] dark:border-[#2A5A63]">
                         {item.actionsCount}
                       </span>
                     </td>
                     <td className="py-4 px-6 text-right">
                       <Link
                         href={`/meetings/${item.id}`}
-                        className="px-3 py-1.5 bg-white border border-[#DCE7E2] hover:bg-[#F5FAF8] hover:border-[#78A98F] text-xs font-semibold rounded-xl text-[#173A2C] transition-colors inline-block shadow-2xs"
+                        className="px-3 py-1.5 bg-white dark:bg-[#1A2B24] border border-[#DCE7E2] dark:border-[#2D4A3E] hover:bg-[#F5FAF8] dark:bg-[#0F1A15] hover:border-[#78A98F] text-xs font-semibold rounded-xl text-[#173A2C] dark:text-[#E8F0EC] transition-colors inline-block shadow-2xs"
                       >
                         View MoM
                       </Link>

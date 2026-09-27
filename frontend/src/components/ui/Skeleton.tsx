@@ -24,7 +24,7 @@ export function Skeleton({
 
 export function StatCardSkeleton() {
   return (
-    <div className="bg-white rounded-2xl p-5 border border-[#DCE7E2] shadow-sm space-y-3">
+    <div className="bg-white dark:bg-[#1A2B24] rounded-2xl p-5 border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm space-y-3">
       <Skeleton className="w-10 h-10 rounded-xl" />
       <div className="space-y-1.5 pt-1">
         <Skeleton className="w-20 h-7 rounded-lg" />
@@ -36,7 +36,7 @@ export function StatCardSkeleton() {
 
 export function TableRowSkeleton({ cols = 5 }: { cols?: number }) {
   return (
-    <tr className="border-b border-[#DCE7E2]/60">
+    <tr className="border-b border-[#DCE7E2] dark:border-[#2D4A3E]/60">
       {Array.from({ length: cols }).map((_, i) => (
         <td key={i} className="px-6 py-4">
           <Skeleton className="h-4 w-full max-w-[120px] rounded" />

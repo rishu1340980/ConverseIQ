@@ -151,11 +151,11 @@ export default function AdminPage() {
   if (currentUser && currentUser.role !== 'Admin') {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-6 animate-fade-in">
-        <div className="w-16 h-16 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mb-4 shadow-sm">
+        <div className="w-16 h-16 bg-rose-50 dark:bg-rose-950/30 text-rose-600 rounded-full flex items-center justify-center mb-4 shadow-sm">
           <Lock className="w-8 h-8" />
         </div>
-        <h2 className="text-2xl font-black text-[#173A2C] mb-2">Access Restricted</h2>
-        <p className="text-[#667875] max-w-md text-sm mb-6">
+        <h2 className="text-2xl font-black text-[#173A2C] dark:text-[#E8F0EC] mb-2">Access Restricted</h2>
+        <p className="text-[#667875] dark:text-[#8FA89C] max-w-md text-sm mb-6">
           The Administration Suite is strictly restricted to Institutional Administrators. Your account does not have administrative oversight privileges.
         </p>
         <Link
@@ -175,14 +175,14 @@ export default function AdminPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#D4E9DF] text-[#173A2C] uppercase tracking-wider">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC] uppercase tracking-wider">
               Administration Suite
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#173A2C] tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#173A2C] dark:text-[#E8F0EC] tracking-tight mt-1">
             Institutional Governance &amp; Oversight
           </h1>
-          <p className="text-sm text-[#667875] mt-1 font-medium">
+          <p className="text-sm text-[#667875] dark:text-[#8FA89C] mt-1 font-medium">
             System configuration, faculty compliance, user management, and security telemetry.
           </p>
         </div>
@@ -237,17 +237,17 @@ export default function AdminPage() {
 
           {/* Department Activity & Live Alerts Feed */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm p-6 card-interactive">
-              <h3 className="font-bold text-[#173A2C] text-base mb-4 flex items-center space-x-2">
+            <div className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm p-6 card-interactive">
+              <h3 className="font-bold text-[#173A2C] dark:text-[#E8F0EC] text-base mb-4 flex items-center space-x-2">
                 <Building2 className="w-5 h-5 text-[#78A98F]" />
                 <span>Department Activity Breakdown</span>
               </h3>
-              <div className="divide-y divide-[#DCE7E2]/70">
+              <div className="divide-y divide-[#DCE7E2] dark:divide-[#2D4A3E]/70">
                 {dashboard?.department_activity && dashboard.department_activity.length > 0 ? (
                   dashboard.department_activity.map((dept, idx) => (
                     <div key={idx} className="py-3 flex items-center justify-between">
-                      <span className="font-bold text-sm text-[#173A2C]">{dept.department_name}</span>
-                      <div className="text-xs text-[#667875] space-x-3 font-semibold">
+                      <span className="font-bold text-sm text-[#173A2C] dark:text-[#E8F0EC]">{dept.department_name}</span>
+                      <div className="text-xs text-[#667875] dark:text-[#8FA89C] space-x-3 font-semibold">
                         <span>{dept.faculty_count} Faculty</span>
                         <span>•</span>
                         <span>{dept.meeting_count} Meetings</span>
@@ -255,20 +255,20 @@ export default function AdminPage() {
                     </div>
                   ))
                 ) : (
-                  <p className="text-xs text-[#667875] py-4 text-center">No department activity logged yet.</p>
+                  <p className="text-xs text-[#667875] dark:text-[#8FA89C] py-4 text-center">No department activity logged yet.</p>
                 )}
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm p-6 card-interactive">
-              <h3 className="font-bold text-[#173A2C] text-base mb-4 flex items-center space-x-2">
-                <AlertTriangle className="w-5 h-5 text-[#367C88]" />
+            <div className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm p-6 card-interactive">
+              <h3 className="font-bold text-[#173A2C] dark:text-[#E8F0EC] text-base mb-4 flex items-center space-x-2">
+                <AlertTriangle className="w-5 h-5 text-[#367C88] dark:text-[#4DA3B0]" />
                 <span>Live System Alerts Feed</span>
               </h3>
               <div className="space-y-3">
                 {dashboard?.system_alerts && dashboard.system_alerts.length > 0 ? (
                   dashboard.system_alerts.map((alert) => (
-                    <div key={alert.id} className="p-3 bg-[#E4F2F4] border border-[#B9DDE3] rounded-xl text-xs">
+                    <div key={alert.id} className="p-3 bg-[#E4F2F4] dark:bg-[#1A3A3F] border border-[#B9DDE3] dark:border-[#2A5A63] rounded-xl text-xs">
                       <div className="flex items-center justify-between font-bold text-[#132F34]">
                         <span>{alert.action}</span>
                         <span className="text-[10px] font-normal text-[#28606A]">
@@ -279,7 +279,7 @@ export default function AdminPage() {
                     </div>
                   ))
                 ) : (
-                  <p className="text-xs text-[#667875] py-4 text-center">No active security alerts.</p>
+                  <p className="text-xs text-[#667875] dark:text-[#8FA89C] py-4 text-center">No active security alerts.</p>
                 )}
               </div>
             </div>
@@ -289,16 +289,16 @@ export default function AdminPage() {
 
       {/* Tab 2: User Management */}
       {activeTab === 'users' && (
-        <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm overflow-hidden animate-fade-in card-interactive">
-          <div className="p-5 border-b border-[#DCE7E2] flex items-center justify-between bg-[#F5FAF8]">
-            <h3 className="font-bold text-[#173A2C]">Institution Faculty &amp; HOD Accounts</h3>
-            <span className="text-xs font-bold text-[#3F795F] bg-[#D4E9DF] px-2.5 py-1 rounded-full">
+        <div className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm overflow-hidden animate-fade-in card-interactive">
+          <div className="p-5 border-b border-[#DCE7E2] dark:border-[#2D4A3E] flex items-center justify-between bg-[#F5FAF8] dark:bg-[#0F1A15]">
+            <h3 className="font-bold text-[#173A2C] dark:text-[#E8F0EC]">Institution Faculty &amp; HOD Accounts</h3>
+            <span className="text-xs font-bold text-[#3F795F] dark:text-[#78A98F] bg-[#D4E9DF] dark:bg-[#243D33] px-2.5 py-1 rounded-full">
               {users.length} Total Users
             </span>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-[#DCE7E2] text-left text-sm">
-              <thead className="bg-[#F5FAF8] text-xs font-bold text-[#667875] uppercase tracking-wider">
+            <table className="min-w-full divide-y divide-[#DCE7E2] dark:divide-[#2D4A3E] text-left text-sm">
+              <thead className="bg-[#F5FAF8] dark:bg-[#0F1A15] text-xs font-bold text-[#667875] dark:text-[#8FA89C] uppercase tracking-wider">
                 <tr>
                   <th className="px-6 py-4">User Name</th>
                   <th className="px-6 py-4">Role</th>
@@ -308,22 +308,22 @@ export default function AdminPage() {
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#DCE7E2]/60">
+              <tbody className="divide-y divide-[#DCE7E2] dark:divide-[#2D4A3E]/60">
                 {users.map((u) => (
-                  <tr key={u.id} className="hover:bg-[#F5FAF8] transition-colors">
+                  <tr key={u.id} className="hover:bg-[#F5FAF8] dark:bg-[#0F1A15] transition-colors">
                     <td className="px-6 py-4">
-                      <div className="font-bold text-[#173A2C]">{u.name}</div>
-                      <div className="text-xs text-[#667875]">{u.email}</div>
+                      <div className="font-bold text-[#173A2C] dark:text-[#E8F0EC]">{u.name}</div>
+                      <div className="text-xs text-[#667875] dark:text-[#8FA89C]">{u.email}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="px-2.5 py-0.5 text-xs font-bold rounded-lg bg-[#E4F2F4] text-[#132F34]">
+                      <span className="px-2.5 py-0.5 text-xs font-bold rounded-lg bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#132F34]">
                         {u.role}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-[#667875] font-medium">{u.department_name || '—'}</td>
-                    <td className="px-6 py-4 text-[#173A2C] font-bold">{u.meeting_count ?? 0}</td>
+                    <td className="px-6 py-4 text-[#667875] dark:text-[#8FA89C] font-medium">{u.department_name || '—'}</td>
+                    <td className="px-6 py-4 text-[#173A2C] dark:text-[#E8F0EC] font-bold">{u.meeting_count ?? 0}</td>
                     <td className="px-6 py-4">
-                      <span className={`px-2.5 py-0.5 text-xs font-bold rounded-full ${u.is_active ? 'bg-[#D4E9DF] text-[#173A2C]' : 'bg-rose-50 text-rose-700'}`}>
+                      <span className={`px-2.5 py-0.5 text-xs font-bold rounded-full ${u.is_active ? 'bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC]' : 'bg-rose-50 dark:bg-rose-950/30 text-rose-700'}`}>
                         {u.is_active ? 'Active' : 'Suspended'}
                       </span>
                     </td>
@@ -332,8 +332,8 @@ export default function AdminPage() {
                         onClick={() => handleToggleUserStatus(u.id, u.is_active)}
                         className={`btn-interactive text-xs font-bold px-3 py-1.5 rounded-xl transition-colors ${
                           u.is_active
-                            ? 'bg-rose-50 text-rose-700 hover:bg-rose-100'
-                            : 'bg-[#D4E9DF] text-[#173A2C] hover:bg-[#BDDEC0]'
+                            ? 'bg-rose-50 dark:bg-rose-950/30 text-rose-700 hover:bg-rose-100'
+                            : 'bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC] hover:bg-[#BDDEC0]'
                         }`}
                       >
                         {u.is_active ? 'Suspend' : 'Activate'}
@@ -349,13 +349,13 @@ export default function AdminPage() {
 
       {/* Tab 3: Departments */}
       {activeTab === 'departments' && (
-        <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm overflow-hidden animate-fade-in card-interactive">
-          <div className="p-5 border-b border-[#DCE7E2] bg-[#F5FAF8]">
-            <h3 className="font-bold text-[#173A2C]">Academic Departments Overview</h3>
+        <div className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm overflow-hidden animate-fade-in card-interactive">
+          <div className="p-5 border-b border-[#DCE7E2] dark:border-[#2D4A3E] bg-[#F5FAF8] dark:bg-[#0F1A15]">
+            <h3 className="font-bold text-[#173A2C] dark:text-[#E8F0EC]">Academic Departments Overview</h3>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-[#DCE7E2] text-left text-sm">
-              <thead className="bg-[#F5FAF8] text-xs font-bold text-[#667875] uppercase tracking-wider">
+            <table className="min-w-full divide-y divide-[#DCE7E2] dark:divide-[#2D4A3E] text-left text-sm">
+              <thead className="bg-[#F5FAF8] dark:bg-[#0F1A15] text-xs font-bold text-[#667875] dark:text-[#8FA89C] uppercase tracking-wider">
                 <tr>
                   <th className="px-6 py-4">Department Name</th>
                   <th className="px-6 py-4">Faculty Count</th>
@@ -364,14 +364,14 @@ export default function AdminPage() {
                   <th className="px-6 py-4">Completion %</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#DCE7E2]/60">
+              <tbody className="divide-y divide-[#DCE7E2] dark:divide-[#2D4A3E]/60">
                 {departments.map((d) => (
-                  <tr key={d.id} className="hover:bg-[#F5FAF8] transition-colors">
-                    <td className="px-6 py-4 font-bold text-[#173A2C]">{d.name}</td>
-                    <td className="px-6 py-4 text-[#667875] font-semibold">{d.faculty_count}</td>
-                    <td className="px-6 py-4 text-[#667875] font-semibold">{d.meeting_count}</td>
-                    <td className="px-6 py-4 text-[#667875] font-semibold">{d.pending_actions}</td>
-                    <td className="px-6 py-4 font-black text-[#3F795F]">{d.completion_rate}%</td>
+                  <tr key={d.id} className="hover:bg-[#F5FAF8] dark:bg-[#0F1A15] transition-colors">
+                    <td className="px-6 py-4 font-bold text-[#173A2C] dark:text-[#E8F0EC]">{d.name}</td>
+                    <td className="px-6 py-4 text-[#667875] dark:text-[#8FA89C] font-semibold">{d.faculty_count}</td>
+                    <td className="px-6 py-4 text-[#667875] dark:text-[#8FA89C] font-semibold">{d.meeting_count}</td>
+                    <td className="px-6 py-4 text-[#667875] dark:text-[#8FA89C] font-semibold">{d.pending_actions}</td>
+                    <td className="px-6 py-4 font-black text-[#3F795F] dark:text-[#78A98F]">{d.completion_rate}%</td>
                   </tr>
                 ))}
               </tbody>
@@ -383,7 +383,7 @@ export default function AdminPage() {
       {/* Tab 4: Analytics */}
       {activeTab === 'analytics' && (
         !analytics ? (
-          <div className="bg-white p-12 rounded-2xl border border-[#DCE7E2] text-center text-[#667875] text-sm animate-fade-in">
+          <div className="bg-white dark:bg-[#1A2B24] p-12 rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] text-center text-[#667875] dark:text-[#8FA89C] text-sm animate-fade-in">
             Loading real-time institutional analytics...
           </div>
         ) : (
@@ -415,20 +415,20 @@ export default function AdminPage() {
               />
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-[#DCE7E2] shadow-sm card-interactive">
-              <h4 className="font-bold text-[#173A2C] mb-4">6-Month Meeting &amp; Action Item Trends</h4>
+            <div className="bg-white dark:bg-[#1A2B24] p-6 rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm card-interactive">
+              <h4 className="font-bold text-[#173A2C] dark:text-[#E8F0EC] mb-4">6-Month Meeting &amp; Action Item Trends</h4>
               {analytics.meetings_vs_actions_trend && analytics.meetings_vs_actions_trend.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 text-center text-xs">
                   {analytics.meetings_vs_actions_trend.map((t: any, idx: number) => (
-                    <div key={idx} className="p-3.5 bg-[#F5FAF8] rounded-xl border border-[#DCE7E2]/60 hover:border-[#78A98F]/40 transition-colors">
-                      <span className="font-bold text-[#667875] block mb-2">{t.month}</span>
-                      <div className="text-[#3F795F] font-extrabold text-sm">{t.meetings} Mtgs</div>
-                      <div className="text-[#367C88] font-bold mt-1">{t.actions} Actions</div>
+                    <div key={idx} className="p-3.5 bg-[#F5FAF8] dark:bg-[#0F1A15] rounded-xl border border-[#DCE7E2] dark:border-[#2D4A3E]/60 hover:border-[#78A98F]/40 transition-colors">
+                      <span className="font-bold text-[#667875] dark:text-[#8FA89C] block mb-2">{t.month}</span>
+                      <div className="text-[#3F795F] dark:text-[#78A98F] font-extrabold text-sm">{t.meetings} Mtgs</div>
+                      <div className="text-[#367C88] dark:text-[#4DA3B0] font-bold mt-1">{t.actions} Actions</div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-[#667875] py-4">No historical activity logged yet.</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C] py-4">No historical activity logged yet.</p>
               )}
             </div>
           </div>
@@ -437,14 +437,14 @@ export default function AdminPage() {
 
       {/* Tab 5: Audit Log */}
       {activeTab === 'audit' && (
-        <div className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm overflow-hidden p-6 space-y-4 animate-fade-in card-interactive">
+        <div className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm overflow-hidden p-6 space-y-4 animate-fade-in card-interactive">
           <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
-            <h3 className="font-bold text-[#173A2C] text-base">Security &amp; Operational Audit Log</h3>
+            <h3 className="font-bold text-[#173A2C] dark:text-[#E8F0EC] text-base">Security &amp; Operational Audit Log</h3>
             <div className="flex gap-2 w-full sm:w-auto">
               <select
                 value={auditSeverity}
                 onChange={(e) => setAuditSeverity(e.target.value)}
-                className="px-3 py-1.5 border border-[#DCE7E2] rounded-xl text-xs font-semibold bg-[#F5FAF8] text-[#173A2C] focus:outline-none focus:ring-1 focus:ring-[#78A98F]"
+                className="px-3 py-1.5 border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-xs font-semibold bg-[#F5FAF8] dark:bg-[#0F1A15] text-[#173A2C] dark:text-[#E8F0EC] focus:outline-none focus:ring-1 focus:ring-[#78A98F]"
               >
                 <option value="">All Severities</option>
                 <option value="Info">Info</option>
@@ -458,35 +458,35 @@ export default function AdminPage() {
                 value={auditSearch}
                 onChange={(e) => setAuditSearch(e.target.value)}
                 placeholder="Search action or details..."
-                className="px-3 py-1.5 border border-[#DCE7E2] rounded-xl text-xs flex-1 sm:w-56 bg-[#F5FAF8] text-[#173A2C] focus:outline-none focus:ring-1 focus:ring-[#78A98F]"
+                className="px-3 py-1.5 border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-xs flex-1 sm:w-56 bg-[#F5FAF8] dark:bg-[#0F1A15] text-[#173A2C] dark:text-[#E8F0EC] focus:outline-none focus:ring-1 focus:ring-[#78A98F]"
               />
             </div>
           </div>
 
-          <div className="divide-y divide-[#DCE7E2]/60 text-xs">
+          <div className="divide-y divide-[#DCE7E2] dark:divide-[#2D4A3E]/60 text-xs">
             {filteredLogs.length > 0 ? (
               filteredLogs.map((log) => (
-                <div key={log.id} className="py-3 flex items-start justify-between hover:bg-[#F5FAF8] px-2 rounded-xl transition-colors">
+                <div key={log.id} className="py-3 flex items-start justify-between hover:bg-[#F5FAF8] dark:bg-[#0F1A15] px-2 rounded-xl transition-colors">
                   <div>
-                    <div className="font-bold text-[#173A2C] flex items-center space-x-2">
+                    <div className="font-bold text-[#173A2C] dark:text-[#E8F0EC] flex items-center space-x-2">
                       <span>{log.action}</span>
                       <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-black ${
                         log.severity === 'Alert' ? 'bg-rose-100 text-rose-800' :
                         log.severity === 'Warn' ? 'bg-amber-100 text-amber-800' :
-                        log.severity === 'OK' ? 'bg-[#D4E9DF] text-[#173A2C]' : 'bg-[#E4F2F4] text-[#132F34]'
+                        log.severity === 'OK' ? 'bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC]' : 'bg-[#E4F2F4] dark:bg-[#1A3A3F] text-[#132F34]'
                       }`}>
                         {log.severity}
                       </span>
                     </div>
-                    <p className="text-[#667875] mt-0.5">{log.details}</p>
+                    <p className="text-[#667875] dark:text-[#8FA89C] mt-0.5">{log.details}</p>
                   </div>
-                  <span className="text-[#667875]/70 whitespace-nowrap ml-4 font-mono text-[11px]">
+                  <span className="text-[#667875] dark:text-[#8FA89C]/70 whitespace-nowrap ml-4 font-mono text-[11px]">
                     {new Date(log.timestamp).toLocaleString()}
                   </span>
                 </div>
               ))
             ) : (
-              <p className="text-[#667875] py-6 text-center">No logs matching criteria.</p>
+              <p className="text-[#667875] dark:text-[#8FA89C] py-6 text-center">No logs matching criteria.</p>
             )}
           </div>
         </div>
@@ -494,36 +494,36 @@ export default function AdminPage() {
 
       {/* Tab 6: System Settings */}
       {activeTab === 'settings' && (
-        <form onSubmit={handleSaveSettings} className="bg-white rounded-2xl border border-[#DCE7E2] shadow-sm p-6 space-y-6 max-w-2xl animate-fade-in card-interactive">
+        <form onSubmit={handleSaveSettings} className="bg-white dark:bg-[#1A2B24] rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm p-6 space-y-6 max-w-2xl animate-fade-in card-interactive">
           <div>
-            <h3 className="font-bold text-[#173A2C] text-lg">Institutional Configuration &amp; Feature Toggles</h3>
-            <p className="text-xs text-[#667875] mt-0.5">Parameters apply across all academic departments.</p>
+            <h3 className="font-bold text-[#173A2C] dark:text-[#E8F0EC] text-lg">Institutional Configuration &amp; Feature Toggles</h3>
+            <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-0.5">Parameters apply across all academic departments.</p>
           </div>
 
           {settingsSaved && (
-            <div className="p-3 bg-[#D4E9DF] text-[#173A2C] rounded-xl text-xs font-bold flex items-center space-x-2 animate-slide-up">
-              <CheckCircle2 className="w-4 h-4 text-[#3F795F]" />
+            <div className="p-3 bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC] rounded-xl text-xs font-bold flex items-center space-x-2 animate-slide-up">
+              <CheckCircle2 className="w-4 h-4 text-[#3F795F] dark:text-[#78A98F]" />
               <span>System settings updated and persisted successfully!</span>
             </div>
           )}
 
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-[#173A2C] uppercase mb-1">Institution Name</label>
+              <label className="block text-xs font-bold text-[#173A2C] dark:text-[#E8F0EC] uppercase mb-1">Institution Name</label>
               <input
                 type="text"
                 value={instName}
                 onChange={(e) => setInstName(e.target.value)}
-                className="w-full px-3.5 py-2.5 border border-[#DCE7E2] rounded-xl text-sm bg-[#F5FAF8] text-[#173A2C] focus:outline-none focus:ring-1 focus:ring-[#78A98F]"
+                className="w-full px-3.5 py-2.5 border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm bg-[#F5FAF8] dark:bg-[#0F1A15] text-[#173A2C] dark:text-[#E8F0EC] focus:outline-none focus:ring-1 focus:ring-[#78A98F]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#173A2C] uppercase mb-1">AI MoM Extraction Model</label>
+              <label className="block text-xs font-bold text-[#173A2C] dark:text-[#E8F0EC] uppercase mb-1">AI MoM Extraction Model</label>
               <select
                 value={aiModel}
                 onChange={(e) => setAiModel(e.target.value)}
-                className="w-full px-3.5 py-2.5 border border-[#DCE7E2] rounded-xl text-sm bg-[#F5FAF8] text-[#173A2C] focus:outline-none focus:ring-1 focus:ring-[#78A98F]"
+                className="w-full px-3.5 py-2.5 border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm bg-[#F5FAF8] dark:bg-[#0F1A15] text-[#173A2C] dark:text-[#E8F0EC] focus:outline-none focus:ring-1 focus:ring-[#78A98F]"
               >
                 <option value="meta-llama/llama-3.3-70b-instruct">Llama 3.3 70B Instruct (OpenRouter)</option>
                 <option value="google/gemini-2.5-flash">Google Gemini 2.5 Flash</option>
@@ -532,42 +532,42 @@ export default function AdminPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#173A2C] uppercase mb-1">Data Retention Period (Days)</label>
+              <label className="block text-xs font-bold text-[#173A2C] dark:text-[#E8F0EC] uppercase mb-1">Data Retention Period (Days)</label>
               <input
                 type="number"
                 value={retentionDays}
                 onChange={(e) => setRetentionDays(Number(e.target.value))}
-                className="w-full px-3.5 py-2.5 border border-[#DCE7E2] rounded-xl text-sm bg-[#F5FAF8] text-[#173A2C] focus:outline-none focus:ring-1 focus:ring-[#78A98F]"
+                className="w-full px-3.5 py-2.5 border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm bg-[#F5FAF8] dark:bg-[#0F1A15] text-[#173A2C] dark:text-[#E8F0EC] focus:outline-none focus:ring-1 focus:ring-[#78A98F]"
               />
             </div>
 
             <div className="pt-2 space-y-3">
-              <label className="flex items-center space-x-3 text-sm font-medium text-[#173A2C] cursor-pointer">
+              <label className="flex items-center space-x-3 text-sm font-medium text-[#173A2C] dark:text-[#E8F0EC] cursor-pointer">
                 <input
                   type="checkbox"
                   checked={enableEmailAlerts}
                   onChange={(e) => setEnableEmailAlerts(e.target.checked)}
-                  className="rounded border-[#DCE7E2] text-[#78A98F] focus:ring-[#78A98F] w-4 h-4"
+                  className="rounded border-[#DCE7E2] dark:border-[#2D4A3E] text-[#78A98F] focus:ring-[#78A98F] w-4 h-4"
                 />
                 <span>Enable Automated Email Notifications</span>
               </label>
 
-              <label className="flex items-center space-x-3 text-sm font-medium text-[#173A2C] cursor-pointer">
+              <label className="flex items-center space-x-3 text-sm font-medium text-[#173A2C] dark:text-[#E8F0EC] cursor-pointer">
                 <input
                   type="checkbox"
                   checked={enableAutoTranscription}
                   onChange={(e) => setEnableAutoTranscription(e.target.checked)}
-                  className="rounded border-[#DCE7E2] text-[#78A98F] focus:ring-[#78A98F] w-4 h-4"
+                  className="rounded border-[#DCE7E2] dark:border-[#2D4A3E] text-[#78A98F] focus:ring-[#78A98F] w-4 h-4"
                 />
                 <span>Enable Automated Audio Diarization &amp; Transcription</span>
               </label>
 
-              <label className="flex items-center space-x-3 text-sm font-medium text-[#173A2C] cursor-pointer">
+              <label className="flex items-center space-x-3 text-sm font-medium text-[#173A2C] dark:text-[#E8F0EC] cursor-pointer">
                 <input
                   type="checkbox"
                   checked={enable2FA}
                   onChange={(e) => setEnable2FA(e.target.checked)}
-                  className="rounded border-[#DCE7E2] text-[#78A98F] focus:ring-[#78A98F] w-4 h-4"
+                  className="rounded border-[#DCE7E2] dark:border-[#2D4A3E] text-[#78A98F] focus:ring-[#78A98F] w-4 h-4"
                 />
                 <span>Enforce Two-Factor Authentication (2FA) for Faculty Accounts</span>
               </label>
