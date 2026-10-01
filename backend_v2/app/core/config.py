@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     
     # AI keys & models (read securely from environment / .env)
     GEMINI_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-3.5-flash"
+    GEMINI_MODEL: str = "gemini-3.5-flash-lite"
     ASSEMBLYAI_API_KEY: str = ""
     
     # Uploads

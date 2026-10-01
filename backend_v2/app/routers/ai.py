@@ -36,7 +36,7 @@ async def _call_gemini_chat(prompt: str) -> Optional[str]:
     if not key or not key.strip():
         return None
 
-    candidate_models = [settings.GEMINI_MODEL, "gemini-2.5-flash", "gemini-flash-latest", "gemini-3.5-flash"]
+    candidate_models = ["gemini-3.5-flash-lite", settings.GEMINI_MODEL, "gemini-3.5-flash", "gemini-3.6-flash", "gemini-2.5-pro"]
     seen = set()
     models = [m for m in candidate_models if not (m in seen or seen.add(m))]
 

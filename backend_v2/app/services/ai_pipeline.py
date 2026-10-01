@@ -175,7 +175,7 @@ Return ONLY raw JSON with no backticks.
         }
     }
 
-    candidate_models = [settings.GEMINI_MODEL, "gemini-flash-latest", "gemini-3.6-flash"]
+    candidate_models = ["gemini-3.5-flash-lite", settings.GEMINI_MODEL, "gemini-3.5-flash", "gemini-3.6-flash", "gemini-2.5-pro"]
     seen = set()
     models = [m for m in candidate_models if not (m in seen or seen.add(m))]
 
@@ -230,7 +230,7 @@ async def _generate_mom_with_gemini(
 ) -> Dict[str, Any]:
     """Calls Google Gemini with strict grounding instructions for institutional MoM."""
     key = settings.GEMINI_API_KEY
-    candidate_models = [settings.GEMINI_MODEL, "gemini-3.5-flash", "gemini-flash-latest", "gemini-3.6-flash"]
+    candidate_models = ["gemini-3.5-flash-lite", settings.GEMINI_MODEL, "gemini-3.5-flash", "gemini-3.6-flash", "gemini-2.5-pro"]
     # De-duplicate while preserving order
     seen = set()
     models = [m for m in candidate_models if not (m in seen or seen.add(m))]
