@@ -238,8 +238,8 @@ async def _generate_mom_with_gemini(
     roster_str = ", ".join(participants) if participants else "Attendees identified in audio"
 
     prompt = f"""
-You are an expert academic meeting intelligence AI for ConverseIQ.
-Analyze this meeting transcript and extract factual Minutes of Meeting (MoM).
+You are an uncompromising, strictly factual academic meeting intelligence parser for ConverseIQ.
+Analyze this meeting transcript and extract ONLY verified Minutes of Meeting (MoM).
 
 Meeting Title: {meeting_title or "Recorded Meeting"}
 Attendees: {roster_str}
@@ -247,35 +247,37 @@ Attendees: {roster_str}
 Transcript:
 {transcript_text}
 
-CRITICAL ACCURACY & GROUNDING RULES:
-1. ONLY include information that was EXPLICITLY spoken in the transcript.
-2. SUMMARY: High-level factual summary of what was actually discussed.
-3. DECISIONS: Concrete decisions actually agreed upon. IF NO DECISIONS WERE EXPLICITLY MADE, RETURN AN EMPTY LIST []. NEVER FABRICATE DECISIONS.
-4. TOPICS DISCUSSED: Structured list of topics actually covered with key takeaways.
-5. ACTION ITEMS: Concrete follow-up tasks explicitly assigned to someone.
-   - IF NO ACTION ITEMS OR DELIVERABLES WERE EXPLICITLY ASSIGNED, RETURN AN EMPTY LIST [].
-   - DO NOT invent speculative tasks, recommendations, or hypothetical responsibilities.
-   - 'owner_name': Use the actual speaker's name from the conversation. If unassigned or unknown, do not fabricate a name.
-   - 'priority': 'High', 'Medium', or 'Low'
-   - 'days_until_due': Integer days until due date if specified, otherwise 3.
-6. IF ANYTHING IS MISSING IN THE MEETING (no decisions, no action items), LEAVE IT MISSING ([]). DO NOT ADD EXTRA ASSUMPTIONS OR PLACEHOLDERS.
+ZERO-HALLUCINATION & VERBATIM GROUNDING PROTOCOL:
+1. ABSOLUTE ZERO FABRICATION: Under no circumstances assume, extrapolate, or invent information not directly uttered in the transcript text.
+2. VERBATIM PROOF REQUIREMENT:
+   - For every decision, it must be supported by an explicit agreement in the speech (e.g., "Approved", "Agreed", "We decide that...").
+   - For every action item, there MUST be an explicit verbal commitment (e.g., "I will submit...", "Please send...", "Assigned to...").
+   - If a topic was only discussed or brainstormed but NO decision was finalized, DO NOT put it under decisions.
+   - If nobody took ownership or was assigned a task, DO NOT generate an action item.
+3. NEGATIVE EXTRACTION:
+   - If the meeting had NO formal decisions made: "decisions": []
+   - If the meeting had NO action items assigned: "action_items": []
+   - DO NOT add filler tasks like "Prepare for next meeting", "Review notes", or "Continue discussions".
+4. ACCURATE ATTRIBUTION:
+   - 'owner_name': Strictly the real name or speaker label of the person who committed to the task. Never invent a placeholder or name.
+   - 'days_until_due': If an exact timeframe is spoken (e.g. "by tomorrow" -> 1, "by Friday" -> calculated days, "next week" -> 7), use that number. Otherwise default to 3.
 
 Output strictly valid JSON with this exact schema:
 {{
-  "summary": "Factual meeting summary string",
+  "summary": "Objective, strictly factual summary of explicitly discussed points.",
   "decisions": [
-    "Decision string"
+    "Concrete agreed decision string"
   ],
   "topics_discussed": [
     {{
       "topic": "Topic Name",
-      "points": ["Takeaway 1"]
+      "points": ["Verifiable discussion point"]
     }}
   ],
   "action_items": [
     {{
-      "task": "Specific assigned task",
-      "owner_name": "Actual speaker name",
+      "task": "Explicitly committed task",
+      "owner_name": "Speaker Name",
       "priority": "High" | "Medium" | "Low",
       "days_until_due": 3
     }}
@@ -288,7 +290,7 @@ Return ONLY raw JSON with no backticks.
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
             "responseMimeType": "application/json",
-            "temperature": 0.1
+            "temperature": 0.0
         }
     }
 

@@ -43,7 +43,7 @@ async def _call_gemini_chat(prompt: str) -> Optional[str]:
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
-            "temperature": 0.2,
+            "temperature": 0.0,
             "maxOutputTokens": 1024,
         }
     }
@@ -249,14 +249,13 @@ User Query: "{query_text}"
 Institutional Context:
 {context_block}
 
-INSTRUCTIONS:
-1. Answer the query thoroughly, accurately, and factually based ONLY on the institutional context above.
-2. If the user asks about action items, list the task, who is assigned, status, and deadline.
-3. If the user asks about decisions, state the exact decisions and the meeting they occurred in.
-4. If the user asks about summaries, provide a clear, concise bulleted breakdown.
-5. If the information is NOT mentioned in the context, explicitly state:
-   "Based on the recorded meetings and action items, there is no mention of [topic]."
-   NEVER invent, assume, or hallucinate details.
+ZERO-HALLUCINATION & FACTUAL CITATION PROTOCOL:
+1. Answer strictly based on the Institutional Context above.
+2. If the user asks about action items, cite the exact task description, assigned faculty, priority, and deadline as stated in the context.
+3. If the user asks about decisions, list only the explicitly recorded decisions and their meeting titles.
+4. STRICT REFUSAL RULE: If the topic, meeting, faculty, or question is NOT directly mentioned in the Institutional Context above, you MUST answer:
+   "Based on the recorded department meetings and action items, there is no mention of [topic]."
+5. NEVER fabricate external dates, syllabus details, faculty names, or hypothetical decisions.
 6. Use clean, professional Markdown formatting with bold text, bullet points, and headers.
 """
 
