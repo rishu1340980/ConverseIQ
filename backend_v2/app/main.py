@@ -7,7 +7,7 @@ from backend_v2.app.models import (
     Department, User, Meeting, ActionItem, MinutesOfMeeting, Utterance, MeetingParticipant,
     AuditLog, SystemSetting
 )
-from backend_v2.app.routers import auth, dashboard, action_items, meetings, mom, users, departments, ai, admin
+from backend_v2.app.routers import auth, dashboard, action_items, meetings, mom, users, departments, ai, admin, reports
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -53,6 +53,7 @@ app.include_router(users.router, prefix=settings.API_V1_STR)
 app.include_router(departments.router, prefix=settings.API_V1_STR)
 app.include_router(ai.router, prefix=settings.API_V1_STR)
 app.include_router(admin.router, prefix=settings.API_V1_STR)
+app.include_router(reports.router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 async def root():

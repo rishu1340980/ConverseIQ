@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Search, CheckSquare, Check, Calendar, User, Clock, AlertTriangle } from 'lucide-react';
-import { apiRequest } from '@/lib/api';
+import { Search, CheckSquare, Check, Calendar, User, Clock, AlertTriangle, FileDown } from 'lucide-react';
+import { apiRequest, downloadFile } from '@/lib/api';
 import SegmentedControl from '@/components/ui/SegmentedControl';
+import AnimatedButton from '@/components/ui/AnimatedButton';
 import Skeleton from '@/components/ui/Skeleton';
 
 interface Task {
@@ -21,10 +22,22 @@ export default function ActionItemsPage() {
   const [search, setSearch] = useState('');
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     loadLiveTasks();
   }, []);
+
+  const handleExportPdf = async () => {
+    setIsExporting(true);
+    try {
+      await downloadFile('/reports/action-items/pdf', 'ConverseIQ_Action_Items.pdf');
+    } catch (err: any) {
+      alert(err.message || 'Failed to export Action Items PDF');
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const loadLiveTasks = async () => {
     setLoading(true);
@@ -103,13 +116,24 @@ export default function ActionItemsPage() {
     <div className="space-y-6 max-w-5xl animate-fade-in">
       
       {/* Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#173A2C] dark:text-[#E8F0EC] tracking-tight">
-          Action Items
-        </h1>
-        <p className="text-sm text-[#667875] dark:text-[#8FA89C] mt-1">
-          Track deliverables and deadlines distilled from institutional meetings.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#173A2C] dark:text-[#E8F0EC] tracking-tight">
+            Action Items
+          </h1>
+          <p className="text-sm text-[#667875] dark:text-[#8FA89C] mt-1">
+            Track deliverables and deadlines distilled from institutional meetings.
+          </p>
+        </div>
+        <AnimatedButton
+          variant="outline"
+          size="sm"
+          icon={<FileDown className="w-4 h-4 text-rose-500" />}
+          onClick={handleExportPdf}
+          disabled={isExporting}
+        >
+          {isExporting ? 'Exporting PDF...' : 'Export PDF Report'}
+        </AnimatedButton>
       </div>
 
       {/* Top 3 Summary Pills */}

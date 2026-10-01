@@ -27,7 +27,7 @@ import {
   CheckCircle2,
   UserCheck
 } from 'lucide-react';
-import { apiRequest } from '@/lib/api';
+import { apiRequest, downloadFile } from '@/lib/api';
 import { Meeting, MinutesOfMeeting, ActionItem, Participant, Utterance } from '@/types';
 import AnimatedButton from '@/components/ui/AnimatedButton';
 import SegmentedControl from '@/components/ui/SegmentedControl';
@@ -189,25 +189,17 @@ export default function MeetingDetailPage() {
     }
   };
 
-  const downloadExport = (format: 'pdf' | 'docx') => {
-    const token = localStorage.getItem('converseiq_token');
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
-    const url = `${baseUrl}/export/${meetingId}/${format}`;
-    // Trigger download with auth token in fetch or popup
-    fetch(url, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.blob())
-      .then((blob) => {
-        const fileUrl = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = fileUrl;
-        a.download = `MoM_Meeting_${meetingId}.${format}`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-      })
-      .catch(() => alert(`Failed to export ${format.toUpperCase()}`));
+  const downloadExport = async (format: 'pdf' | 'docx') => {
+    try {
+      if (format === 'pdf') {
+        const cleanTitle = (meeting?.title || `Meeting_${meetingId}`).replace(/[^a-zA-Z0-9_-]/g, '_');
+        await downloadFile(`/reports/mom/${meetingId}/pdf`, `MoM_${cleanTitle}.pdf`);
+      } else {
+        await downloadFile(`/mom/${meetingId}/export/docx`, `MoM_Meeting_${meetingId}.docx`);
+      }
+    } catch (err: any) {
+      alert(err.message || `Failed to export ${format.toUpperCase()}`);
+    }
   };
 
   // Helper to fallback parse raw transcript into utterances if needed

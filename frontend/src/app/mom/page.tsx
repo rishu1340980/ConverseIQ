@@ -13,9 +13,12 @@ import {
   ListTodo,
   FileText,
   Plus,
-  ArrowRight
+  ArrowRight,
+  Download,
+  FileDown,
+  Loader2
 } from 'lucide-react';
-import { apiRequest } from '@/lib/api';
+import { apiRequest, downloadFile } from '@/lib/api';
 import AnimatedButton from '@/components/ui/AnimatedButton';
 import Skeleton from '@/components/ui/Skeleton';
 
@@ -39,10 +42,24 @@ export default function MoMSummariesPage() {
   const [search, setSearch] = useState('');
   const [momList, setMomList] = useState<MoMCard[]>([]);
   const [loading, setLoading] = useState(true);
+  const [downloadingId, setDownloadingId] = useState<number | string | null>(null);
 
   useEffect(() => {
     fetchLiveMoMs();
   }, []);
+
+  const handleDownloadMomPdf = async (e: React.MouseEvent, meetingId: number | string, title: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDownloadingId(meetingId);
+    try {
+      await downloadFile(`/reports/mom/${meetingId}/pdf`, `MoM_${title.replace(/\s+/g, '_')}.pdf`);
+    } catch (err: any) {
+      alert(err.message || 'Failed to download PDF');
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
   const fetchLiveMoMs = async () => {
     setLoading(true);
@@ -260,15 +277,27 @@ export default function MoMSummariesPage() {
                     <span>{item.duration}</span>
                   </span>
                 </div>
-                <div className="flex items-center space-x-2.5">
-                  <span className="flex items-center space-x-1 text-[#3F795F] dark:text-[#78A98F] font-semibold bg-[#D4E9DF] dark:bg-[#243D33]/60 px-2 py-0.5 rounded-md border border-[#78A98F]/20">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>{item.decisionsCount} decisions</span>
-                  </span>
-                  <span className="flex items-center space-x-1 text-[#367C88] dark:text-[#4DA3B0] font-semibold bg-[#E4F2F4] dark:bg-[#1A3A3F] px-2 py-0.5 rounded-md border border-[#B9DDE3] dark:border-[#2A5A63]">
-                    <ListTodo className="w-3.5 h-3.5" />
-                    <span>{item.actionsCount} actions</span>
-                  </span>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={(e) => handleDownloadMomPdf(e, item.id, item.title)}
+                    disabled={downloadingId === item.id}
+                    className="inline-flex items-center space-x-1 px-2.5 py-1 bg-white dark:bg-[#1A2B24] hover:bg-[#F5FAF8] dark:hover:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] hover:border-[#78A98F] text-[#3F795F] dark:text-[#78A98F] font-semibold rounded-lg transition-all shadow-2xs cursor-pointer text-[11px]"
+                    title="Download PDF Minutes of Meeting"
+                  >
+                    {downloadingId === item.id ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <FileDown className="w-3.5 h-3.5 text-rose-500" />
+                    )}
+                    <span>PDF</span>
+                  </button>
+                  <Link
+                    href={`/meetings/${item.id}`}
+                    className="inline-flex items-center space-x-1 px-2.5 py-1 bg-[#D4E9DF] dark:bg-[#243D33] text-[#173A2C] dark:text-[#E8F0EC] hover:bg-[#78A98F] hover:text-white rounded-lg font-semibold transition-all text-[11px]"
+                  >
+                    <span>View</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </Link>
                 </div>
               </div>
             </div>
@@ -285,7 +314,7 @@ export default function MoMSummariesPage() {
                   <th className="py-4 px-6">Date</th>
                   <th className="py-4 px-4 text-center">Decisions</th>
                   <th className="py-4 px-4 text-center">Actions</th>
-                  <th className="py-4 px-6 text-right">View</th>
+                  <th className="py-4 px-6 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#DCE7E2] dark:divide-[#2D4A3E]/60 text-sm">
@@ -324,12 +353,27 @@ export default function MoMSummariesPage() {
                       </span>
                     </td>
                     <td className="py-4 px-6 text-right">
-                      <Link
-                        href={`/meetings/${item.id}`}
-                        className="px-3 py-1.5 bg-white dark:bg-[#1A2B24] border border-[#DCE7E2] dark:border-[#2D4A3E] hover:bg-[#F5FAF8] dark:bg-[#0F1A15] hover:border-[#78A98F] text-xs font-semibold rounded-xl text-[#173A2C] dark:text-[#E8F0EC] transition-colors inline-block shadow-2xs"
-                      >
-                        View MoM
-                      </Link>
+                      <div className="flex items-center justify-end space-x-2">
+                        <button
+                          onClick={(e) => handleDownloadMomPdf(e, item.id, item.title)}
+                          disabled={downloadingId === item.id}
+                          className="px-2.5 py-1.5 bg-white dark:bg-[#1A2B24] border border-[#DCE7E2] dark:border-[#2D4A3E] hover:bg-[#F5FAF8] dark:hover:bg-[#0F1A15] hover:border-[#78A98F] text-xs font-semibold rounded-xl text-[#3F795F] dark:text-[#78A98F] transition-colors inline-flex items-center space-x-1 shadow-2xs"
+                          title="Download PDF"
+                        >
+                          {downloadingId === item.id ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <FileDown className="w-3.5 h-3.5 text-rose-500" />
+                          )}
+                          <span>PDF</span>
+                        </button>
+                        <Link
+                          href={`/meetings/${item.id}`}
+                          className="px-3 py-1.5 bg-white dark:bg-[#1A2B24] border border-[#DCE7E2] dark:border-[#2D4A3E] hover:bg-[#F5FAF8] dark:bg-[#0F1A15] hover:border-[#78A98F] text-xs font-semibold rounded-xl text-[#173A2C] dark:text-[#E8F0EC] transition-colors inline-block shadow-2xs"
+                        >
+                          View MoM
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))}

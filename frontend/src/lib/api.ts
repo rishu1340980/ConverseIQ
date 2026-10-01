@@ -77,3 +77,40 @@ export async function apiRequest<T = any>(
     throw err;
   }
 }
+
+export async function downloadFile(endpoint: string, fallbackFilename: string = 'document.pdf'): Promise<void> {
+  const token = getAuthToken();
+  const headers = new Headers();
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  const url = `${BASE_URL}${endpoint}`;
+  const res = await fetch(url, { headers });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.detail || `Download failed with status ${res.status}`);
+  }
+
+  // Extract filename from Content-Disposition if present
+  let filename = fallbackFilename;
+  const disposition = res.headers.get('Content-Disposition');
+  if (disposition && disposition.includes('filename=')) {
+    const matches = disposition.match(/filename="?([^";]+)"?/);
+    if (matches && matches[1]) {
+      filename = matches[1];
+    }
+  }
+
+  const blob = await res.blob();
+  const blobUrl = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = blobUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(blobUrl);
+}
+
