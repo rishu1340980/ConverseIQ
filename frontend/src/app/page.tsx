@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { getAuthToken } from '@/lib/api';
+import { getAuthToken, getCurrentStoredUser } from '@/lib/api';
 
 export default function HomePage() {
   const router = useRouter();
@@ -10,7 +10,14 @@ export default function HomePage() {
   useEffect(() => {
     const token = getAuthToken();
     if (token) {
-      router.replace('/dashboard');
+      const user = getCurrentStoredUser();
+      if (user?.role === 'HOD') {
+        router.replace('/hod/overview');
+      } else if (user?.role === 'Admin') {
+        router.replace('/admin');
+      } else {
+        router.replace('/dashboard');
+      }
     } else {
       router.replace('/login');
     }

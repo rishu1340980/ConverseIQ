@@ -1,0 +1,14 @@
+# ConverseIQ Academic Meeting Intelligence Platform
+User-agent: *
+Allow: /
+Allow: /login
+
+# Disallow authenticated/institutional internal routes
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /hod/
+Disallow: /meetings/
+Disallow: /action-items
+Disallow: /mom
+Disallow: /settings
+Disallow: /api/

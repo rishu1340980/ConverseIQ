@@ -353,6 +353,108 @@ async def upload_and_analyze_meeting(
         "title": new_meeting.title
     }
 
+@router.post("/{meeting_id}/upload-recording")
+async def upload_recording_for_existing_meeting(
+    meeting_id: int,
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Attach audio recording to an existing scheduled meeting and run AI analysis."""
+    stmt = (
+        select(Meeting)
+        .options(
+            selectinload(Meeting.participants),
+            selectinload(Meeting.mom),
+            selectinload(Meeting.action_items),
+        )
+        .filter(Meeting.id == meeting_id)
+    )
+    result = await db.execute(stmt)
+    meeting = result.scalar_one_or_none()
+
+    if not meeting:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meeting not found")
+
+    meeting_dir = os.path.join(settings.UPLOAD_DIR, f"meeting_{meeting.id}")
+    os.makedirs(meeting_dir, exist_ok=True)
+    filename = os.path.basename(file.filename or "recording.mp3")
+    file_path = os.path.join(meeting_dir, filename)
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    # Participant roster
+    participant_names = [p.name for p in meeting.participants] if meeting.participants else []
+    mapping = {f"Speaker {chr(65 + i)}": name for i, name in enumerate(participant_names)}
+
+    # Transcribe audio
+    transcription_data = await transcribe_audio_with_diarization(
+        file_path,
+        speaker_mapping=mapping,
+        participants=participant_names,
+        meeting_title=meeting.title
+    )
+    transcript_text = transcription_data.get("text", "")
+    utterances_list = transcription_data.get("utterances", [])
+
+    for u in utterances_list:
+        raw_spk = u.get("raw_speaker") or "Speaker A"
+        spk_name = u.get("speaker") or raw_spk
+        utt = Utterance(
+            meeting_id=meeting.id,
+            speaker_label=raw_spk,
+            speaker_name=spk_name,
+            timestamp=u.get("timestamp") or "00:00",
+            language=u.get("language") or "English",
+            text=u.get("text") or "",
+            english_translation=u.get("translation") or u.get("text") or ""
+        )
+        db.add(utt)
+
+    # Generate MoM
+    mom_data = await generate_mom_and_actions(
+        transcript_text=transcript_text,
+        participants=participant_names,
+        meeting_title=meeting.title
+    )
+
+    if meeting.mom:
+        meeting.mom.summary = mom_data.get("summary", "")
+        meeting.mom.decisions = mom_data.get("decisions", [])
+        meeting.mom.agenda_topics = mom_data.get("topics_discussed", [])
+    else:
+        new_mom = MinutesOfMeeting(
+            meeting_id=meeting.id,
+            summary=mom_data.get("summary", ""),
+            decisions=mom_data.get("decisions", []),
+            agenda_topics=mom_data.get("topics_discussed", []),
+            is_finalized=False
+        )
+        db.add(new_mom)
+
+    for it in mom_data.get("action_items", []):
+        days = it.get("days_until_due", 3)
+        due = datetime.now(timezone.utc) + timedelta(days=days)
+        action_item = ActionItem(
+            meeting_id=meeting.id,
+            task=it.get("task") or "Institutional Follow-up",
+            owner_name=it.get("owner_name") or "Assigned Faculty",
+            priority=it.get("priority") or "Medium",
+            status="Pending",
+            due_date=due,
+            user_id=current_user.id
+        )
+        db.add(action_item)
+
+    meeting.status = "Analysis Complete"
+    await db.commit()
+
+    return {
+        "status": "success",
+        "message": f"Recording uploaded and analyzed for meeting '{meeting.title}'",
+        "meeting_id": meeting.id
+    }
+
 @router.get("/{meeting_id}")
 async def get_meeting_detail(
     meeting_id: int,
