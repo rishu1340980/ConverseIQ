@@ -59,7 +59,11 @@ export interface Meeting {
   title: string;
   date: string;
   duration_minutes: number;
-  status: 'Scheduled' | 'In Progress' | 'Processing' | 'Completed' | 'Failed';
+  status: string;
+  processing_status?: 'SCHEDULED' | 'LIVE' | 'RECORDED' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'INTERRUPTED' | string;
+  has_recording?: boolean;
+  error_message?: string | null;
+  jitsi_room?: string | null;
   created_by_id: number;
   department_id?: number | null;
   participant_count?: number;

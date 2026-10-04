@@ -10,6 +10,7 @@ from backend_v2.app.models.meeting import Meeting
 from backend_v2.app.models.action_item import ActionItem
 from backend_v2.app.models.department import Department
 from backend_v2.app.models.audit_log import AuditLog
+from backend_v2.app.models.schedule_event import ScheduleEvent
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 
@@ -84,12 +85,26 @@ async def get_faculty_dashboard(
     fac_deadlines_res = await db.execute(fac_deadlines_stmt)
     fac_deadlines = fac_deadlines_res.scalars().all()
 
+    # Academic sessions for faculty
+    sched_events_stmt = (
+        select(ScheduleEvent)
+        .filter(
+            (ScheduleEvent.faculty_email == current_user.email) | (ScheduleEvent.department_id == current_user.department_id),
+            ScheduleEvent.start_time >= now,
+            ScheduleEvent.status == "Scheduled"
+        )
+        .order_by(ScheduleEvent.start_time.asc())
+        .limit(6)
+    )
+    sched_events_res = await db.execute(sched_events_stmt)
+    faculty_scheduled_events = sched_events_res.scalars().all()
+
     return {
         "metrics": {
             "total_meetings": total_meetings,
             "pending_action_items": pending_actions,
             "upcoming_deadlines_count": upcoming_deadlines,
-            "upcoming_sessions_count": len(sched_meetings),
+            "upcoming_sessions_count": len(faculty_scheduled_events) + len(sched_meetings),
         },
         "priority_action_items": [
             {
@@ -122,7 +137,19 @@ async def get_faculty_dashboard(
                 }
                 for m in sched_meetings
             ],
-            "sessions": [],
+            "sessions": [
+                {
+                    "id": ev.id,
+                    "title": ev.title,
+                    "date": ev.start_time.strftime("%d") if ev.start_time else "",
+                    "date_info": ev.start_time.strftime("%b %d, %Y • %I:%M %p") if ev.start_time else "",
+                    "domain": ev.domain,
+                    "academic_year": ev.academic_year,
+                    "target_batch": ev.target_batch or "Department Students",
+                    "venue_or_link": ev.venue_or_link,
+                }
+                for ev in faculty_scheduled_events
+            ],
             "deadlines": [
                 {
                     "title": it.task,
@@ -132,7 +159,17 @@ async def get_faculty_dashboard(
                 for it in fac_deadlines
             ],
         },
-        "upcoming_events": [],
+        "upcoming_events": [
+            {
+                "id": ev.id,
+                "title": ev.title,
+                "academic_year": ev.academic_year,
+                "domain": ev.domain,
+                "date_info": ev.start_time.strftime("%b %d, %Y • %I:%M %p") if ev.start_time else "",
+                "venue_or_link": ev.venue_or_link,
+            }
+            for ev in faculty_scheduled_events
+        ],
     }
 
 
@@ -315,6 +352,19 @@ async def get_hod_dashboard(
     sched_dept_res = await db.execute(sched_dept_stmt)
     sched_dept_meetings = sched_dept_res.scalars().all()
 
+    # ── 9. Academic sessions in this department ──────────────────────────────
+    hod_sessions_stmt = (
+        select(ScheduleEvent)
+        .filter(
+            ScheduleEvent.department_id == dept_id,
+            ScheduleEvent.status == "Scheduled"
+        )
+        .order_by(ScheduleEvent.start_time.asc())
+        .limit(10)
+    )
+    hod_sessions_res = await db.execute(hod_sessions_stmt)
+    hod_sessions = hod_sessions_res.scalars().all()
+
     return {
         "metrics": {
             "total_faculty": total_faculty,
@@ -350,13 +400,32 @@ async def get_hod_dashboard(
                 }
                 for m in sched_dept_meetings
             ],
-            "sessions": [],
+            "sessions": [
+                {
+                    "id": ev.id,
+                    "title": ev.title,
+                    "day": ev.start_time.day if ev.start_time else None,
+                    "dateInfo": ev.start_time.strftime("%b %d, %Y • %I:%M %p") if ev.start_time else "",
+                    "faculty": ev.faculty_name,
+                    "faculty_email": ev.faculty_email,
+                    "domain": ev.domain,
+                    "academic_year": ev.academic_year,
+                    "target_batch": ev.target_batch or "Department Students",
+                    "venue_or_link": ev.venue_or_link,
+                    "reminder_sent": ev.reminder_sent > 0,
+                    "reminder_count": ev.reminder_sent,
+                }
+                for ev in hod_sessions
+            ],
             "deadlines": [
                 {
+                    "id": it.id,
                     "title": it.task,
                     "day": it.due_date.day if it.due_date else None,
                     "dateInfo": it.due_date.strftime("%b %d, %Y") if it.due_date else "No date",
                     "owner": it.owner_name,
+                    "owner_email": getattr(it, "owner_email", None),
+                    "reminder_sent": getattr(it, "reminder_sent", 0) > 0,
                 }
                 for it in deadline_items
             ],

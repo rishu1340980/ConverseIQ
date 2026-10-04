@@ -35,4 +35,12 @@ class Settings(BaseSettings):
     # Uploads
     UPLOAD_DIR: str = "./uploads"
 
+    # Email / SMTP Configuration
+    SMTP_HOST: str = ""
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM: str = "ConverseIQ Academic Notifications <no-reply@converseiq.edu>"
+    SMTP_TLS: bool = True
+
 settings = Settings()

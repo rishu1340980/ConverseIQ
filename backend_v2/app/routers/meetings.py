@@ -3,6 +3,7 @@ import shutil
 from fastapi import APIRouter, Depends, HTTPException, status, Query, UploadFile, File, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy import or_
 from sqlalchemy.orm import selectinload
 from pydantic import BaseModel, ConfigDict
 from typing import Optional, List, Any
@@ -99,6 +100,9 @@ def format_meeting_response(m: Meeting) -> dict:
         "date": m.date.isoformat() if m.date else datetime.now(timezone.utc).isoformat(),
         "duration_minutes": m.duration_minutes or 45,
         "status": m.status or "Analysis Complete",
+        "processing_status": getattr(m, "processing_status", "COMPLETED") or "COMPLETED",
+        "has_recording": bool(getattr(m, "recording_path", None)),
+        "error_message": getattr(m, "error_message", None),
         "created_by_id": m.user_id,
         "participant_count": len(participants_list) if participants_list else 1,
         "participants": participants_list,
@@ -134,8 +138,23 @@ async def list_meetings(
         stmt = stmt.filter(Meeting.user_id == current_user.id)
     # Admin sees all — no filter
 
-    if search:
-        stmt = stmt.filter(Meeting.title.ilike(f"%{search.strip()}%"))
+    if search and search.strip():
+        term = f"%{search.strip()}%"
+        # Global search: title, utterances, mom summary, or action items
+        stmt = stmt.filter(
+            or_(
+                Meeting.title.ilike(term),
+                Meeting.id.in_(
+                    select(Utterance.meeting_id).filter(Utterance.text.ilike(term))
+                ),
+                Meeting.id.in_(
+                    select(MinutesOfMeeting.meeting_id).filter(MinutesOfMeeting.summary.ilike(term))
+                ),
+                Meeting.id.in_(
+                    select(ActionItem.meeting_id).filter(ActionItem.task.ilike(term))
+                ),
+            )
+        )
 
     # Month/year filter
     if month and year:
@@ -242,11 +261,12 @@ async def upload_and_analyze_meeting(
     """
     meeting_title = title.strip() if title else "Faculty Meeting Recording"
 
-    # 1. Create meeting record
+    # 1. Create meeting record with initial RECORDED state
     new_meeting = Meeting(
         title=meeting_title,
         duration_minutes=duration_minutes or 45,
-        status="Completed",
+        status="Processing",
+        processing_status="RECORDED",
         user_id=current_user.id,
         department_id=current_user.department_id,
         date=datetime.now(timezone.utc)
@@ -254,13 +274,17 @@ async def upload_and_analyze_meeting(
     db.add(new_meeting)
     await db.flush()
 
-    # 2. Save uploaded audio file locally
+    # 2. Save uploaded audio file locally to durable storage first
     meeting_dir = os.path.join(settings.UPLOAD_DIR, f"meeting_{new_meeting.id}")
     os.makedirs(meeting_dir, exist_ok=True)
-    filename = os.path.basename(file.filename or "recording.mp3")
+    filename = os.path.basename(file.filename or "recording.webm")
     file_path = os.path.join(meeting_dir, filename)
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
+
+    new_meeting.recording_path = file_path
+    new_meeting.processing_status = "PROCESSING"
+    await db.commit()
 
     # 3. Build participant roster and speaker mapping (only if provided by user)
     mapping = {}
@@ -272,86 +296,104 @@ async def upload_and_analyze_meeting(
             mapping[label] = name
             participant_names.append(name)
 
-    # 4. Transcribe audio with multi-speaker diarization
-    transcription_data = await transcribe_audio_with_diarization(
-        file_path,
-        speaker_mapping=mapping,
-        participants=participant_names,
-        meeting_title=meeting_title
-    )
-    transcript_text = transcription_data.get("text", "")
-    utterances_list = transcription_data.get("utterances", [])
-
-    # Collect actual speakers from speech/transcription
-    distinct_speakers = {}
-    for u in utterances_list:
-        raw_spk = u.get("raw_speaker") or "Speaker A"
-        spk_name = u.get("speaker") or raw_spk
-        if raw_spk not in distinct_speakers:
-            distinct_speakers[raw_spk] = spk_name
-
-        utt = Utterance(
-            meeting_id=new_meeting.id,
-            speaker_label=raw_spk,
-            speaker_name=spk_name,
-            timestamp=u.get("timestamp") or "00:00",
-            language=u.get("language") or "English",
-            text=u.get("text") or "",
-            english_translation=u.get("translation") or u.get("text") or ""
+    try:
+        # 4. Transcribe audio with multi-speaker diarization
+        transcription_data = await transcribe_audio_with_diarization(
+            file_path,
+            speaker_mapping=mapping,
+            participants=participant_names,
+            meeting_title=meeting_title
         )
-        db.add(utt)
+        transcript_text = transcription_data.get("text", "")
+        utterances_list = transcription_data.get("utterances", [])
 
-    # Register real participants
-    if participant_names:
-        for idx, name in enumerate(participant_names):
-            label = f"Speaker {chr(65 + idx)}"
-            db.add(MeetingParticipant(meeting_id=new_meeting.id, name=name, speaker_label=label))
-    elif distinct_speakers:
-        for label, name in distinct_speakers.items():
-            db.add(MeetingParticipant(meeting_id=new_meeting.id, name=name, speaker_label=label))
-    else:
-        db.add(MeetingParticipant(meeting_id=new_meeting.id, name=current_user.name or "Host", speaker_label="Host"))
+        # Collect actual speakers from speech/transcription
+        distinct_speakers = {}
+        for u in utterances_list:
+            raw_spk = u.get("raw_speaker") or "Speaker A"
+            spk_name = u.get("speaker") or raw_spk
+            if raw_spk not in distinct_speakers:
+                distinct_speakers[raw_spk] = spk_name
 
-    # 5. Extract strictly grounded MoM (no hallucinations, no extra fake actions/decisions)
-    mom_data = await generate_mom_and_actions(
-        transcript_text=transcript_text,
-        participants=participant_names or list(distinct_speakers.values()),
-        meeting_title=meeting_title
-    )
+            utt = Utterance(
+                meeting_id=new_meeting.id,
+                speaker_label=raw_spk,
+                speaker_name=spk_name,
+                timestamp=u.get("timestamp") or "00:00",
+                language=u.get("language") or "English",
+                text=u.get("text") or "",
+                english_translation=u.get("translation") or u.get("text") or ""
+            )
+            db.add(utt)
 
-    new_mom = MinutesOfMeeting(
-        meeting_id=new_meeting.id,
-        summary=mom_data.get("summary", ""),
-        decisions=mom_data.get("decisions", []),
-        agenda_topics=mom_data.get("topics_discussed", []),
-        is_finalized=False
-    )
-    db.add(new_mom)
+        # Register real participants
+        if participant_names:
+            for idx, name in enumerate(participant_names):
+                label = f"Speaker {chr(65 + idx)}"
+                db.add(MeetingParticipant(meeting_id=new_meeting.id, name=name, speaker_label=label))
+        elif distinct_speakers:
+            for label, name in distinct_speakers.items():
+                db.add(MeetingParticipant(meeting_id=new_meeting.id, name=name, speaker_label=label))
+        else:
+            db.add(MeetingParticipant(meeting_id=new_meeting.id, name=current_user.name or "Host", speaker_label="Host"))
 
-    # 6. Save Action Items with calculated deadlines and faculty ownership
-    for it in mom_data.get("action_items", []):
-        days = it.get("days_until_due", 3)
-        due = datetime.now(timezone.utc) + timedelta(days=days)
-        action_item = ActionItem(
-            meeting_id=new_meeting.id,
-            task=it.get("task") or "Institutional Follow-up",
-            owner_name=it.get("owner_name") or "Assigned Faculty",
-            priority=it.get("priority") or "Medium",
-            status="Pending",
-            due_date=due,
-            user_id=current_user.id
+        # 5. Extract strictly grounded MoM (no hallucinations, no extra fake actions/decisions)
+        mom_data = await generate_mom_and_actions(
+            transcript_text=transcript_text,
+            participants=participant_names or list(distinct_speakers.values()),
+            meeting_title=meeting_title
         )
-        db.add(action_item)
 
-    await db.commit()
-    await db.refresh(new_meeting)
+        new_mom = MinutesOfMeeting(
+            meeting_id=new_meeting.id,
+            summary=mom_data.get("summary", ""),
+            decisions=mom_data.get("decisions", []),
+            agenda_topics=mom_data.get("topics_discussed", []),
+            is_finalized=False
+        )
+        db.add(new_mom)
 
-    return {
-        "status": "success",
-        "message": "Meeting recording analyzed successfully",
-        "meeting_id": new_meeting.id,
-        "title": new_meeting.title
-    }
+        # 6. Save Action Items with calculated deadlines and faculty ownership
+        for it in mom_data.get("action_items", []):
+            days = it.get("days_until_due", 3)
+            due = datetime.now(timezone.utc) + timedelta(days=days)
+            action_item = ActionItem(
+                meeting_id=new_meeting.id,
+                task=it.get("task") or "Institutional Follow-up",
+                owner_name=it.get("owner_name") or "Assigned Faculty",
+                priority=it.get("priority") or "Medium",
+                status="Pending",
+                due_date=due,
+                user_id=current_user.id
+            )
+            db.add(action_item)
+
+        new_meeting.status = "Completed"
+        new_meeting.processing_status = "COMPLETED"
+        await db.commit()
+        await db.refresh(new_meeting)
+
+        return {
+            "status": "success",
+            "message": "Meeting recording analyzed successfully",
+            "meeting_id": new_meeting.id,
+            "title": new_meeting.title,
+            "processing_status": "COMPLETED"
+        }
+    except Exception as proc_err:
+        print(f"AI Pipeline partial error for meeting {new_meeting.id}: {proc_err}")
+        new_meeting.status = "Processing Failed"
+        new_meeting.processing_status = "FAILED"
+        new_meeting.error_message = str(proc_err)
+        await db.commit()
+        return {
+            "status": "partial_saved",
+            "message": f"Audio safely saved, but AI analysis hit a transient issue: {proc_err}. You can retry processing from the meeting page.",
+            "meeting_id": new_meeting.id,
+            "title": new_meeting.title,
+            "processing_status": "FAILED",
+            "can_retry": True
+        }
 
 @router.post("/{meeting_id}/upload-recording")
 async def upload_recording_for_existing_meeting(
@@ -575,3 +617,142 @@ async def delete_meeting(
         resource_id=meeting_id,
     )
     return None
+
+@router.get("/{meeting_id}/processing-status")
+async def get_meeting_processing_status(
+    meeting_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    stmt = (
+        select(Meeting)
+        .options(selectinload(Meeting.mom), selectinload(Meeting.utterances))
+        .filter(Meeting.id == meeting_id)
+    )
+    result = await db.execute(stmt)
+    meeting = result.scalar_one_or_none()
+
+    if not meeting:
+        raise HTTPException(status_code=404, detail="Meeting not found")
+
+    return {
+        "meeting_id": meeting.id,
+        "title": meeting.title,
+        "status": meeting.status,
+        "processing_status": getattr(meeting, "processing_status", "COMPLETED") or "COMPLETED",
+        "has_recording": bool(getattr(meeting, "recording_path", None)),
+        "recording_path": getattr(meeting, "recording_path", None),
+        "has_mom": bool(meeting.mom),
+        "utterances_count": len(meeting.utterances) if meeting.utterances else 0,
+        "error_message": getattr(meeting, "error_message", None),
+    }
+
+@router.post("/{meeting_id}/retry-processing")
+async def retry_meeting_processing(
+    meeting_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    stmt = (
+        select(Meeting)
+        .options(
+            selectinload(Meeting.participants),
+            selectinload(Meeting.mom),
+            selectinload(Meeting.action_items),
+            selectinload(Meeting.utterances),
+        )
+        .filter(Meeting.id == meeting_id)
+    )
+    result = await db.execute(stmt)
+    meeting = result.scalar_one_or_none()
+
+    if not meeting:
+        raise HTTPException(status_code=404, detail="Meeting not found")
+
+    rec_path = getattr(meeting, "recording_path", None)
+    if not rec_path or not os.path.exists(rec_path):
+        raise HTTPException(
+            status_code=400,
+            detail="No saved audio recording file found for this meeting to retry processing."
+        )
+
+    meeting.processing_status = "PROCESSING"
+    meeting.status = "Processing"
+    meeting.error_message = None
+    await db.commit()
+
+    participant_names = [p.name for p in meeting.participants] if meeting.participants else []
+    mapping = {f"Speaker {chr(65 + i)}": name for i, name in enumerate(participant_names)}
+
+    try:
+        transcription_data = await transcribe_audio_with_diarization(
+            rec_path,
+            speaker_mapping=mapping,
+            participants=participant_names,
+            meeting_title=meeting.title
+        )
+        transcript_text = transcription_data.get("text", "")
+        utterances_list = transcription_data.get("utterances", [])
+
+        # If previous utterances exist, remove them first to avoid duplication
+        if meeting.utterances:
+            for old_u in meeting.utterances:
+                await db.delete(old_u)
+
+        for u in utterances_list:
+            raw_spk = u.get("raw_speaker") or "Speaker A"
+            spk_name = u.get("speaker") or raw_spk
+            utt = Utterance(
+                meeting_id=meeting.id,
+                speaker_label=raw_spk,
+                speaker_name=spk_name,
+                timestamp=u.get("timestamp") or "00:00",
+                language=u.get("language") or "English",
+                text=u.get("text") or "",
+                english_translation=u.get("translation") or u.get("text") or ""
+            )
+            db.add(utt)
+
+        mom_data = await generate_mom_and_actions(
+            transcript_text=transcript_text,
+            participants=participant_names,
+            meeting_title=meeting.title
+        )
+
+        if meeting.mom:
+            meeting.mom.summary = mom_data.get("summary", "")
+            meeting.mom.decisions = mom_data.get("decisions", [])
+            meeting.mom.agenda_topics = mom_data.get("topics_discussed", [])
+        else:
+            new_mom = MinutesOfMeeting(
+                meeting_id=meeting.id,
+                summary=mom_data.get("summary", ""),
+                decisions=mom_data.get("decisions", []),
+                agenda_topics=mom_data.get("topics_discussed", []),
+                is_finalized=False
+            )
+            db.add(new_mom)
+
+        meeting.processing_status = "COMPLETED"
+        meeting.status = "Completed"
+        meeting.error_message = None
+        await db.commit()
+
+        return {
+            "status": "success",
+            "message": "AI transcription & MoM reprocessed successfully from saved recording.",
+            "meeting_id": meeting.id,
+            "processing_status": "COMPLETED"
+        }
+    except Exception as e:
+        meeting.processing_status = "FAILED"
+        meeting.status = "Processing Failed"
+        meeting.error_message = str(e)
+        await db.commit()
+        return {
+            "status": "failed",
+            "message": f"Retry failed: {e}",
+            "meeting_id": meeting.id,
+            "processing_status": "FAILED"
+        }
+

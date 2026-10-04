@@ -1,0 +1,82 @@
+# ConverseIQ — Roo Code Project Rules & Architecture Context
+
+You are working on **ConverseIQ**, an enterprise academic meeting intelligence platform designed for higher education institutions (Faculty, HOD, and Admin personas).
+
+---
+
+## 🏛️ 1. Technical Stack & Architecture
+
+- **Frontend**: Next.js 14 App Router, React 18, TypeScript, Tailwind CSS, Lucide React icons.
+  - Path: `frontend/`
+  - Dev server port: `3000` (`http://localhost:3000`)
+  - API helper: `frontend/src/lib/api.ts` (`apiRequest`, `downloadFile`, `getAuthToken`)
+- **Backend**: FastAPI v2, Python 3.12, SQLAlchemy async (`aiosqlite` / `asyncpg`), ReportLab (PDF generator), Pydantic v2.
+  - Path: `backend_v2/`
+  - Local backend port: `8001`
+  - Live Render backend: `https://converseiq.onrender.com/api/v1`
+  - Swagger docs: `https://converseiq.onrender.com/docs`
+- **Live Deployment**:
+  - Frontend: `https://converse-iq.vercel.app` (Vercel)
+  - Backend: `https://converseiq.onrender.com` (Render)
+
+---
+
+## 🎨 2. Visual Identity & Design Tokens
+
+Always adhere strictly to the **Soft Blue + Sage Green** design system. Do NOT introduce unrelated corporate purple, harsh blue, or beige colors.
+
+### Core Color Palette:
+- **Main Background**: `#F5FAF8` (Light) / `#0F1A15` (Dark)
+- **Cards / Surfaces**: `#FFFFFF` (Light) / `#1A2B24` (Dark)
+- **Primary Sage**: `#78A98F`
+- **Deep Sage**: `#3F795F`
+- **Light Sage**: `#D4E9DF` / `#243D33` (Dark)
+- **Soft Blue**: `#B9DDE3`
+- **Pale Blue**: `#E4F2F4` / `#1A3A3F` (Dark)
+- **Deep Teal**: `#367C88`
+- **Primary Text**: `#173A2C` (Light) / `#E8F0EC` (Dark)
+- **Secondary Text**: `#667875` (Light) / `#8FA89C` (Dark)
+- **Borders**: `#DCE7E2` (Light) / `#2D4A3E` (Dark)
+
+### Dark Mode Support:
+- Always pair classes: e.g. `bg-white dark:bg-[#1A2B24]`, `text-[#173A2C] dark:text-[#E8F0EC]`, `border-[#DCE7E2] dark:border-[#2D4A3E]`.
+- Use `useTheme()` from `@/components/ThemeProvider` if programmatic theme detection is needed.
+
+---
+
+## 👥 3. Role-Based Portals & Routes
+
+Never delete or break any of these 20 routes:
+
+1. **Authentication**: `/login` (with demo quick-fill role switcher).
+2. **Faculty Portal**:
+   - `/dashboard` (Personal KPI cards, upcoming meetings, quick actions).
+   - `/meetings` & `/meetings/[id]` (Meeting archive, speaker timeline, MoM view, PDF export).
+   - `/live-meeting` (Speech waveform visualizer & live transcription).
+   - `/mom` (Executive meeting summaries, decisions, PDF download).
+   - `/action-items` (Interactive task tracker with strikethrough & priority badges).
+   - `/schedule` (Meeting calendar & scheduling).
+   - `/ai-assistant` (Grounded academic query assistant).
+   - `/settings` (Profile, password change, data export, preferences).
+3. **HOD Portal**:
+   - `/hod/overview` (Department metrics & analytics).
+   - `/hod/faculty` (Faculty workload & performance tracking).
+   - `/hod/meetings` (Departmental meeting archive).
+   - `/hod/action-tracker` (Branch-wide action item governance).
+   - `/hod/schedule` (Departmental scheduling).
+4. **Administration Suite**:
+   - `/admin` (User management, department setup, system settings, real-time audit logs).
+
+---
+
+## ⚠️ 4. Strict Engineering Guardrails
+
+1. **Zero Dummy Data Policy**:
+   - Never inject hardcoded mock arrays like `const DUMMY_MEETINGS = [...]` into pages.
+   - Always fetch from FastAPI endpoints via `apiRequest()`.
+   - If the database returns 0 records, render a clean, polite empty state (e.g. *"No scheduled meetings found"*).
+2. **Audit Logging**:
+   - Every sensitive mutation on backend must call `log_audit_event(db, action, details, user_id, user_name)`.
+3. **Compile Verification**:
+   - After any frontend edit, run `npm --prefix frontend run build` to ensure 0 TypeScript or Next.js errors.
+   - All 20 static pages must generate cleanly.

@@ -23,6 +23,13 @@ import {
 } from 'lucide-react';
 import { apiRequest } from '@/lib/api';
 import AnimatedButton from '@/components/ui/AnimatedButton';
+import {
+  initSessionVault,
+  appendChunkToVault,
+  getLatestUnsavedSession,
+  clearVaultSession,
+  assembleAudioBlob
+} from '@/lib/indexedDbVault';
 
 const PIPELINE_STEPS = [
   'Upload',
@@ -49,6 +56,8 @@ export default function LiveMeetingPage() {
   const [isScreenSharing, setIsScreenSharing] = useState(false);
   const [mediaError, setMediaError] = useState('');
   const [titleError, setTitleError] = useState('');
+  const [isInterrupted, setIsInterrupted] = useState(false);
+  const [unsavedSession, setUnsavedSession] = useState<any | null>(null);
   
   // Recording & Pipeline states
   const [isProcessingMoM, setIsProcessingMoM] = useState(false);
@@ -57,6 +66,9 @@ export default function LiveMeetingPage() {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [audioLevel, setAudioLevel] = useState(0);
 
+  const sessionIdRef = useRef<string>('');
+  const isLiveRef = useRef<boolean>(false);
+  const elapsedSecondsRef = useRef<number>(0);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
@@ -68,12 +80,29 @@ export default function LiveMeetingPage() {
   const jitsiDirectLink = `https://meet.jit.si/${roomName}#config.prejoinPageEnabled=false`;
 
   useEffect(() => {
+    // Check for any un-ingested recordings from interrupted sessions
+    getLatestUnsavedSession().then((saved) => {
+      if (saved && saved.chunks && saved.chunks.length > 0) {
+        setUnsavedSession(saved);
+      }
+    });
+
+    const onBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isLiveRef.current) {
+        e.preventDefault();
+        e.returnValue = 'Live academic recording session is in progress. Audio is securely backed up in your offline vault.';
+      }
+    };
+    window.addEventListener('beforeunload', onBeforeUnload);
+
     return () => {
+      window.removeEventListener('beforeunload', onBeforeUnload);
       cleanupMedia();
     };
   }, []);
 
   const cleanupMedia = () => {
+    isLiveRef.current = false;
     if (timerRef.current) clearInterval(timerRef.current);
     if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     if (audioContextRef.current) audioContextRef.current.close().catch(() => {});
@@ -119,7 +148,11 @@ export default function LiveMeetingPage() {
     }
     setTitleError('');
     setMediaError('');
+    setIsInterrupted(false);
     audioChunksRef.current = [];
+
+    const newSessionId = `session_${Date.now()}`;
+    sessionIdRef.current = newSessionId;
 
     let mediaStream: MediaStream | null = null;
 
@@ -152,6 +185,15 @@ export default function LiveMeetingPage() {
     if (mediaStream) {
       streamRef.current = mediaStream;
 
+      // Track listeners for unexpected disconnections
+      mediaStream.getAudioTracks().forEach((track) => {
+        track.onended = () => {
+          console.warn('Audio track ended unexpectedly (e.g. system sleep, hardware unplug, or browser collision).');
+          setIsInterrupted(true);
+          setMediaError('Microphone track was disconnected unexpectedly. All audio captured up to this second is safely buffered in your offline vault.');
+        };
+      });
+
       // Attach to video element
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
@@ -160,13 +202,15 @@ export default function LiveMeetingPage() {
       // Audio spectrum visualizer
       setupAudioVisualizer(mediaStream);
 
-      // Setup recorder
+      // Setup recorder with dual persistence (memory + IndexedDB)
       try {
         const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
           ? 'audio/webm;codecs=opus'
           : MediaRecorder.isTypeSupported('audio/webm')
           ? 'audio/webm'
           : '';
+
+        await initSessionVault(newSessionId, meetingTitle.trim(), attendeeNames.trim(), mimeType || 'audio/webm');
 
         const recorder = mimeType
           ? new MediaRecorder(mediaStream, { mimeType })
@@ -177,10 +221,11 @@ export default function LiveMeetingPage() {
         recorder.ondataavailable = (event) => {
           if (event.data && event.data.size > 0) {
             audioChunksRef.current.push(event.data);
+            appendChunkToVault(newSessionId, event.data, elapsedSecondsRef.current);
           }
         };
 
-        recorder.start(1000);
+        recorder.start(2000); // 2-second chunk intervals for continuous persistence
       } catch (recErr) {
         console.warn('MediaRecorder init failed:', recErr);
       }
@@ -188,10 +233,16 @@ export default function LiveMeetingPage() {
 
     // Start elapsed timer
     setElapsedSeconds(0);
+    elapsedSecondsRef.current = 0;
     timerRef.current = setInterval(() => {
-      setElapsedSeconds(prev => prev + 1);
+      setElapsedSeconds(prev => {
+        const next = prev + 1;
+        elapsedSecondsRef.current = next;
+        return next;
+      });
     }, 1000);
 
+    isLiveRef.current = true;
     setIsLive(true);
   };
 
@@ -281,90 +332,109 @@ export default function LiveMeetingPage() {
     return `${mins}:${secs}`;
   };
 
+  // Universal ingestion pipeline with recovery & offline vault support
+  const completeIngestion = async (
+    audioBlob?: Blob,
+    overrideTitle?: string,
+    overrideParticipants?: string,
+    overrideDuration?: number
+  ) => {
+    setIsProcessingMoM(true);
+    setProcessingStatus('Uploading audio stream to AI pipeline...');
+    setPipelineStage(0);
+
+    const effectiveTitle = overrideTitle || meetingTitle.trim() || 'Live Academic Meeting';
+    const effectiveParticipants = overrideParticipants !== undefined ? overrideParticipants : attendeeNames.trim();
+    const effectiveDuration = overrideDuration || Math.max(1, Math.ceil(elapsedSeconds / 60));
+
+    try {
+      if (audioBlob && audioBlob.size > 0) {
+        const formData = new FormData();
+        const fileExt = audioBlob.type.includes('webm') ? 'webm' : 'wav';
+        formData.append('file', audioBlob, `live_meeting_${Date.now()}.${fileExt}`);
+        formData.append('title', effectiveTitle);
+        formData.append('participants', effectiveParticipants);
+        formData.append('duration_minutes', String(effectiveDuration));
+
+        setTimeout(() => {
+          setPipelineStage(1);
+          setProcessingStatus('Processing raw audio spectra & normalising channels...');
+        }, 800);
+
+        setTimeout(() => {
+          setPipelineStage(2);
+          setProcessingStatus('Transcribing audio in Hindi, English & Hinglish...');
+        }, 2000);
+
+        setTimeout(() => {
+          setPipelineStage(3);
+          setProcessingStatus('Performing zero-manual faculty speaker diarization...');
+        }, 3200);
+
+        setTimeout(() => {
+          setPipelineStage(4);
+          setProcessingStatus('Generating side-by-side English translations...');
+        }, 4200);
+
+        setTimeout(() => {
+          setPipelineStage(5);
+          setProcessingStatus('Gemini synthesizing structured MoM & action items (Zero Hallucination)...');
+        }, 5200);
+
+        const result = await apiRequest('/meetings/upload-and-analyze', {
+          method: 'POST',
+          body: formData,
+        });
+
+        // Safely purge vault session once persisted to backend database
+        if (sessionIdRef.current) {
+          await clearVaultSession(sessionIdRef.current);
+        }
+
+        setPipelineStage(6);
+        setProcessingStatus('MoM Ready! Redirecting to meeting intelligence...');
+        setTimeout(() => router.push(`/meetings/${result.meeting_id}`), 900);
+      } else {
+        setPipelineStage(6);
+        setProcessingStatus('Saving academic meeting record...');
+        const parsedParticipants = effectiveParticipants
+          ? effectiveParticipants.split(',').map(n => n.trim()).filter(Boolean)
+          : [];
+
+        const newM = await apiRequest('/meetings', {
+          method: 'POST',
+          body: JSON.stringify({
+            title: effectiveTitle,
+            date: new Date().toISOString(),
+            duration_minutes: effectiveDuration,
+            status: 'Completed',
+            participants: parsedParticipants.join(', '),
+          }),
+        });
+
+        if (sessionIdRef.current) {
+          await clearVaultSession(sessionIdRef.current);
+        }
+
+        router.push(`/meetings/${newM.id}`);
+      }
+    } catch (err: any) {
+      alert(err.message || 'Error processing live meeting recording. Please try again.');
+      setIsProcessingMoM(false);
+    } finally {
+      cleanupMedia();
+    }
+  };
+
   // Finish meeting & trigger AI MoM generation
   const handleFinishAndIngest = async () => {
     if (isProcessingMoM) return;
     setIsProcessingMoM(true);
-    setProcessingStatus('Stopping recording and finalizing audio chunk...');
+    setProcessingStatus('Finalizing audio recording & safeguarding buffers...');
     setPipelineStage(0);
 
     if (timerRef.current) clearInterval(timerRef.current);
     const recorder = mediaRecorderRef.current;
-    const durationMinutes = Math.max(1, Math.ceil(elapsedSeconds / 60));
-
-    const completeIngestion = async (audioBlob?: Blob) => {
-      try {
-        if (audioBlob && audioBlob.size > 2000) {
-          setPipelineStage(0);
-          setProcessingStatus('Uploading audio stream to AI pipeline...');
-          
-          const formData = new FormData();
-          const fileExt = audioBlob.type.includes('webm') ? 'webm' : 'wav';
-          formData.append('file', audioBlob, `live_meeting_${Date.now()}.${fileExt}`);
-          formData.append('title', meetingTitle.trim() || 'Live Academic Meeting');
-          formData.append('participants', attendeeNames.trim());
-          formData.append('duration_minutes', String(durationMinutes));
-
-          setTimeout(() => {
-            setPipelineStage(1);
-            setProcessingStatus('Processing raw audio spectra & normalising channels...');
-          }, 800);
-
-          setTimeout(() => {
-            setPipelineStage(2);
-            setProcessingStatus('Transcribing audio in Hindi, English & Hinglish...');
-          }, 2000);
-
-          setTimeout(() => {
-            setPipelineStage(3);
-            setProcessingStatus('Performing zero-manual faculty speaker diarization...');
-          }, 3200);
-
-          setTimeout(() => {
-            setPipelineStage(4);
-            setProcessingStatus('Generating side-by-side English translations...');
-          }, 4200);
-
-          setTimeout(() => {
-            setPipelineStage(5);
-            setProcessingStatus('Gemini synthesizing structured MoM & action items (Zero Hallucination)...');
-          }, 5200);
-
-          const result = await apiRequest('/meetings/upload-and-analyze', {
-            method: 'POST',
-            body: formData,
-          });
-
-          setPipelineStage(6);
-          setProcessingStatus('MoM Ready! Redirecting to meeting intelligence...');
-          setTimeout(() => router.push(`/meetings/${result.meeting_id}`), 900);
-        } else {
-          setPipelineStage(6);
-          setProcessingStatus('Saving meeting record (no audio captured)...');
-          const parsedParticipants = attendeeNames
-            ? attendeeNames.split(',').map(n => n.trim()).filter(Boolean)
-            : [];
-
-          const newM = await apiRequest('/meetings', {
-            method: 'POST',
-            body: JSON.stringify({
-              title: meetingTitle.trim() || 'Live Academic Meeting',
-              date: new Date().toISOString(),
-              duration_minutes: durationMinutes,
-              status: 'Completed',
-              participants: parsedParticipants.join(', '),
-            }),
-          });
-
-          router.push(`/meetings/${newM.id}`);
-        }
-      } catch (err: any) {
-        alert(err.message || 'Error processing live meeting recording. Please try again.');
-        setIsProcessingMoM(false);
-      } finally {
-        cleanupMedia();
-      }
-    };
 
     if (recorder && recorder.state !== 'inactive') {
       recorder.onstop = () => {
@@ -375,7 +445,28 @@ export default function LiveMeetingPage() {
       };
       recorder.stop();
     } else {
-      completeIngestion();
+      const audioBlob = audioChunksRef.current.length > 0
+        ? new Blob(audioChunksRef.current, { type: 'audio/webm' })
+        : undefined;
+      completeIngestion(audioBlob);
+    }
+  };
+
+  const handleRecoverSession = async () => {
+    if (!unsavedSession) return;
+    setIsProcessingMoM(true);
+    setProcessingStatus('Assembling offline vault audio buffers...');
+    const blob = assembleAudioBlob(unsavedSession);
+    const dur = Math.max(1, Math.ceil((unsavedSession.durationSeconds || 0) / 60));
+    await completeIngestion(blob, unsavedSession.meetingTitle, unsavedSession.attendeeNames, dur);
+    await clearVaultSession(unsavedSession.sessionId);
+    setUnsavedSession(null);
+  };
+
+  const handleDismissRecovery = async () => {
+    if (unsavedSession) {
+      await clearVaultSession(unsavedSession.sessionId);
+      setUnsavedSession(null);
     }
   };
 
@@ -460,6 +551,43 @@ export default function LiveMeetingPage() {
                 </span>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Disaster Recovery Banner for Interrupted Meetings */}
+      {!isLive && !isProcessingMoM && unsavedSession && (
+        <div className="bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-400 dark:border-amber-600 rounded-3xl p-6 shadow-md max-w-xl mx-auto space-y-4 animate-fade-in">
+          <div className="flex items-start space-x-3">
+            <div className="w-10 h-10 rounded-2xl bg-amber-100 dark:bg-amber-900/60 border border-amber-300 flex items-center justify-center text-amber-700 dark:text-amber-300 flex-shrink-0">
+              <Sparkles className="w-5 h-5 animate-pulse" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-base font-bold text-amber-900 dark:text-amber-100">
+                Unsaved Meeting Recording Detected
+              </h3>
+              <p className="text-xs text-amber-800 dark:text-amber-200 mt-1 leading-relaxed">
+                Your previous video conference <strong>&quot;{unsavedSession.meetingTitle || 'Academic Meeting'}&quot;</strong> was abruptly cut or interrupted. ConverseIQ safely preserved <strong>{unsavedSession.chunks?.length || 0} audio buffers</strong> ({Math.max(1, Math.ceil((unsavedSession.durationSeconds || 0) / 60))} min) in your offline browser vault!
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-end space-x-3 pt-2 border-t border-amber-200 dark:border-amber-800">
+            <button
+              type="button"
+              onClick={handleDismissRecovery}
+              className="px-4 py-2 text-xs font-semibold text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/40 rounded-xl transition-colors cursor-pointer"
+            >
+              Dismiss
+            </button>
+            <AnimatedButton
+              variant="primary"
+              size="sm"
+              icon={<Sparkles className="w-4 h-4" />}
+              onClick={handleRecoverSession}
+            >
+              Recover &amp; Generate AI MoM Now
+            </AnimatedButton>
           </div>
         </div>
       )}
@@ -576,6 +704,24 @@ export default function LiveMeetingPage() {
             <div className="p-3.5 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 rounded-2xl text-xs text-amber-800 dark:text-amber-200 flex items-start space-x-2">
               <AlertCircle className="w-4 h-4 flex-shrink-0 text-amber-600 mt-0.5" />
               <span>{mediaError}</span>
+            </div>
+          )}
+
+          {isInterrupted && (
+            <div className="p-4 bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800 rounded-2xl text-xs text-rose-800 dark:text-rose-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fade-in shadow-xs">
+              <div className="flex items-center space-x-2">
+                <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
+                <span>
+                  <strong>Connection Interrupted:</strong> Audio/video track was severed. Recorded dialogue is safely stored in your offline vault!
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleFinishAndIngest}
+                className="px-3 py-1.5 bg-rose-600 text-white rounded-xl text-xs font-bold hover:bg-rose-700 transition-colors whitespace-nowrap cursor-pointer shadow-xs"
+              >
+                Synthesize MoM Now
+              </button>
             </div>
           )}
 

@@ -11,6 +11,12 @@ class Meeting(Base):
     date = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     duration_minutes = Column(Integer, default=45)
     status = Column(String(50), default="Analysis Complete")
+    # Processing state: SCHEDULED, LIVE, RECORDED, PROCESSING, COMPLETED, FAILED, INTERRUPTED
+    processing_status = Column(String(50), default="COMPLETED")
+    recording_path = Column(String(500), nullable=True)
+    recording_duration_seconds = Column(Integer, nullable=True)
+    error_message = Column(Text, nullable=True)
+    jitsi_room = Column(String(200), nullable=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     department_id = Column(Integer, ForeignKey("departments.id"), nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

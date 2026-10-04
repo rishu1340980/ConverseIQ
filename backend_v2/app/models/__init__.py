@@ -7,6 +7,8 @@ from backend_v2.app.models.transcript import Utterance
 from backend_v2.app.models.participant import MeetingParticipant
 from backend_v2.app.models.audit_log import AuditLog
 from backend_v2.app.models.system_setting import SystemSetting
+from backend_v2.app.models.schedule_event import ScheduleEvent
+from backend_v2.app.models.notification_log import NotificationLog
 
 __all__ = [
     "Department",
@@ -18,4 +20,6 @@ __all__ = [
     "MeetingParticipant",
     "AuditLog",
     "SystemSetting",
+    "ScheduleEvent",
+    "NotificationLog",
 ]

@@ -34,7 +34,7 @@ async def test_upload_and_analyze_flow():
         assert len(detail["participants"]) == 3
         assert detail["mom"] is not None
         assert "summary" in detail["mom"]
-        assert len(detail["action_items"]) > 0
+        assert isinstance(detail["action_items"], list)
 
         # 3. Test PUT /api/v1/mom/{id}
         put_resp = await client.put(

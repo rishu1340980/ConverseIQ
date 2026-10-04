@@ -63,6 +63,48 @@ export default function MeetingDetailPage() {
   const [aiAnswer, setAiAnswer] = useState<string | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [retrying, setRetrying] = useState(false);
+  const [retryMessage, setRetryMessage] = useState<string | null>(null);
+
+  // Auto-polling when processing
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    const isProcessing =
+      meeting?.processing_status === 'PROCESSING' ||
+      meeting?.status === 'Processing';
+
+    if (isProcessing) {
+      interval = setInterval(async () => {
+        try {
+          const statusRes = await apiRequest<any>(`/meetings/${meetingId}/processing-status`);
+          if (statusRes.processing_status !== 'PROCESSING') {
+            await fetchMeetingDetail();
+          }
+        } catch (err) {
+          console.error('Polling status error:', err);
+        }
+      }, 3500);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [meeting?.processing_status, meeting?.status, meetingId]);
+
+  const handleRetryProcessing = async () => {
+    setRetrying(true);
+    setRetryMessage(null);
+    try {
+      await apiRequest(`/meetings/${meetingId}/retry-processing`, { method: 'POST' });
+      setRetryMessage('AI processing completed successfully!');
+      await fetchMeetingDetail();
+      setTimeout(() => setRetryMessage(null), 4000);
+    } catch (err: any) {
+      setRetryMessage(err.message || 'Retry failed. Check audio format and server logs.');
+    } finally {
+      setRetrying(false);
+    }
+  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -392,6 +434,83 @@ export default function MeetingDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Processing Status Banner */}
+      {(meeting.processing_status === 'PROCESSING' || meeting.status === 'Processing') && (
+        <div className="bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-pulse">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-900/60 flex items-center justify-center flex-shrink-0">
+              <div className="w-4 h-4 border-2 border-sky-600 dark:border-sky-400 border-t-transparent rounded-full animate-spin" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-sky-900 dark:text-sky-200">
+                AI Speech Diarization & MoM Synthesis Running...
+              </h4>
+              <p className="text-xs text-sky-700 dark:text-sky-300 mt-0.5">
+                AssemblyAI and Gemini 3.6 Flash are processing this audio recording. This page updates automatically.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={fetchMeetingDetail}
+            className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-sky-100 hover:bg-sky-200 dark:bg-sky-900 text-sky-800 dark:text-sky-200 transition-colors flex-shrink-0 cursor-pointer self-end sm:self-center"
+          >
+            Check Status
+          </button>
+        </div>
+      )}
+
+      {/* Interrupted or Incomplete MoM Disaster Recovery Banner */}
+      {(meeting.processing_status === 'FAILED' || 
+        meeting.processing_status === 'INTERRUPTED' || 
+        (!meeting.mom?.summary && meeting.has_recording)) && (
+        <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex items-start space-x-3">
+            <div className="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-900/60 flex items-center justify-center text-amber-700 dark:text-amber-300 flex-shrink-0 mt-0.5">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-amber-900 dark:text-amber-200">
+                {meeting.processing_status === 'INTERRUPTED' ? 'Call Ended / Incomplete AI MoM' : 'AI Minutes of Meeting (MoM) Incomplete'}
+              </h4>
+              <p className="text-xs text-amber-700 dark:text-amber-300 mt-0.5">
+                {meeting.error_message || (meeting.has_recording 
+                  ? 'A recorded audio track is securely stored on the server. You can trigger AI extraction at any time without re-recording.' 
+                  : 'Audio transcription was interrupted. You can upload an audio file or retry.')}
+              </p>
+              {retryMessage && (
+                <p className="text-xs font-bold text-emerald-700 dark:text-emerald-300 mt-1">
+                  {retryMessage}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center space-x-2 flex-shrink-0 self-end md:self-center">
+            {meeting.has_recording && (
+              <AnimatedButton
+                variant="primary"
+                size="sm"
+                loading={retrying}
+                icon={<Sparkles className="w-3.5 h-3.5" />}
+                onClick={handleRetryProcessing}
+              >
+                {retrying ? 'Extracting MoM...' : 'Generate / Retry AI MoM'}
+              </AnimatedButton>
+            )}
+            <label className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-white dark:bg-[#1A2B24] hover:bg-[#F5FAF8] text-[#173A2C] dark:text-[#E8F0EC] text-xs font-semibold rounded-xl border border-[#DCE7E2] dark:border-[#2D4A3E] transition-colors cursor-pointer">
+              <UploadCloud className="w-3.5 h-3.5 text-[#3F795F] dark:text-[#78A98F]" />
+              <span>Upload Fresh Audio</span>
+              <input
+                type="file"
+                accept="audio/*,video/*,.mp3,.wav,.m4a,.webm,.mp4"
+                onChange={handleFileUpload}
+                className="hidden"
+                disabled={isUploading || retrying}
+              />
+            </label>
+          </div>
+        </div>
+      )}
 
       {/* Navigation Tabs (SegmentedControl) */}
       <div className="max-w-3xl">
