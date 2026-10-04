@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from backend_v2.app.core.database import Base
@@ -35,6 +35,8 @@ class ScheduleEvent(Base):
     # Reminder & Notifications
     reminder_sent = Column(Integer, default=0)
     reminder_sent_at = Column(DateTime, nullable=True)
+    reminder_24h_sent = Column(Boolean, default=False)
+    reminder_4h_sent = Column(Boolean, default=False)
     status = Column(String(50), default="Scheduled")  # Scheduled, In Progress, Completed, Cancelled
     
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

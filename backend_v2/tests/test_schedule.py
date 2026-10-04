@@ -63,3 +63,63 @@ async def test_schedule_and_reminder_flow():
         # 5. Test DELETE /api/v1/schedule/events/{id}
         del_resp = await client.delete(f"/api/v1/schedule/events/{event_id}", headers=headers)
         assert del_resp.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_automated_timed_reminders():
+    from backend_v2.app.services.reminder_scheduler import check_and_send_due_reminders
+    from backend_v2.app.core.database import AsyncSessionLocal, engine, Base
+    from backend_v2.app.models.schedule_event import ScheduleEvent
+
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    now = datetime.now(timezone.utc)
+    
+    # Insert two test events: one at 20 hours (in 24h window), one at 3 hours (in 4h window)
+    async with AsyncSessionLocal() as db:
+        ev_24h = ScheduleEvent(
+            title="Automated 24h Reminder Test",
+            academic_year="2nd Year",
+            domain="Cloud & DevOps",
+            faculty_name="Prof. Test24",
+            faculty_email="prof.test24@converseiq.edu",
+            start_time=now + timedelta(hours=20),
+            status="Scheduled",
+            reminder_24h_sent=False,
+            reminder_4h_sent=False,
+        )
+        ev_4h = ScheduleEvent(
+            title="Automated 4h Reminder Test",
+            academic_year="4th Year",
+            domain="Cyber Security",
+            faculty_name="Prof. Test4",
+            faculty_email="prof.test4@converseiq.edu",
+            start_time=now + timedelta(hours=3),
+            status="Scheduled",
+            reminder_24h_sent=True,  # 24h already sent
+            reminder_4h_sent=False,
+        )
+        db.add_all([ev_24h, ev_4h])
+        await db.commit()
+        await db.refresh(ev_24h)
+        await db.refresh(ev_4h)
+        id_24h = ev_24h.id
+        id_4h = ev_4h.id
+
+    # Run the automated reminder check
+    dispatched = await check_and_send_due_reminders()
+    assert dispatched >= 2
+
+    # Verify flags updated
+    async with AsyncSessionLocal() as db:
+        res1 = await db.get(ScheduleEvent, id_24h)
+        res2 = await db.get(ScheduleEvent, id_4h)
+        assert res1.reminder_24h_sent is True
+        assert res2.reminder_4h_sent is True
+
+        # Clean up
+        await db.delete(res1)
+        await db.delete(res2)
+        await db.commit()
+

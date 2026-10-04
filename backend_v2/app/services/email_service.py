@@ -285,3 +285,128 @@ Please update your progress at: https://converse-iq.vercel.app/action-items
         db=db,
         action_item_id=getattr(action_item, "id", None),
     )
+
+
+async def send_event_timed_reminder(
+    event: Any,
+    timeframe: str,  # "24h" or "4h"
+    db: Optional[AsyncSession] = None,
+) -> Dict[str, Any]:
+    """
+    Sends an automated, time-grounded reminder email to faculty:
+    - 24 hours (1 day) before the session
+    - 4 to 5 hours before the session
+    """
+    rec_email = event.faculty_email
+    rec_name = event.faculty_name or "Faculty Member"
+    start_str = format_ist_datetime(event.start_time)
+    duration_str = f"{event.duration_minutes or 60} mins"
+
+    if timeframe == "24h":
+        subject = f"[Reminder: 1 Day Before] {event.title} — {event.academic_year} ({event.domain})"
+        badge_text = "24-HOUR NOTICE"
+        headline = "Your Academic Session is Scheduled for Tomorrow"
+        urgency_note = "This is an automated 24-hour reminder to ensure your lecture/lab materials and syllabus topics are prepared."
+    else:
+        subject = f"[Urgent Reminder: Starting in ~4 Hours] {event.title} — {event.academic_year}"
+        badge_text = "FINAL CALL (4-5 HOURS)"
+        headline = "Your Academic Session Starts Soon"
+        urgency_note = "Your session will commence in approximately 4–5 hours. Please confirm your classroom or virtual room connectivity."
+
+    is_online = event.delivery_mode == "Online"
+    link_or_venue = event.venue_or_link or ("Virtual Meeting" if is_online else "Department Hall")
+
+    join_button_html = ""
+    if is_online and link_or_venue.startswith("http"):
+        join_button_html = f"""
+        <div style="margin: 20px 0;">
+          <a href="{link_or_venue}" style="display: inline-block; padding: 12px 24px; background: #367C88; color: #ffffff !important; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 14px;">
+            Join Virtual Jitsi Room &rarr;
+          </a>
+        </div>
+        """
+
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #F5FAF8; color: #173A2C; margin: 0; padding: 20px; }}
+        .container {{ max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; border: 1px solid #DCE7E2; overflow: hidden; }}
+        .header {{ background: {'#173A2C' if timeframe == '24h' else '#367C88'}; padding: 24px; color: #ffffff; text-align: left; }}
+        .header h1 {{ margin: 0; font-size: 20px; }}
+        .badge {{ display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.25); color: #ffffff; margin-bottom: 8px; }}
+        .content {{ padding: 24px; }}
+        .meta-box {{ background: #F5FAF8; border: 1px solid #DCE7E2; border-radius: 12px; padding: 16px; margin: 16px 0; }}
+        .meta-row {{ margin-bottom: 8px; font-size: 13px; }}
+        .meta-label {{ font-weight: bold; color: #667875; width: 130px; display: inline-block; }}
+        .footer {{ padding: 16px 24px; background: #F5FAF8; border-top: 1px solid #DCE7E2; font-size: 11px; color: #667875; text-align: center; }}
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <span class="badge">{badge_text}</span>
+          <h1>{headline}</h1>
+          <p style="margin: 4px 0 0 0; font-size: 13px; opacity: 0.9;">Academic Schedule Intelligence</p>
+        </div>
+        <div class="content">
+          <p style="font-size: 15px; margin-top: 0;">Dear Professor <strong>{rec_name}</strong>,</p>
+          <p style="font-size: 13px; line-height: 1.5; color: #33443F;">
+            {urgency_note}
+          </p>
+
+          <div class="meta-box">
+            <div class="meta-row"><span class="meta-label">Session Title:</span> <strong>{event.title}</strong></div>
+            <div class="meta-row"><span class="meta-label">Domain:</span> <span style="background: #E8F5EE; color: #2D6A4F; padding: 2px 8px; border-radius: 4px; font-weight: bold;">{event.domain}</span></div>
+            <div class="meta-row"><span class="meta-label">Academic Year:</span> <span style="background: #E4F2F4; color: #367C88; padding: 2px 8px; border-radius: 4px; font-weight: bold;">{event.academic_year}</span></div>
+            <div class="meta-row"><span class="meta-label">Target Batch:</span> {event.target_batch or "Department Students"}</div>
+            <div class="meta-row"><span class="meta-label">Scheduled Time:</span> <strong>{start_str}</strong></div>
+            <div class="meta-row"><span class="meta-label">Duration:</span> {duration_str}</div>
+            <div class="meta-row"><span class="meta-label">Mode / Venue:</span> {link_or_venue}</div>
+          </div>
+
+          {join_button_html}
+
+          <div style="margin-top: 20px;">
+            <a href="https://converse-iq.vercel.app/schedule" style="display: inline-block; padding: 10px 18px; background: #3F795F; color: #ffffff !important; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 13px;">
+              Open Academic Calendar &rarr;
+            </a>
+          </div>
+        </div>
+        <div class="footer">
+          ConverseIQ Automated Academic Reminder &bull; Sent automatically by Department Intelligence
+        </div>
+      </div>
+    </body>
+    </html>
+    """
+
+    text = f"""{headline}
+Dear {rec_name},
+
+{urgency_note}
+
+Session: {event.title}
+Domain: {event.domain}
+Academic Year: {event.academic_year}
+Target Batch: {event.target_batch or "Department Students"}
+Time: {start_str}
+Duration: {duration_str}
+Mode / Venue: {link_or_venue}
+
+Open Calendar: https://converse-iq.vercel.app/schedule
+"""
+
+    return await send_email_notification(
+        recipient_email=rec_email,
+        recipient_name=rec_name,
+        subject=subject,
+        html_body=html,
+        text_body=text,
+        notification_type=f"Event_Reminder_{timeframe.upper()}",
+        db=db,
+        event_id=getattr(event, "id", None),
+    )
+

@@ -7,7 +7,9 @@ from backend_v2.app.models import (
     Department, User, Meeting, ActionItem, MinutesOfMeeting, Utterance, MeetingParticipant,
     AuditLog, SystemSetting
 )
+import asyncio
 from backend_v2.app.routers import auth, dashboard, action_items, meetings, mom, users, departments, ai, admin, reports, schedule
+from backend_v2.app.services.reminder_scheduler import reminder_scheduler_loop
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -22,7 +24,18 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         print(f"Seed startup notice: {e}")
 
+    # Start automated background reminder scheduler worker (runs every 5 mins)
+    scheduler_task = asyncio.create_task(reminder_scheduler_loop(interval_seconds=300))
+
     yield
+
+    # Clean shutdown of scheduler task
+    scheduler_task.cancel()
+    try:
+        await scheduler_task
+    except asyncio.CancelledError:
+        pass
+
     await engine.dispose()
 
 app = FastAPI(
