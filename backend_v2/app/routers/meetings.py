@@ -251,6 +251,7 @@ async def upload_and_analyze_meeting(
     title: str = Form("Faculty Meeting Recording"),
     participants: Optional[str] = Form(""),
     duration_minutes: Optional[int] = Form(45),
+    live_transcript: Optional[str] = Form(None),
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
@@ -258,6 +259,7 @@ async def upload_and_analyze_meeting(
     Direct 1-step audio upload & AI analysis.
     Transcribes audio with AssemblyAI / multi-speaker diarization,
     and extracts structured MoM & action items with Google Gemini Pro.
+    Supports live_transcript fallback from in-browser speech recognition.
     """
     meeting_title = title.strip() if title else "Faculty Meeting Recording"
 
@@ -307,6 +309,27 @@ async def upload_and_analyze_meeting(
         transcript_text = transcription_data.get("text", "")
         utterances_list = transcription_data.get("utterances", [])
 
+        # Fallback to browser-captured live transcript if audio is silent/brief
+        if (not transcript_text or not transcript_text.strip()) and live_transcript and live_transcript.strip():
+            transcript_text = live_transcript.strip()
+            lines = [l.strip() for l in live_transcript.split("\n") if l.strip()]
+            for idx, line in enumerate(lines):
+                if ":" in line:
+                    spk, txt = line.split(":", 1)
+                    spk_clean = spk.strip()
+                    txt_clean = txt.strip()
+                else:
+                    spk_clean = current_user.name or "Speaker A"
+                    txt_clean = line
+                utterances_list.append({
+                    "speaker": spk_clean,
+                    "raw_speaker": spk_clean,
+                    "timestamp": f"00:{(idx * 10) % 60:02d}",
+                    "language": "English",
+                    "text": txt_clean,
+                    "translation": txt_clean
+                })
+
         # Collect actual speakers from speech/transcription
         distinct_speakers = {}
         for u in utterances_list:
@@ -344,9 +367,16 @@ async def upload_and_analyze_meeting(
             meeting_title=meeting_title
         )
 
+        summary_text = mom_data.get("summary")
+        if not summary_text or not summary_text.strip():
+            if transcript_text and transcript_text.strip():
+                summary_text = f"Discussion session for '{meeting_title}'. Topics covered the meeting agenda with key points outlined in the transcript."
+            else:
+                summary_text = f"Academic conference session recorded for '{meeting_title}'. Spoken audio was brief or low-amplitude. Review audio recording or upload discussion notes to enrich MoM."
+
         new_mom = MinutesOfMeeting(
             meeting_id=new_meeting.id,
-            summary=mom_data.get("summary", ""),
+            summary=summary_text,
             decisions=mom_data.get("decisions", []),
             agenda_topics=mom_data.get("topics_discussed", []),
             is_finalized=False

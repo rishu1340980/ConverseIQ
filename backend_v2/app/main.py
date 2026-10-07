@@ -8,6 +8,7 @@ from backend_v2.app.models import (
     AuditLog, SystemSetting
 )
 import asyncio
+from sqlalchemy import text
 from backend_v2.app.routers import auth, dashboard, action_items, meetings, mom, users, departments, ai, admin, reports, schedule
 from backend_v2.app.services.reminder_scheduler import reminder_scheduler_loop
 
@@ -16,6 +17,30 @@ async def lifespan(app: FastAPI):
     # Initialize DB tables on startup
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        
+        # Verify and add columns dynamically for SQLite
+        cols = [
+            ("meetings", "processing_status", "VARCHAR(50) DEFAULT 'COMPLETED'"),
+            ("meetings", "recording_path", "VARCHAR(500)"),
+            ("meetings", "recording_duration_seconds", "INTEGER DEFAULT 0"),
+            ("meetings", "error_message", "TEXT"),
+            ("meetings", "jitsi_room", "VARCHAR(255)"),
+            ("action_items", "academic_year", "VARCHAR(50)"),
+            ("action_items", "department_id", "INTEGER"),
+            ("action_items", "assigned_by_id", "INTEGER"),
+            ("action_items", "assigned_by_name", "VARCHAR(150)"),
+            ("action_items", "assigned_by_role", "VARCHAR(50)"),
+            ("action_items", "owner_email", "VARCHAR(255)"),
+            ("action_items", "reminder_sent", "INTEGER DEFAULT 0"),
+            ("action_items", "reminder_sent_at", "DATETIME"),
+            ("schedule_events", "reminder_24h_sent", "BOOLEAN DEFAULT 0"),
+            ("schedule_events", "reminder_4h_sent", "BOOLEAN DEFAULT 0"),
+        ]
+        for tbl, col, col_t in cols:
+            try:
+                await conn.execute(text(f"ALTER TABLE {tbl} ADD COLUMN {col} {col_t};"))
+            except Exception:
+                pass
 
     # Automatically seed initial departments and users if table is fresh
     try:
