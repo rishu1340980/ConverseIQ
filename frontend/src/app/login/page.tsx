@@ -10,24 +10,13 @@ import SegmentedControl from '@/components/ui/SegmentedControl';
 export default function LoginPage() {
   const router = useRouter();
   const [selectedRole, setSelectedRole] = useState<'Faculty' | 'HOD' | 'Admin'>('Faculty');
-  const [email, setEmail] = useState('prof.sharma@converseiq.edu');
-  const [password, setPassword] = useState('Faculty@123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleRoleSelect = (role: string) => {
-    const typedRole = role as 'Faculty' | 'HOD' | 'Admin';
-    setSelectedRole(typedRole);
-    if (typedRole === 'Faculty') {
-      setEmail('prof.sharma@converseiq.edu');
-      setPassword('Faculty@123');
-    } else if (typedRole === 'HOD') {
-      setEmail('hod.cs@converseiq.edu');
-      setPassword('Hod@123');
-    } else {
-      setEmail('admin@converseiq.edu');
-      setPassword('Admin@123');
-    }
+    setSelectedRole(role as 'Faculty' | 'HOD' | 'Admin');
     setError(null);
   };
 
@@ -154,7 +143,7 @@ export default function LoginPage() {
                 Institutional Access
               </h2>
               <p className="text-sm text-[#667875] dark:text-[#8FA89C] mt-1 font-medium">
-                Select your academic role to proceed with preloaded demo credentials
+                Enter your institutional email and security password to sign in
               </p>
             </div>
 
@@ -216,7 +205,7 @@ export default function LoginPage() {
                   isLoading={isLoading}
                   className="w-full justify-center"
                 >
-                  Sign In as {selectedRole}
+                  Sign In
                 </AnimatedButton>
               </div>
             </form>
