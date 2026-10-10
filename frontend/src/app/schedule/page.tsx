@@ -639,6 +639,53 @@ export default function SchedulePage() {
                 </button>
               </div>
             )}
+
+            {/* Always visible: All Scheduled Sessions Overview */}
+            {filteredEvents.length > 0 && selectedDayEvents.length === 0 && (
+              <div className="mt-4 pt-4 border-t border-[#DCE7E2] dark:border-[#2D4A3E]">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#667875] dark:text-[#8FA89C] mb-3">
+                  All Scheduled Sessions ({filteredEvents.length})
+                </h4>
+                <div className="space-y-3">
+                  {filteredEvents.slice(0, 5).map((ev) => {
+                    const domainCfg = DOMAIN_COLORS[ev.domain] || DOMAIN_COLORS['Departmental & Administrative'];
+                    const evDate = new Date(ev.start_time);
+                    const formattedDate = evDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    const timeStr = evDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+                    return (
+                      <div
+                        key={ev.id}
+                        onClick={() => {
+                          setCurrentDate(evDate);
+                          setSelectedDay(evDate.getDate());
+                        }}
+                        className="p-3.5 rounded-2xl bg-[#F5FAF8] dark:bg-[#141F1A] border border-[#DCE7E2] dark:border-[#2D4A3E] hover:border-[#3F795F] transition-all cursor-pointer flex items-center justify-between"
+                      >
+                        <div className="space-y-1">
+                          <div className="flex items-center space-x-2">
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${domainCfg.bg} ${domainCfg.text}`}>
+                              {ev.domain}
+                            </span>
+                            <span className="text-xs font-bold text-[#173A2C] dark:text-[#E8F0EC]">
+                              {ev.title}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-[#667875] dark:text-[#8FA89C] flex items-center space-x-2">
+                            <span>📅 {formattedDate} at {timeStr}</span>
+                            <span>•</span>
+                            <span>👤 {ev.faculty_name}</span>
+                          </p>
+                        </div>
+                        <span className="text-xs font-bold text-[#3F795F] dark:text-[#78A98F]">
+                          View &rarr;
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Card: Pending Faculty Deadlines */}
