@@ -18,6 +18,25 @@ export function removeAuthToken() {
   }
 }
 
+export async function logoutSession(): Promise<void> {
+  const token = getAuthToken();
+  if (token) {
+    try {
+      await fetch(`${BASE_URL}/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+    } catch (e) {
+      // Safe fallback on network failure
+      console.warn('Backend revocation unreachable, proceeding with client-side cleanup', e);
+    }
+  }
+  removeAuthToken();
+}
+
 export function getCurrentStoredUser() {
   if (typeof window === 'undefined') return null;
   const raw = localStorage.getItem('converseiq_user');
@@ -57,11 +76,17 @@ export async function apiRequest<T = any>(
       if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
         window.location.href = '/login';
       }
-      throw new Error('Session expired. Please log in again.');
+      throw new Error('Session expired or invalidated. Please log in again.');
+    }
+
+    if (res.status === 423) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(errBody.detail || 'Account is temporarily locked. Please wait before retrying.');
     }
 
     if (res.status === 429) {
-      throw new Error('Too many failed attempts. Account temporarily locked for 15 minutes.');
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(errBody.detail || 'Too many authentication attempts. Please wait a minute before trying again.');
     }
 
     if (!res.ok) {

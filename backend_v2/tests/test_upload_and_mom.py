@@ -6,11 +6,15 @@ from backend_v2.app.core.security import create_access_token
 
 @pytest.mark.asyncio
 async def test_upload_and_analyze_flow():
-    token = create_access_token(data={"sub": "prof.sharma@converseiq.edu", "role": "Faculty"})
-    headers = {"Authorization": f"Bearer {token}"}
     transport = ASGITransport(app=app)
-
     async with AsyncClient(transport=transport, base_url="http://test") as client:
+        # Obtain fresh valid token
+        login_res = await client.post("/api/v1/auth/login", json={
+            "email": "prof.sharma@converseiq.edu",
+            "password": "Faculty@123"
+        })
+        token = login_res.json()["access_token"]
+        headers = {"Authorization": f"Bearer {token}"}
         # 1. Test POST /api/v1/meetings/upload-and-analyze
         dummy_audio = io.BytesIO(b"RIFF\x24\x00\x00\x00WAVEfmt \x10\x00\x00\x00\x01\x00\x01\x00D\xac\x00\x00\x88X\x01\x00\x02\x00\x10\x00data\x00\x00\x00\x00")
         files = {"file": ("test_recording.wav", dummy_audio, "audio/wav")}

@@ -17,4 +17,9 @@ class User(Base):
     department_id = Column(Integer, ForeignKey("departments.id"), nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
+    # Security & Brute-force protection fields
+    failed_login_attempts = Column(Integer, default=0, nullable=False)
+    locked_until = Column(DateTime, nullable=True)
+    token_version = Column(Integer, default=1, nullable=False)
+
     department = relationship("Department", back_populates="users")

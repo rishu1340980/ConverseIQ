@@ -35,6 +35,9 @@ async def lifespan(app: FastAPI):
             ("action_items", "reminder_sent_at", "DATETIME"),
             ("schedule_events", "reminder_24h_sent", "BOOLEAN DEFAULT 0"),
             ("schedule_events", "reminder_4h_sent", "BOOLEAN DEFAULT 0"),
+            ("users", "failed_login_attempts", "INTEGER DEFAULT 0"),
+            ("users", "locked_until", "DATETIME"),
+            ("users", "token_version", "INTEGER DEFAULT 1"),
         ]
         for tbl, col, col_t in cols:
             try:

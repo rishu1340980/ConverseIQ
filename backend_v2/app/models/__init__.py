@@ -9,6 +9,7 @@ from backend_v2.app.models.audit_log import AuditLog
 from backend_v2.app.models.system_setting import SystemSetting
 from backend_v2.app.models.schedule_event import ScheduleEvent
 from backend_v2.app.models.notification_log import NotificationLog
+from backend_v2.app.models.token_blacklist import TokenBlacklist
 
 __all__ = [
     "Department",
@@ -22,4 +23,5 @@ __all__ = [
     "SystemSetting",
     "ScheduleEvent",
     "NotificationLog",
+    "TokenBlacklist",
 ]

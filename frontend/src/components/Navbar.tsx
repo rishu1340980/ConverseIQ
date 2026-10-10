@@ -16,7 +16,7 @@ import {
   ChevronRight,
   UploadCloud
 } from 'lucide-react';
-import { getCurrentStoredUser, removeAuthToken } from '@/lib/api';
+import { getCurrentStoredUser, logoutSession } from '@/lib/api';
 import { User } from '@/types';
 import UploadRecordingModal from '@/components/UploadRecordingModal';
 
@@ -30,8 +30,8 @@ export default function Navbar() {
     setUser(getCurrentStoredUser());
   }, [pathname]);
 
-  const handleLogout = () => {
-    removeAuthToken();
+  const handleLogout = async () => {
+    await logoutSession();
     router.push('/login');
   };
 

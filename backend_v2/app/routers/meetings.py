@@ -553,6 +553,26 @@ async def get_meeting_detail(
             detail="Meeting not found"
         )
 
+    # Enforce Object-Level Authorization (IDOR Defense)
+    # Admin has institutional visibility; HOD can view meetings in their department; Faculty can view own meetings or where participating
+    if current_user.role == "Faculty":
+        is_creator = (meeting.user_id == current_user.id)
+        is_participant = any(
+            p.name.lower() == current_user.name.lower() or current_user.email.lower() in (p.name or "").lower()
+            for p in (meeting.participants or [])
+        )
+        if not (is_creator or is_participant):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied. You do not have permission to view this meeting."
+            )
+    elif current_user.role == "HOD":
+        if meeting.department_id and current_user.department_id and meeting.department_id != current_user.department_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied. Meeting belongs to another academic department."
+            )
+
     return format_meeting_response(meeting)
 
 @router.post("/{meeting_id}/map-attendees")
