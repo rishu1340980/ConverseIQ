@@ -6,7 +6,7 @@ from pydantic import BaseModel, EmailStr, ConfigDict
 from typing import Optional, List
 from backend_v2.app.core.database import get_db
 from backend_v2.app.core.dependencies import get_current_user
-from backend_v2.app.core.security import get_password_hash
+from backend_v2.app.core.security import get_password_hash, validate_password_strength
 from backend_v2.app.models.user import User
 from backend_v2.app.models.meeting import Meeting
 from backend_v2.app.models.action_item import ActionItem
@@ -134,6 +134,14 @@ async def create_faculty(
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="A user with this email already exists."
+        )
+
+    # Validate institutional password complexity
+    pwd_err = validate_password_strength(payload.password)
+    if pwd_err:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=pwd_err
         )
 
     new_faculty = User(
