@@ -19,7 +19,7 @@ import {
   Moon,
   Sun,
 } from 'lucide-react';
-import { getCurrentStoredUser, removeAuthToken } from '@/lib/api';
+import { getCurrentStoredUser, logoutSession } from '@/lib/api';
 import { useTheme } from '@/components/ThemeProvider';
 import AddMeetingModal from './AddMeetingModal';
 
@@ -35,8 +35,8 @@ export default function Sidebar() {
     if (u) setUser(u);
   }, []);
 
-  const handleLogout = () => {
-    removeAuthToken();
+  const handleLogout = async () => {
+    await logoutSession();
     router.push('/login');
   };
 
@@ -48,6 +48,9 @@ export default function Sidebar() {
   const isHodMode = userRole === 'HOD';
   const isAdminMode = userRole === 'Admin';
   const isFacultyMode = userRole === 'Faculty';
+
+  // Role-based home dashboard URL
+  const homeHref = isHodMode ? '/hod/overview' : isAdminMode ? '/admin' : '/dashboard';
 
   interface NavItem {
     label: string;
@@ -94,14 +97,18 @@ export default function Sidebar() {
         <div>
           <div className="px-2 py-2.5 mb-2">
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 rounded-xl bg-[#78A98F] text-white flex items-center justify-center font-bold text-lg shadow-sm">
+              <Link 
+                href={homeHref}
+                className="flex items-center space-x-3 group focus:outline-none"
+                title="Go to Dashboard"
+              >
+                <div className="w-9 h-9 rounded-xl bg-[#78A98F] group-hover:bg-[#3F795F] text-white flex items-center justify-center font-bold text-lg shadow-sm transition-all duration-200 group-hover:scale-105">
                   C
                 </div>
-                <span className="font-bold text-xl text-[#173A2C] dark:text-[#E8F0EC] tracking-tight">
+                <span className="font-bold text-xl text-[#173A2C] dark:text-[#E8F0EC] group-hover:text-[#3F795F] dark:group-hover:text-[#78A98F] tracking-tight transition-colors duration-200">
                   ConverseIQ
                 </span>
-              </div>
+              </Link>
 
               {/* Dark Mode Toggle */}
               <button
