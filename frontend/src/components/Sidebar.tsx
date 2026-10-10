@@ -76,6 +76,7 @@ export default function Sidebar() {
     { label: 'Action Tracker', href: '/hod/action-tracker', icon: CheckSquare },
     { label: 'Schedule', href: '/hod/schedule', icon: Calendar },
     { label: 'AI Assistant', href: '/ai-assistant', icon: Sparkles, isAi: true },
+    { label: 'Settings', href: '/settings', icon: Settings },
   ];
 
   const adminNavItems: NavItem[] = [
@@ -193,19 +194,23 @@ export default function Sidebar() {
 
           {/* User Profile Bar */}
           <div className="flex items-center justify-between px-2 py-2 rounded-xl hover:bg-[#F5FAF8] dark:hover:bg-[#1A2B24] border border-transparent hover:border-[#DCE7E2] dark:hover:border-[#2D4A3E] transition-colors">
-            <div className="flex items-center space-x-3 truncate">
-              <div className="w-9 h-9 rounded-full bg-[#3F795F] text-white flex items-center justify-center font-bold text-sm flex-shrink-0 shadow-xs">
+            <Link
+              href="/settings"
+              title="Edit Profile & Settings"
+              className="flex items-center space-x-3 truncate flex-1 group focus:outline-none cursor-pointer"
+            >
+              <div className="w-9 h-9 rounded-full bg-[#3F795F] group-hover:bg-[#34654F] text-white flex items-center justify-center font-bold text-sm flex-shrink-0 shadow-xs transition-colors">
                 {initial}
               </div>
               <div className="truncate">
-                <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC] truncate leading-tight">
+                <p className="text-sm font-bold text-[#173A2C] dark:text-[#E8F0EC] group-hover:text-[#3F795F] dark:group-hover:text-[#78A98F] truncate leading-tight transition-colors">
                   {displayName}
                 </p>
                 <p className="text-xs text-[#667875] dark:text-[#8FA89C] truncate leading-tight mt-0.5">
                   {displayRole}
                 </p>
               </div>
-            </div>
+            </Link>
 
             <button
               onClick={handleLogout}
