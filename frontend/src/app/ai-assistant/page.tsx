@@ -5,9 +5,13 @@ import { Sparkles, ArrowUp, Bot, User, Trash2, BookOpen } from 'lucide-react';
 import { apiRequest, getCurrentStoredUser } from '@/lib/api';
 
 interface MessageSource {
-  type: string;
+  type?: string;
   id?: number | string;
-  title: string;
+  meeting_id?: number | string;
+  title?: string;
+  meeting_title?: string;
+  date?: string;
+  relevant_snippet?: string;
 }
 
 interface Message {
@@ -245,9 +249,11 @@ export default function AIAssistantPage() {
                   {m.sources.map((src, i) => (
                     <span
                       key={i}
+                      title={src.relevant_snippet || ''}
                       className="px-2 py-0.5 bg-white dark:bg-[#1A2B24] text-[#3F795F] dark:text-[#78A98F] text-[10px] font-semibold rounded-md border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-2xs"
                     >
-                      {src.title}
+                      {src.meeting_title || src.title || 'Meeting Reference'}
+                      {src.date ? ` (${src.date})` : ''}
                     </span>
                   ))}
                 </div>

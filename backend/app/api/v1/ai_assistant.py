@@ -20,7 +20,7 @@ async def chat_with_meetings(
     """
     response = await answer_faculty_query(
         db=db,
-        user_id=current_user.id,
+        user=current_user,
         query=req.query,
         target_meeting_id=req.meeting_id
     )
