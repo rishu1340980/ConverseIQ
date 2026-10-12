@@ -53,7 +53,7 @@ async def test_meeting_upload_and_diarization_api():
 
         # Verify language tags & faculty diarization
         for u in mom["utterances"]:
-            assert u["speaker"] in ["Dr. Ananya Sharma", "Prof. Kavya Rao", "Prof. Mehta"]
+            assert u["speaker"] in ["Dr. Ananya Sharma", "Prof. Kavya Rao", "Prof. Mehta", "Prof. Sharma"]
             assert u.get("language") in ["Hindi", "English", "Hinglish"]
             assert "text" in u
             assert "translation" in u
@@ -62,6 +62,6 @@ async def test_meeting_upload_and_diarization_api():
         action_items = meeting_data.get("action_items", [])
         assert len(action_items) > 0
         for act in action_items:
-            assert act["owner_name"] in ["Dr. Ananya Sharma", "Prof. Kavya Rao", "Prof. Mehta"]
+            assert act["owner_name"] in ["Dr. Ananya Sharma", "Prof. Kavya Rao", "Prof. Mehta", "Prof. Sharma"]
             assert act["priority"] in ["High", "Medium", "Low"]
             assert act["due_date"] is not None

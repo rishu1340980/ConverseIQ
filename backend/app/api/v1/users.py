@@ -114,3 +114,77 @@ async def update_user(
     )
 
     return target_user
+
+import json
+from fastapi import UploadFile, File
+from app.core.security import get_current_user
+from app.services.voice_service import voice_service
+
+@router.post("/enroll-voice")
+async def enroll_faculty_voice(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Enrolls faculty voiceprint sample. Extracts acoustic spectral signature
+    and stores normalized embedding on the user profile for speaker identification.
+    """
+    audio_bytes = await file.read()
+    if len(audio_bytes) < 100:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Audio sample is too short or empty. Please record at least 3 seconds of clear speech."
+        )
+
+    embedding = voice_service.extract_voice_embedding(audio_bytes)
+    user_res = await db.execute(select(User).where(User.id == current_user.id))
+    user = user_res.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    user.voice_embedding = json.dumps(embedding)
+    user.voice_enrolled = True
+
+    await db.commit()
+
+    await log_audit_event(
+        db=db,
+        action="Voice Profile Enrolled",
+        details=f"Faculty {current_user.email} enrolled voiceprint (64 dimensions)",
+        severity="OK",
+        user_id=current_user.id
+    )
+
+    return {
+        "success": True,
+        "message": f"Voice profile successfully enrolled for {current_user.name}",
+        "voice_enrolled": True,
+        "dimensions": len(embedding)
+    }
+
+@router.get("/voice-status")
+async def get_voice_enrollment_status(
+    current_user: User = Depends(get_current_user)
+):
+    """Returns current user voice enrollment status."""
+    return {
+        "user_id": current_user.id,
+        "name": current_user.name,
+        "email": current_user.email,
+        "voice_enrolled": bool(current_user.voice_enrolled)
+    }
+
+@router.delete("/enroll-voice")
+async def delete_faculty_voice(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Deletes enrolled voice signature."""
+    user_res = await db.execute(select(User).where(User.id == current_user.id))
+    user = user_res.scalar_one_or_none()
+    if user:
+        user.voice_enrolled = False
+        user.voice_embedding = None
+        await db.commit()
+    return {"message": "Voice profile successfully removed"}

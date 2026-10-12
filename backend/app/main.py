@@ -102,6 +102,25 @@ async def seed_initial_data():
             )
             session.add(faculty_mishra)
 
+        # Seed Professors: Vedant, Unnati, Manthan
+        professors_seed = [
+            ("Prof. Vedant", "prof.vedant@converseiq.edu"),
+            ("Prof. Unnati", "prof.unnati@converseiq.edu"),
+            ("Prof. Manthan", "prof.manthan@converseiq.edu")
+        ]
+        for p_name, p_email in professors_seed:
+            p_res = await session.execute(select(User).where(User.email == p_email))
+            if not p_res.scalar_one_or_none():
+                new_prof = User(
+                    name=p_name,
+                    email=p_email,
+                    hashed_password=get_password_hash("Faculty@123"),
+                    role="Faculty",
+                    department_id=cs_dept.id,
+                    is_active=True
+                )
+                session.add(new_prof)
+
         await session.commit()
         if admin_user:
             await session.refresh(admin_user)

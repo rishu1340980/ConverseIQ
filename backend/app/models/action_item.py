@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
@@ -14,6 +14,9 @@ class ActionItem(Base):
     priority = Column(String(20), default="Medium", nullable=False)  # 'High', 'Medium', 'Low'
     status = Column(String(20), default="Pending", nullable=False)    # 'Pending', 'Completed'
     due_date = Column(DateTime, nullable=True)
+    alert_before_sent = Column(Boolean, default=False, nullable=False)
+    alert_due_day_sent = Column(Boolean, default=False, nullable=False)
+    alert_overdue_sent = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
     updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc), nullable=False)
 

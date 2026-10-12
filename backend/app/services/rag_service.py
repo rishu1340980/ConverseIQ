@@ -1,4 +1,5 @@
 from typing import List, Optional, Dict, Any
+from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
@@ -120,3 +121,115 @@ async def answer_faculty_query(
         sources=sources[:3],
         suggested_questions=[s for s in suggested if s.lower() != q_lower][:3]
     )
+
+async def hybrid_search_meetings(
+    db: AsyncSession,
+    user_id: int,
+    query: str,
+    department_id: Optional[int] = None,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+    speaker: Optional[str] = None,
+    status: Optional[str] = None
+) -> List[Dict[str, Any]]:
+    """
+    Hybrid Search Engine combining semantic relevance scoring with multi-faceted keyword & metadata filters.
+    """
+    stmt = (
+        select(Meeting)
+        .options(selectinload(Meeting.mom), selectinload(Meeting.action_items), selectinload(Meeting.participants))
+        .where(Meeting.created_by_id == user_id)
+        .order_by(Meeting.date.desc())
+    )
+
+    if department_id:
+        stmt = stmt.where(Meeting.department_id == department_id)
+    if status:
+        stmt = stmt.where(Meeting.status == status)
+    if date_from:
+        stmt = stmt.where(Meeting.date >= date_from)
+    if date_to:
+        stmt = stmt.where(Meeting.date <= date_to)
+
+    res = await db.execute(stmt)
+    meetings = res.scalars().all()
+
+    q_tokens = [w.lower() for w in query.strip().split() if len(w) > 2] if query else []
+    results = []
+
+    for m in meetings:
+        # Check speaker filter if provided
+        if speaker:
+            spk_match = any(speaker.lower() in p.name.lower() for p in m.participants)
+            if not spk_match:
+                continue
+
+        score = 0.0
+        match_reasons = []
+        highlight_snippets = []
+
+        title_lower = m.title.lower()
+        summary = m.mom.summary if m.mom else ""
+        summary_lower = summary.lower()
+        transcript = m.mom.raw_transcript if m.mom and m.mom.raw_transcript else ""
+        transcript_lower = transcript.lower()
+
+        # 1. Exact title match
+        if query and query.lower() in title_lower:
+            score += 4.0
+            match_reasons.append("Exact Title Match")
+
+        # 2. Token overlap & semantic proxy in summary
+        summary_hits = [t for t in q_tokens if t in summary_lower]
+        if summary_hits:
+            score += len(summary_hits) * 1.5
+            match_reasons.append("Summary Context Match")
+            # Create snippet around first hit
+            idx = summary_lower.find(summary_hits[0])
+            start = max(0, idx - 40)
+            end = min(len(summary), idx + 100)
+            highlight_snippets.append(f"...{summary[start:end]}...")
+
+        # 3. Action items check
+        for a in m.action_items:
+            if any(t in a.task.lower() for t in q_tokens):
+                score += 2.0
+                match_reasons.append(f"Action Item: {a.task[:50]}")
+
+        # 4. Decisions check
+        if m.mom and m.mom.decisions:
+            for d in m.mom.decisions:
+                if any(t in str(d).lower() for t in q_tokens):
+                    score += 2.5
+                    match_reasons.append(f"Decision: {str(d)[:60]}")
+
+        # 5. Fallback transcript search
+        if not highlight_snippets and transcript_lower and q_tokens:
+            for t in q_tokens:
+                if t in transcript_lower:
+                    idx = transcript_lower.find(t)
+                    start = max(0, idx - 30)
+                    end = min(len(transcript), idx + 100)
+                    highlight_snippets.append(f"...{transcript[start:end]}...")
+                    score += 1.0
+                    break
+
+        # If no text query was provided, return all filtered meetings
+        if not query:
+            score = 1.0
+
+        if score > 0.0:
+            results.append({
+                "meeting_id": m.id,
+                "title": m.title,
+                "date": m.date.isoformat(),
+                "duration_minutes": m.duration_minutes,
+                "status": m.status,
+                "department_id": m.department_id,
+                "relevance_score": round(score, 2),
+                "match_reasons": list(set(match_reasons)),
+                "snippet": highlight_snippets[0] if highlight_snippets else (summary[:150] + "..." if summary else "No summary available.")
+            })
+
+    results.sort(key=lambda x: x["relevance_score"], reverse=True)
+    return results

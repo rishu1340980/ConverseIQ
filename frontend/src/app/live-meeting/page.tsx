@@ -633,26 +633,26 @@ export default function LiveMeetingPage() {
   // Demo: Load Sample Academic Discussion (for instant guide demonstration)
   const handleLoadSampleDemo = () => {
     setMeetingTitle('Computer Science Department Board of Studies (Curriculum 2026)');
-    setAttendeeNames('Prof. Sharma, Dr. Anita Rao, Prof. Mishra');
+    setAttendeeNames('Prof. Vedant, Prof. Unnati, Prof. Manthan');
     setLiveTranscript([
       {
-        speaker: 'Prof. Sharma',
+        speaker: 'Prof. Vedant',
         text: 'Welcome colleagues. Today we must finalize the syllabus revision for the 3rd Year AI & Machine Learning curriculum.',
         time: '00:05'
       },
       {
-        speaker: 'Dr. Anita Rao',
+        speaker: 'Prof. Unnati',
         text: 'I propose we include hands-on PyTorch model training and Docker container deployment in the 5th semester lab exercises.',
         time: '00:18'
       },
       {
-        speaker: 'Prof. Mishra',
+        speaker: 'Prof. Manthan',
         text: 'Agreed. That aligns directly with industry demand. I will prepare the revised lab manual and assessment rubric by Friday.',
         time: '00:32'
       },
       {
-        speaker: 'Prof. Sharma',
-        text: 'Excellent decision. Decision is approved. Dr. Rao, please coordinate with the examination controller for credits approval.',
+        speaker: 'Prof. Vedant',
+        text: 'Excellent decision. Decision is approved. Prof. Unnati, please coordinate with the examination controller for credits approval.',
         time: '00:46'
       }
     ]);
@@ -858,7 +858,7 @@ export default function LiveMeetingPage() {
               </label>
               <input
                 type="text"
-                placeholder="e.g. Prof. Sharma, Dr. Anita Rao"
+                placeholder="e.g. Prof. Vedant, Prof. Unnati, Prof. Manthan"
                 value={attendeeNames}
                 onChange={(e) => setAttendeeNames(e.target.value)}
                 className="w-full px-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] placeholder-[#667875] dark:placeholder-[#8FA89C] focus:outline-none focus:ring-2 focus:ring-[#78A98F]/40 transition-all"
@@ -955,7 +955,7 @@ export default function LiveMeetingPage() {
               </label>
               <input
                 type="text"
-                placeholder="e.g. Prof. Sharma, Dr. Anita Rao, Prof. Mishra"
+                placeholder="e.g. Prof. Vedant, Prof. Unnati, Prof. Manthan"
                 value={attendeeNames}
                 onChange={(e) => setAttendeeNames(e.target.value)}
                 className="w-full px-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] placeholder-[#667875] dark:placeholder-[#8FA89C] focus:outline-none focus:ring-2 focus:ring-[#78A98F]/40 transition-all"

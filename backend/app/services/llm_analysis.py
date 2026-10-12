@@ -10,7 +10,7 @@ async def generate_mom_and_actions(transcript_text: str, participants: List[str]
     Minutes of Meeting (MoM) including executive summary, key decisions, topics discussed,
     and action items with exact faculty owner names, priorities, and deadlines.
     """
-    faculty_list = participants or ["Prof. Mehta", "Dr. Ananya Sharma", "Prof. Kavya Rao", "Dr. Priya Kapoor"]
+    faculty_list = participants or ["Prof. Vedant", "Prof. Unnati", "Prof. Manthan"]
 
     # 1. Primary Engine: Google Gemini 3.6 Flash
     if settings.GEMINI_API_KEY:
@@ -134,10 +134,10 @@ Analyze the provided meeting dialogue and extract structured Minutes of Meeting 
 
 def _fallback_mom(transcript_text: str, participants: List[str] = None) -> Dict[str, Any]:
     """Deterministic high-quality fallback MoM."""
-    p_names = participants or ["Prof. Mehta", "Dr. Ananya Sharma", "Prof. Kavya Rao", "Dr. Priya Kapoor"]
-    p1 = p_names[0] if len(p_names) > 0 else "Prof. Mehta"
-    p2 = p_names[1] if len(p_names) > 1 else "Dr. Ananya Sharma"
-    p3 = p_names[2] if len(p_names) > 2 else "Prof. Kavya Rao"
+    p_names = participants or ["Prof. Vedant", "Prof. Unnati", "Prof. Manthan"]
+    p1 = p_names[0] if len(p_names) > 0 else "Prof. Vedant"
+    p2 = p_names[1] if len(p_names) > 1 else "Prof. Unnati"
+    p3 = p_names[2] if len(p_names) > 2 else "Prof. Manthan"
 
     return {
         "summary": "The committee convened to finalize the mid-term examination timetable and coordinate documentation verification for NAAC Criteria 3. Resource allocations for CS laboratory slots were negotiated and central coordination responsibilities were delegated.",

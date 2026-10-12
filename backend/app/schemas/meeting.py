@@ -26,6 +26,7 @@ class MeetingResponse(MeetingBase):
     id: int
     created_by_id: int
     created_at: datetime
+    meeting_link_token: Optional[str] = None
     participant_count: Optional[int] = 0
     participants: List[ParticipantResponse] = []
 

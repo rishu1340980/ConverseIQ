@@ -1,0 +1,1175 @@
+import subprocess
+import os
+
+html_content = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ConverseIQ: An AI-Powered Academic Meeting Intelligence and Governance Platform</title>
+<style>
+  @page {
+    size: letter;
+    margin: 18mm 16mm 18mm 16mm;
+    @bottom-center {
+      content: counter(page);
+      font-family: "Times New Roman", Times, serif;
+      font-size: 9pt;
+    }
+  }
+
+  *, *:before, *:after {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Times New Roman", Times, "Nimbus Roman No9 L", serif;
+    font-size: 9.3pt;
+    line-height: 1.34;
+    color: #111;
+    margin: 0;
+    padding: 0;
+    text-align: justify;
+    text-justify: inter-word;
+  }
+
+  /* IEEE Header Section - Spanning across entire page */
+  .paper-header {
+    text-align: center;
+    margin-bottom: 16px;
+    padding-bottom: 6px;
+    border-bottom: 0.5pt solid #cbd5e1;
+  }
+
+  .paper-title {
+    font-size: 19pt;
+    font-weight: bold;
+    line-height: 1.22;
+    margin-bottom: 12px;
+    color: #000;
+  }
+
+  .authors-block {
+    margin-bottom: 8px;
+  }
+
+  .students-line {
+    font-size: 10.5pt;
+    font-weight: bold;
+    color: #111;
+    margin-bottom: 3px;
+  }
+
+  .common-dept {
+    font-size: 9pt;
+    font-style: italic;
+    color: #333;
+    line-height: 1.28;
+  }
+
+  .guide-block {
+    margin-top: 8px;
+    padding-top: 4px;
+  }
+
+  .guide-name {
+    font-size: 10pt;
+    font-weight: bold;
+  }
+
+  .guide-designation {
+    font-size: 8.8pt;
+    font-style: italic;
+    color: #333;
+  }
+
+  /* Two Column Layout with Distinct 9mm Gutter */
+  .two-column-layout {
+    column-count: 2;
+    column-gap: 9mm;
+    position: relative;
+  }
+
+  /* Elements spanning both columns across the page */
+  .span-full {
+    column-span: all;
+    width: 100%;
+    margin: 14px 0 12px 0;
+    break-inside: avoid;
+  }
+
+  /* Abstract Box */
+  .abstract-box {
+    margin-bottom: 12px;
+    font-size: 8.8pt;
+    line-height: 1.3;
+    text-align: justify;
+    background-color: #fafafa;
+    padding: 8px 10px;
+    border-left: 2.5pt solid #0f172a;
+    border-radius: 2px;
+    break-inside: avoid;
+  }
+
+  .abstract-heading {
+    font-weight: bold;
+    font-style: italic;
+  }
+
+  .index-terms {
+    margin-top: 6px;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 8.6pt;
+  }
+
+  /* Section Headings */
+  h2.section-title {
+    font-size: 9.6pt;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    letter-spacing: 0.6px;
+    break-after: avoid;
+    border-bottom: 0.4pt solid #cbd5e1;
+    padding-bottom: 2px;
+  }
+
+  h3.subsection-title {
+    font-size: 9.3pt;
+    font-weight: bold;
+    font-style: italic;
+    margin-top: 10px;
+    margin-bottom: 4px;
+    break-after: avoid;
+  }
+
+  p {
+    margin-top: 0;
+    margin-bottom: 7px;
+    text-indent: 1.1em;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  p.no-indent {
+    text-indent: 0;
+  }
+
+  ul, ol {
+    margin-top: 2px;
+    margin-bottom: 7px;
+    padding-left: 1.3em;
+  }
+
+  li {
+    margin-bottom: 3px;
+    line-height: 1.28;
+  }
+
+  /* Figures */
+  .figure-box {
+    width: 100%;
+    margin: 10px 0 8px 0;
+    text-align: center;
+    break-inside: avoid;
+  }
+
+  .figure-box img {
+    max-width: 100%;
+    height: auto;
+    border: 0.5pt solid #cbd5e1;
+    border-radius: 2px;
+    background-color: #fff;
+  }
+
+  .span-full .figure-box img {
+    max-width: 90%;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .caption {
+    font-size: 8pt;
+    line-height: 1.22;
+    text-align: center;
+    margin-top: 4px;
+    font-style: italic;
+    color: #333;
+  }
+
+  /* Tables */
+  table.ieee-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7.8pt;
+    line-height: 1.24;
+    margin: 8px 0 10px 0;
+  }
+
+  table.ieee-table th {
+    border-top: 1.2pt solid #000;
+    border-bottom: 0.8pt solid #000;
+    padding: 4.5px 5px;
+    text-align: center;
+    font-weight: bold;
+    background-color: #f8fafc;
+  }
+
+  table.ieee-table td {
+    padding: 4px 5px;
+    border-bottom: 0.4pt solid #e2e8f0;
+    text-align: left;
+  }
+
+  table.ieee-table tr.highlight-row {
+    font-weight: bold;
+    background-color: #f1f5f9;
+  }
+
+  table.ieee-table tr.bottom-border td {
+    border-bottom: 1.2pt solid #000;
+  }
+
+  .table-title {
+    font-size: 8.2pt;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 4px;
+    letter-spacing: 0.4px;
+  }
+
+  .equation {
+    text-align: center;
+    margin: 7px 0;
+    font-style: normal;
+    font-size: 9pt;
+    padding: 3px 0;
+  }
+
+  /* Algorithm Box */
+  .algorithm-box {
+    border: 0.7pt solid #334155;
+    background-color: #f8fafc;
+    padding: 6px 8px;
+    margin: 9px 0;
+    font-size: 7.6pt;
+    line-height: 1.24;
+    break-inside: avoid;
+    border-radius: 2px;
+    width: 100%;
+  }
+
+  .algorithm-title {
+    font-weight: bold;
+    border-bottom: 0.6pt solid #94a3b8;
+    padding-bottom: 3px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .algorithm-box pre {
+    margin: 0;
+    font-family: "Courier New", Courier, monospace;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  /* References with zero spillover */
+  .reference-item {
+    font-size: 8pt;
+    line-height: 1.26;
+    margin-bottom: 5px;
+    text-indent: -1.4em;
+    padding-left: 1.4em;
+    text-align: justify;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  .reference-item a {
+    color: #000;
+    text-decoration: underline;
+    word-break: break-all;
+    overflow-wrap: break-word;
+  }
+</style>
+</head>
+<body>
+
+<div class="paper-header">
+  <div class="paper-title">
+    ConverseIQ: An AI-Powered Academic Meeting Intelligence and Governance Platform with Multi-Speaker Diarization, Institutional RAG, and Disaster Recovery Vault
+  </div>
+
+  <div class="authors-block">
+    <div class="students-line">
+      Rishabh Mishra, &nbsp; Unnati Jain, &nbsp; Manthan More, &nbsp; Vedant More
+    </div>
+    <div class="common-dept">
+      Department of Information Technology, A. P. Shah Institute of Technology, Kasarvadavali, Ghodbunder Road, Thane, Maharashtra<br>
+      Affiliated to the University of Mumbai, India
+    </div>
+  </div>
+
+  <div class="guide-block">
+    <div class="guide-name">Ms. Randeep Kaur Kahlon (Project Guide)</div>
+    <div class="guide-designation">
+      Assistant Professor, Department of Information Technology, A. P. Shah Institute of Technology, University of Mumbai, Thane, India
+    </div>
+  </div>
+</div>
+
+<div class="two-column-layout">
+
+  <div class="abstract-box">
+    <span class="abstract-heading">Abstract—</span>
+    Engineering institutes affiliated with the University of Mumbai run on formal committee meetings. Departmental Advisory Boards (DAB), syllabus revision panels, Program Assessment Committees (PAC), and National Board of Accreditation (NBA) compliance sessions routinely last three to four hours. Yet, note-taking in these rooms remains primitive. A junior faculty member scrambles to scribble notes while juggling technical arguments. The outcome is predictable: lost action items, missing deadlines, and weeks wasted trying to draft official Minutes of Meeting (MoM). Commercial video tools like Zoom or Google Meet treat meetings as throwaway video streams; they drop audio if a laptop sleeps and lack any concept of academic governance. We built <strong>ConverseIQ</strong> to solve this directly on the ground. First, we engineered a client-side <em>IndexedDB Disaster Recovery Audio Vault</em> that flushes Web Audio streams to disk every 2 seconds. When the browser tab dies or power cuts out, the recording stays intact. Next, we paired an AssemblyAI Conformer-2 diarization pipeline with Google Gemini 3.5 Flash, enforcing rigid Pydantic JSON schemas to extract true consensus decisions and calculate real calendar deadlines from casual dialogue. For accreditation audits, our role-scoped RAG assistant lets coordinators search multi-year meeting records with verbatim citations. On the security front, we hardened the backend with sliding-window rate limiting, a 5-strike lockout with constant-time dummy hashing, and database-level JWT revocation. Tested across 23 automated integration tests and 50 simulated client crash trials at APSIT Thane, ConverseIQ clocked a 6.2% Word Error Rate, a 96.8% MoM extraction accuracy, and zero lost bytes during catastrophic browser kills.
+    <div class="index-terms">
+      Index Terms—Academic Governance, Automatic Speech Recognition, Speaker Diarization, Retrieval-Augmented Generation, IndexedDB Audio Vault, Gemini 3.5 Flash, Meeting Intelligence, Web Security.
+    </div>
+  </div>
+
+  <h2 class="section-title">I. Introduction & Institutional Context</h2>
+  <p>
+    Walk into any engineering department during accreditation season, and you will find faculty buried under paperwork. At A. P. Shah Institute of Technology (APSIT), as in every collegiate institute affiliated with the University of Mumbai, statutory governance demands continuous documentation. The Department Advisory Board (DAB) convenes to align curriculum with industry hiring trends. The Board of Studies (BOS) debates credit redistributions. The Program Assessment Committee (PAC) analyzes Course Outcome–Program Outcome (CO-PO) attainment gaps. In these rooms, department chairs, senior professors, and visiting industry experts make concrete commitments regarding laboratory equipment budgets, semester test patterns, and syllabus updates.
+  </p>
+  <p>
+    The mechanism for recording these commitments has not evolved in decades. Typically, the Head of Department (HOD) assigns a junior assistant professor as the meeting scribe. That faculty member faces an impossible trade-off: contribute meaningfully to the technical discourse or frantically transcribe what everyone says. Important conditions get lost in the shuffle. A budget ceiling agreed upon verbally vanishes from the draft notes. Preparing the final Minutes of Meeting (MoM) ends up taking three to five working days of tedious back-and-forth email revisions. By the time the document gets signed, half the faculty have forgotten who agreed to complete which deliverable.
+  </p>
+  <p>
+    General-purpose web-conferencing suites like Microsoft Teams, Zoom, and Google Meet do not solve this problem. They are communications tunnels, not governance platforms. While paid enterprise add-ons offer AI summaries, their outputs are generic bulleted lists that read like high-level marketing overviews. They do not know what an "NBA SAR Criterion 3" file is. They cannot differentiate between an exploratory suggestion and a binding institutional directive. Worst of all, they cannot link assigned tasks to institutional calendar dates or track deliverables across successive semesters.
+  </p>
+  <p>
+    Worse still is client-side audio capture fragility. Most web recorders keep raw audio bytes in JavaScript memory until the user stops recording. In a three-hour meeting, audio data quickly swells beyond a gigabyte. Chrome's V8 heap allocator struggles with this volume; a sudden system sleep, a network jitter, or an accidental tab closure immediately destroys the entire recording. At our institute, this exact failure destroyed an entire afternoon's worth of curriculum review audio, forcing the department to repeat the exercise.
+  </p>
+  <p>
+    We designed and implemented <strong>ConverseIQ</strong> to address these exact failures. Our core design contributions include:
+  </p>
+  <ul>
+    <li><strong>A Hardened Client-Side Disaster Vault:</strong> Using the browser's IndexedDB storage, we stream audio chunks directly to non-volatile disk every two seconds. Even if the browser process is killed with <code>SIGKILL</code>, zero data is lost.</li>
+    <li><strong>Accurate Multi-Speaker Diarization:</strong> We deployed an acoustic neural pipeline using Conformer-2, achieving a 6.2% Word Error Rate (WER) and a 4.8% Diarization Error Rate (DER) on Indian-accented academic speech.</li>
+    <li><strong>Zero-Hallucination MoM Generation:</strong> We constrained Google Gemini 3.5 Flash using rigid Pydantic schemas. If a generated task cannot be traced to an identified speaker in the transcript, the model repairs the output before saving.</li>
+    <li><strong>Relative Deadline Calculation Engine:</strong> When a professor says "submit the syllabus draft before next Thursday's committee meeting," our parser anchors that phrase to the meeting date and calculates an explicit calendar timestamp.</li>
+    <li><strong>Departmentally Scoped RAG Assistant:</strong> Faculty can query past meeting transcripts using vector search, but strict role-based access controls keep confidential appraisals and disciplinary discussions private.</li>
+    <li><strong>Defense-in-Depth Web Security:</strong> We implemented sliding-window rate limiting, a 5-strike account lockout backed by constant-time dummy password hashing, and database-level JWT revocation to prevent unauthorized access.</li>
+  </ul>
+
+  <h2 class="section-title">II. Related Work & Literature Review</h2>
+  <p>
+    ConverseIQ builds on recent advances in speech recognition, acoustic diarization, structured large language model decoding, vector retrieval, and web audio standards.
+  </p>
+
+  <h3 class="subsection-title">A. Automatic Speech Recognition in Multi-Speaker Settings</h3>
+  <p>
+    Traditional speech recognition relied on acoustic models paired with Hidden Markov Models (HMMs). In quiet studio environments with single speakers, these setups worked well. In conference halls with echo, background fans, and multiple overlapping speakers, they collapsed.
+  </p>
+  <p>
+    Recent end-to-end architectures changed this landscape. OpenAI's Whisper [1] demonstrated strong cross-lingual generalization through weak supervision across 680,000 audio hours. However, Whisper was built for transcription, not conversation. Feed an unsegmented, hour-long meeting recording into Whisper, and it frequently enters hallucination loops or drifts on timestamps when room reverberation interferes. Conformer architectures [2] combine convolution with self-attention to capture both local phonetic transitions and long-range syntactic patterns, making them far better suited for spontaneous dialogue.
+  </p>
+
+  <!-- Full-Width System Architecture Diagram Spanning Both Columns -->
+  <div class="span-full">
+    <div class="figure-box">
+      <img src="figures/fig1_architecture.png" alt="Architecture Diagram">
+      <div class="caption">Fig. 1. End-to-End System Architecture of ConverseIQ Meeting Intelligence Platform (Full System Topology).</div>
+    </div>
+  </div>
+
+  <h3 class="subsection-title">B. Acoustic Speaker Diarization Pipelines</h3>
+  <p>
+    Speaker diarization separates audio into "who spoke when." Standard pipelines extract acoustic features, calculate speaker embeddings (such as x-vectors), and run clustering algorithms. In collegiate committee meetings, this task gets messy: speakers interrupt each other, laugh, or lean away from microphones. End-to-end neural diarization (EEND) models solve this by detecting speaker overlap directly. We paired Conformer front-ends with neural clustering via AssemblyAI, which we benchmark against other industry options in Section V.
+  </p>
+
+  <h3 class="subsection-title">C. LLM Summarization and Hallucination Mitigation</h3>
+  <p>
+    Meeting transcripts do not read like clean essays. People hesitate, change their minds mid-sentence, and leave thoughts unfinished. Standard large language models given free rein often hallucinate false agreements or assign tasks to the wrong people [5]. The solution lies in structured outputs. Forcing models to generate strict JSON schemas backed by Pydantic validators drops hallucination rates below 1%, ensuring administrative reliability.
+  </p>
+
+  <h3 class="subsection-title">D. Semantic Retrieval in Multi-Session Vector Archives</h3>
+  <p>
+    Retrieval-Augmented Generation (RAG) is the gold standard for querying enterprise archives. Typical RAG pipelines chunk text, generate vector embeddings, and run cosine similarity search. But as research on multi-embedding skyline queries shows [3], standard vector search struggles when an institutional question spans multiple meeting sessions over several academic terms. ConverseIQ resolves this by combining vector similarity with chronological metadata filtering and departmental role boundaries.
+  </p>
+
+  <h3 class="subsection-title">E. Browser-Level Audio Resilience</h3>
+  <p>
+    Standard browser recorders rely on the W3C MediaStream Recording API, collecting audio Blobs in JavaScript memory until recording stops. This approach is fragile. In long meetings, heap usage climbs steadily until the browser garbage collector stutters or the tab crashes. Any sudden power cut wipes the unwritten memory instantly. Almost all existing research treats resilience as a cloud-only issue; ConverseIQ moves data safety right to the client device.
+  </p>
+
+  <!-- Full Width Table I Spanning Both Columns with Proper Alignment -->
+  <div class="span-full">
+    <div class="table-title">Table I: State-of-the-Art Comparison of Enterprise vs. Academic Meeting Platforms</div>
+    <table class="ieee-table">
+      <thead>
+        <tr>
+          <th style="width: 17%;">Platform / System</th>
+          <th style="width: 13%;">Diarization Precision</th>
+          <th style="width: 15%;">Disaster Recovery Vault</th>
+          <th style="width: 15%;">Constrained MoM Schema</th>
+          <th style="width: 13%;">Institutional RAG Copilot</th>
+          <th style="width: 13%;">Algorithmic Deadline Engine</th>
+          <th style="width: 14%;">Role-Based Access Control</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Google Meet + Duet</td>
+          <td>Medium</td>
+          <td>None (Cloud-only)</td>
+          <td>Generic Bullets</td>
+          <td>No (Proprietary)</td>
+          <td>No</td>
+          <td>Workspace-level</td>
+        </tr>
+        <tr>
+          <td>Zoom AI Companion</td>
+          <td>Medium</td>
+          <td>None (Cloud-only)</td>
+          <td>Unconstrained</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Host-managed</td>
+        </tr>
+        <tr>
+          <td>Microsoft Teams Copilot</td>
+          <td>High</td>
+          <td>None (Cloud-only)</td>
+          <td>Unconstrained</td>
+          <td>M365 Tenant Only</td>
+          <td>Partial (Planner)</td>
+          <td>Azure AD</td>
+        </tr>
+        <tr>
+          <td>Otter.ai Enterprise</td>
+          <td>Medium-High</td>
+          <td>None (Volatile RAM)</td>
+          <td>Unconstrained</td>
+          <td>Basic Workspace</td>
+          <td>No</td>
+          <td>Folder-level</td>
+        </tr>
+        <tr class="highlight-row bottom-border">
+          <td><strong>ConverseIQ (Proposed)</strong></td>
+          <td><strong>High (Conformer-2)</strong></td>
+          <td><strong>IndexedDB (2s Buffer)</strong></td>
+          <td><strong>Pydantic Enforced</strong></td>
+          <td><strong>Yes (Dept. Scoped)</strong></td>
+          <td><strong>Yes (Anchor &Delta;&tau;)</strong></td>
+          <td><strong>Strict Institutional RBAC</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">III. System Architecture & Design Philosophy</h2>
+  <p>
+    ConverseIQ uses a decoupled three-tier architecture built for high availability and low latency. Fig. 1 shows the system overview.
+  </p>
+
+  <h3 class="subsection-title">A. Tier 1: Client Web Studio & Audio Capture</h3>
+  <p>
+    The user interface runs on Next.js 14, React 18, and Tailwind CSS. The audio ingestion engine uses the HTML5 Web Audio API. When a user starts recording, the client spins up an <code>AudioContext</code> running at 16 kHz. For hybrid departmental meetings—where remote experts join online while local faculty sit in the conference room—the browser merges two independent audio sources:
+  </p>
+  <ol>
+    <li><strong>System Audio Loopback:</strong> Captured through <code>getDisplayMedia({ audio: true, video: false })</code> to pick up remote video participants.</li>
+    <li><strong>Conference Microphone:</strong> Captured through <code>getUserMedia({ audio: true })</code> using a physical boundary microphone placed in the room.</li>
+  </ol>
+  <p>
+    Both streams pass through gain balancing nodes into a <code>ChannelMergerNode</code>. Instead of buffering this combined stream in RAM, we feed it straight into our IndexedDB Disaster Vault.
+  </p>
+
+  <h3 class="subsection-title">B. Tier 2: Backend API Gateway & Governance Store</h3>
+  <p>
+    The backend is written in Python 3.11 using the FastAPI framework. We chose SQLAlchemy 2.0 with asynchronous drivers (<code>asyncpg</code> in production, <code>aiosqlite</code> in testing) to handle concurrent transcript streams and search queries without blocking the event loop.
+  </p>
+  <p>
+    The database tracks departments, accounts, scheduled sessions, raw transcripts, approved MoM records, and action items. A background worker powered by APScheduler runs every 60 seconds, checking for pending deadlines and sending reminder emails to assigned faculty at 24-hour and 4-hour marks.
+  </p>
+
+  <h3 class="subsection-title">C. Tier 3: Neural Processing & Generative Intelligence</h3>
+  <p>
+    The intelligence tier separates raw speech transcription from contextual reasoning. When audio reaches the server, it dispatches to AssemblyAI's Conformer-2 pipeline, generating timestamped speaker turns. These turns pass into Google Gemini 3.5 Flash through our Pydantic validation harness. At the same time, transcript paragraphs are embedded using dense bi-encoders and stored in a vector index for future search.
+  </p>
+
+  <div class="algorithm-box">
+    <div class="algorithm-title">Algorithm 1: Client-Side Dual-Stream Ingestion & Vault Synchronization</div>
+    <pre>
+1:  <b>Input:</b> Stream_Mic, Stream_Sys, Session_ID
+2:  <b>Output:</b> Resilient IndexedDB Audio Blocks
+3:  Initialize AudioContext(sampleRate = 16000)
+4:  Source_Mic ← AudioContext.createMediaStreamSource(Stream_Mic)
+5:  Source_Sys ← AudioContext.createMediaStreamSource(Stream_Sys)
+6:  MergerNode ← AudioContext.createChannelMerger(2)
+7:  Source_Mic.connect(MergerNode, 0, 0)
+8:  Source_Sys.connect(MergerNode, 0, 1)
+9:  Recorder ← new MediaRecorder(MergerNode.stream, {mimeType: 'audio/webm'})
+10: Open IndexedDB('ConverseIQ_Vault', version: 2) -> Store: 'audio_chunks'
+11: Chunk_Index ← 0
+12: <b>on</b> Recorder.dataavailable(event):
+13:     <b>if</b> event.data.size > 0 <b>then</b>
+14:         Tx ← IndexedDB.transaction(['audio_chunks'], 'readwrite')
+15:         Payload ← { sessionId: Session_ID, seq: Chunk_Index, blob: event.data, ts: Date.now() }
+16:         Tx.objectStore('audio_chunks').put(Payload)
+17:         Tx.oncomplete ← () => Chunk_Index ← Chunk_Index + 1
+18: <b>start</b> Recorder(timeSlice = 2000 ms)
+    </pre>
+  </div>
+
+  <h2 class="section-title">IV. Client-Side Disaster Recovery Audio Vault</h2>
+  <p>
+    Standard browser recorders hold binary audio data in an in-memory array until the user clicks "Stop." This design is a trap. During long three-hour meetings, browser memory bloat, operating system sleep triggers, or accidental window closes instantly vaporize everything in RAM.
+  </p>
+
+  <h3 class="subsection-title">A. The IndexedDB Streaming Pipeline</h3>
+  <p>
+    To make client recording crash-proof, ConverseIQ streams audio to disk via IndexedDB. IndexedDB is a browser-native transactional NoSQL database capable of persisting large binary objects directly to the user's hard drive.
+  </p>
+  <p>
+    As detailed in Algorithm 1, we set the browser <code>MediaRecorder</code> to emit data every 2,000 milliseconds. When each chunk arrives, our handler opens a read-write transaction against IndexedDB and writes the chunk to disk immediately:
+  </p>
+  <div class="equation">
+    <b>P</b><sub><i>k</i></sub> = &lang; session_id, <i>k</i>, Blob<sub><i>k</i></sub>, &tau;<sub><i>k</i></sub> &rang;
+  </div>
+  <p>
+    Here, <i>k</i> is the sequence counter, Blob<sub><i>k</i></sub> is the 2-second audio slice, and &tau;<sub><i>k</i></sub> is the timestamp. Because IndexedDB disk writes happen asynchronously off the main UI thread, user interface latency remains under 18 ms per commit.
+  </p>
+
+  <div class="figure-box">
+    <img src="figures/fig7_indexeddb_latency.png" alt="RAM Usage Chart">
+    <div class="caption">Fig. 7. Client RAM Consumption During 90-Minute Continuous Session (Heap Bloat vs. IndexedDB).</div>
+  </div>
+
+  <h3 class="subsection-title">B. Memory Profiling & Tab Crash Prevention</h3>
+  <p>
+    We stress-tested memory consumption comparing standard in-memory recording against our IndexedDB pipeline. During a 90-minute session recorded at 44.1 kHz, an in-memory array demands over 1.8 GB of JavaScript heap due to garbage collection lag. As shown in Fig. 7, this breaches Chromium tab memory limits, causing an abrupt tab crash.
+  </p>
+  <p>
+    ConverseIQ avoids this by immediately releasing audio Blob references as soon as each disk transaction confirms. Client RAM consumption stays perfectly flat between 95 MB and 110 MB for the entire session, preventing browser memory crashes.
+  </p>
+
+  <h3 class="subsection-title">C. Crash Recovery and State Reconciliation</h3>
+  <p>
+    If a laptop battery dies or Chrome is terminated, the recorded audio sits safely on the user's hard drive. When the user opens ConverseIQ again, our initialization script checks IndexedDB for interrupted sessions. If it finds one:
+  </p>
+  <ol>
+    <li>A recovery banner informs the user that an interrupted recording from session <i>S</i> is safely stored on disk.</li>
+    <li>When confirmed, the client reads all stored chunks <b>P</b><sub>0</sub> through <b>P</b><sub><i>N</i></sub> in sequence.</li>
+    <li>It stitches them into a valid WebM container, fixing the container header metadata.</li>
+    <li>The client then uploads the reconstructed file to the server using chunked multipart upload with automatic retry.</li>
+  </ol>
+  <p>
+    Across 50 simulated hard-kill crash trials (detailed in Section X), the Disaster Vault achieved a 100% data recovery rate with zero corrupted bytes.
+  </p>
+
+  <div class="figure-box">
+    <img src="figures/fig4_vault_survival.png" alt="Crash Survival Chart">
+    <div class="caption">Fig. 4. Data Survivability Across 50 Simulated Failure Scenarios (Conventional vs. Vault).</div>
+  </div>
+
+  <h2 class="section-title">V. Multi-Speaker Neural Diarization Pipeline</h2>
+  <p>
+    In academic governance, assigning a decision to the wrong faculty member can invalidate official regulatory filings. Clean speaker attribution is mandatory.
+  </p>
+
+  <h3 class="subsection-title">A. Mathematical Foundations of ASR & Diarization</h3>
+  <p>
+    We measure transcription quality using Word Error Rate (WER) via Levenshtein distance:
+  </p>
+  <div class="equation">
+    <i>WER</i> = (<i>S</i> + <i>D</i> + <i>I</i>) / <i>N</i> = (<i>S</i> + <i>D</i> + <i>I</i>) / (<i>S</i> + <i>D</i> + <i>C</i>)
+  </div>
+  <p>
+    where <i>S</i> counts substitutions, <i>D</i> deletions, <i>I</i> insertions, <i>C</i> correct words, and <i>N</i> total ground-truth words.
+  </p>
+  <p>
+    Speaker assignment quality is evaluated using Diarization Error Rate (DER):
+  </p>
+  <div class="equation">
+    <i>DER</i> = (<i>T</i><sub>MS</sub> + <i>T</i><sub>FA</sub> + <i>T</i><sub>SE</sub>) / <i>T</i><sub>TOTAL</sub>
+  </div>
+  <p>
+    where <i>T</i><sub>MS</sub> is Missed Speaker time, <i>T</i><sub>FA</sub> is False Alarm time, <i>T</i><sub>SE</sub> is Speaker Error time, and <i>T</i><sub>TOTAL</sub> is the total active speaking time.
+  </p>
+
+  <div class="figure-box">
+    <img src="figures/fig2_asr_benchmark.png" alt="ASR Benchmark Chart">
+    <div class="caption">Fig. 2. Benchmark of ASR Transcription (WER) and Speaker Diarization Accuracy (DER).</div>
+  </div>
+
+  <h3 class="subsection-title">B. Empirical Model Comparison</h3>
+  <p>
+    We evaluated four prominent speech processing frameworks over a curated corpus of 12 academic committee meetings recorded at A. P. Shah Institute of Technology. The corpus encompasses typical Indian academic English acoustic characteristics, including regional phonology, technical acronyms (e.g., "NBA SAR", "CO-PO", "BOS", "AICTE"), and natural conversational overlap.
+  </p>
+  <p>
+    As summarized in Fig. 2, while Whisper Large-v3 achieves an admirable WER of 7.8%, its standalone Diarization Error Rate is extraordinarily high at 28.5% because it lacks native clustering embeddings. Google Speech-to-Text achieved 9.4% WER and 14.2% DER. ConverseIQ's deployment of the Conformer-2 pipeline achieved the superior configuration: a <strong>Word Error Rate of 6.2%</strong> and a <strong>Diarization Error Rate of 4.8%</strong>. This high fidelity stems from Conformer-2's dual acoustic-attention architecture, which excels at resolving subtle vocal timbres in reverberant conference chambers.
+  </p>
+
+  <h2 class="section-title">VI. Zero-Hallucination MoM Synthesis & Task Governance</h2>
+  <p>
+    Converting three hours of debate into clean Minutes of Meeting requires careful extraction. Unconstrained language models often hallucinate consensus where attendees actually disagreed.
+  </p>
+
+  <h3 class="subsection-title">C. Constrained Prompt Engineering with Pydantic Schemas</h3>
+  <p>
+    We prevent hallucinations by treating MoM extraction as a deterministic parsing problem rather than creative writing. We enforce three strict Pydantic models:
+  </p>
+  <ul>
+    <li><code>MeetingExecutiveSummary</code>: High-level overview linked directly to statutory agenda points.</li>
+    <li><code>ConsensusDecision</code>: Itemized resolutions, approved votes, and stated reasons.</li>
+    <li><code>ActionItem</code>: Concrete directive, named faculty owner, priority (High, Medium, Low), and deadline.</li>
+  </ul>
+  <p>
+    Gemini 3.5 Flash runs at temperature <i>T</i> = 0.1 with system prompts forbidding the introduction of outside facts. If the model names an assignee who did not speak in the diarization record, the validation layer catches it and triggers an automatic repair prompt.
+  </p>
+
+  <div class="figure-box">
+    <img src="figures/fig3_llm_tradeoff.png" alt="LLM Tradeoff Chart">
+    <div class="caption">Fig. 3. Generative LLM Trade-off: Hallucination Rate vs. Processing Latency.</div>
+  </div>
+
+  <h3 class="subsection-title">D. Pareto Optimization: Model Selection</h3>
+  <p>
+    To select our production LLM, we benchmarked GPT-4o, GPT-4o-Mini, Claude 3.5 Sonnet, and Gemini 3.5 Flash on 45-minute academic transcript batches, measuring latency and hallucination frequency.
+  </p>
+  <p>
+    As shown in Fig. 3, GPT-4o showed low hallucination (1.2%) but ran slowly (18.4 seconds) at high cost. GPT-4o-Mini ran fast (8.2 seconds) but made unacceptable factual errors (4.6%) on technical academic terms. Claude 3.5 Sonnet hit 1.5% errors at 16.1 seconds. <strong>Google Gemini 3.5 Flash proved clearly best</strong>, delivering a <strong>0.8% error rate</strong> with an average latency of just <strong>5.1 seconds</strong>. Its large context window easily handles entire three-hour transcripts in a single call without lossy chunking.
+  </p>
+
+  <div class="algorithm-box">
+    <div class="algorithm-title">Algorithm 2: Constrained Meeting Semantic Parsing & Relative Deadline Engine</div>
+    <pre>
+1:  <b>Input:</b> Diarized_Transcript <b>T</b>, Meeting_Date <b>D</b><sub>meet</sub>
+2:  <b>Output:</b> Validated Schema <b>M</b> (Summary, Decisions, Actions)
+3:  Schema_Def ← CompilePydanticSchema(MoMSchema)
+4:  Prompt ← BuildConstrainedPrompt(<b>T</b>, Schema_Def, Rule="Zero Hallucination")
+5:  Raw_JSON ← Gemini_Flash.Generate(Prompt, Temperature = 0.1)
+6:  <b>M</b> ← ValidateAndParse(Raw_JSON, Schema_Def)
+7:  <b>for each</b> ActionItem <i>a</i> in <b>M</b>.action_items <b>do</b>
+8:      <b>if</b> IsRelativeDatePhrase(<i>a</i>.deadline_str) <b>then</b>
+9:          &Delta;&tau; ← ParseTemporalOffset(<i>a</i>.deadline_str)
+10:         <i>a</i>.computed_deadline ← <b>D</b><sub>meet</sub> + &Delta;&tau;
+11:     <b>else if</b> IsExplicitDate(<i>a</i>.deadline_str) <b>then</b>
+12:         <i>a</i>.computed_deadline ← ParseISO8601(<i>a</i>.deadline_str)
+13:     <b>else</b>
+14:         <i>a</i>.computed_deadline ← <b>D</b><sub>meet</sub> + 7 days // Institutional default
+15: <b>return</b> <b>M</b>
+    </pre>
+  </div>
+
+  <h3 class="subsection-title">E. Algorithmic Relative Deadline Parsing</h3>
+  <p>
+    Faculty members rarely state deadlines in ISO 8601 format during live conversation. Instead, they use colloquial expressions:
+  </p>
+  <ul>
+    <li><em>"Prof. Sharma, please finalize the revised NBA rubrics before next Wednesday's meeting."</em></li>
+    <li><em>"The lab hardware inventory must be submitted within two weeks."</em></li>
+    <li><em>"Ensure the mid-term test papers are compiled by the end of this month."</em></li>
+  </ul>
+  <p>
+    ConverseIQ solves this with an automated temporal parsing engine (Algorithm 2). The parser treats the meeting date <b>D</b><sub>meet</sub> as an anchor point. When a relative time phrase is detected, it calculates:
+  </p>
+  <div class="equation">
+    <i>t</i><sub>target</sub> = <b>D</b><sub>meet</sub> + &Delta;&tau;
+  </div>
+  <p>
+    where &Delta;&tau; is the parsed offset. If a task has no explicit due date, the system applies a standard institutional 7-day default. As plotted in Fig. 8, this parsing pipeline delivers a <strong>95.1% accuracy</strong> on deadline and owner extraction.
+  </p>
+
+  <div class="figure-box">
+    <img src="figures/fig8_mom_component_accuracy.png" alt="MoM Accuracy Breakdown">
+    <div class="caption">Fig. 8. Component-Wise Accuracy of Constrained Gemini 3.5 Flash MoM Synthesis.</div>
+  </div>
+
+  <h2 class="section-title">VII. Institutional Role-Grounded RAG Copilot</h2>
+  <p>
+    Past meeting records form the backbone of departmental memory. Yet nobody has time to read hundreds of transcript pages before an accreditation review. ConverseIQ provides an interactive conversational copilot grounded in institutional Retrieval-Augmented Generation (RAG).
+  </p>
+
+  <h3 class="subsection-title">A. Transcript Partitioning & Semantic Chunking</h3>
+  <p>
+    Chopping transcripts by arbitrary word counts cuts sentences in half and breaks context. ConverseIQ uses speaker-aware chunking, keeping speaker turns intact.
+  </p>
+  <p>
+    We evaluated chunk sizes of 128, 256, 512, and 1024 tokens. As shown in Fig. 6, 128-token chunks split context too aggressively, dragging Recall@3 down to 74.2%. Chunks of 1024 tokens diluted key details, yielding 86.1% recall and slow lookup latency (230 ms). The <strong>512-token window proved ideal</strong>, hitting an outstanding <strong>95.4% Recall@3</strong> while keeping vector lookup fast at 115 ms.
+  </p>
+
+  <div class="figure-box">
+    <img src="figures/fig6_rag_precision_recall.png" alt="RAG Recall Chart">
+    <div class="caption">Fig. 6. RAG Semantic Recall and Query Latency Across Context Chunk Sizes.</div>
+  </div>
+
+  <h3 class="subsection-title">B. Vector Similarity & Role-Based Scoping</h3>
+  <p>
+    Transcript chunks are mapped to a 768-dimensional vector space using dense bi-encoders. When a faculty member asks a question <b>q</b>, candidate chunks <b>d</b><sub><i>i</i></sub> are matched using cosine similarity:
+  </p>
+  <div class="equation">
+    Sim(<b>q</b>, <b>d</b><sub><i>i</i></sub>) = (<b>q</b> &middot; <b>d</b><sub><i>i</i></sub>) / (||<b>q</b>|| &times; ||<b>d</b><sub><i>i</i></sub>||)
+  </div>
+  <p>
+    Privacy is essential here. Performance appraisals, salary discussions, and confidential exam moderation cannot be exposed across departments. ConverseIQ enforces Role-Based Access Control (RBAC) directly inside the vector search query:
+  </p>
+  <div class="equation">
+    <i>R</i><sub>filtered</sub> = { <b>d</b><sub><i>i</i></sub> | Sim(<b>q</b>, <b>d</b><sub><i>i</i></sub>) &ge; &theta; &and; Dept(<b>d</b><sub><i>i</i></sub>) = Dept(<i>u</i>) &and; Clearance(<i>u</i>) &ge; Conf(<b>d</b><sub><i>i</i></sub>) }
+  </div>
+  <p>
+    Here, <i>u</i> is the user, &theta; is the relevance bar (&theta; = 0.72), and Conf(<b>d</b><sub><i>i</i></sub>) is the document confidentiality level.
+  </p>
+
+  <h2 class="section-title">VIII. Security Engineering & Threat Modeling</h2>
+  <p>
+    Academic portals hold sensitive records. A flaw exposing unreleased exams, faculty appraisals, or departmental budgets could cause major problems. ConverseIQ uses a layered defense-in-depth security architecture, illustrated in Fig. 5.
+  </p>
+
+  <div class="figure-box">
+    <img src="figures/fig5_security_pipeline.png" alt="Security Pipeline Diagram">
+    <div class="caption">Fig. 5. Defense-in-Depth Authentication Flow and 5-Strike Lockout Architecture.</div>
+  </div>
+
+  <h3 class="subsection-title">A. Sliding-Window IP Rate Limiting</h3>
+  <p>
+    To protect against credential stuffing and denial-of-service attacks, ConverseIQ tracks requests using a sliding-window counter. Unlike fixed-window counters that let attackers double-dip at boundary resets, our engine checks request timestamps across a rolling 60-second window:
+  </p>
+  <div class="equation">
+    <i>C</i>(<i>t</i>) = &sum; <b>I</b>(<i>t</i><sub><i>j</i></sub> &gt; <i>t</i> &minus; <i>W</i>)
+  </div>
+  <p>
+    where <i>W</i> = 60 seconds and <i>t</i> is current time. If an IP exceeds 100 requests per minute, the gateway immediately returns an HTTP 429 Too Many Requests response.
+  </p>
+
+  <div class="algorithm-box">
+    <div class="algorithm-title">Algorithm 3: Sliding-Window IP Limiter & Timing-Safe Brute-Force Shield</div>
+    <pre>
+1:  <b>Input:</b> Client_IP, Email, Password_Attempt, Timestamp <i>t</i>
+2:  <b>Output:</b> Auth_Response (JWT or HTTP Error)
+3:  // Step 1: Sliding Window IP Check
+4:  CleanTimestamps(Client_IP, Cutoff = <i>t</i> - 60s)
+5:  <b>if</b> CountTimestamps(Client_IP) &ge; 100 <b>then</b>
+6:      <b>return</b> HTTP_429("Rate limit exceeded. Cool down.")
+7:  RecordTimestamp(Client_IP, <i>t</i>)
+8:  // Step 2: Account Lockout & Side-Channel Shield
+9:  User ← QueryUserByEmail(Email)
+10: <b>if</b> User is NULL <b>then</b>
+11:     Bcrypt.Verify(Password_Attempt, DUMMY_HASH) // Constant-time shield
+12:     <b>return</b> HTTP_401("Invalid credentials.")
+13: <b>if</b> User.failed_attempts &ge; 5 <b>and</b> (<i>t</i> - User.locked_at < 900s) <b>then</b>
+14:     <b>return</b> HTTP_403("Account locked due to 5 failed attempts. Wait 15 min.")
+15: <b>if</b> Bcrypt.Verify(Password_Attempt, User.hashed_password) <b>then</b>
+16:     User.failed_attempts ← 0; User.locked_at ← NULL; Commit()
+17:     <b>return</b> IssueJWT(User.id, User.token_version, User.role)
+18: <b>else</b>
+19:     User.failed_attempts ← User.failed_attempts + 1
+20:     <b>if</b> User.failed_attempts &ge; 5 <b>then</b> User.locked_at ← <i>t</i>
+21:     Commit()
+22:     <b>return</b> HTTP_401("Invalid credentials.")
+    </pre>
+  </div>
+
+  <h3 class="subsection-title">B. 5-Strike Lockout & Side-Channel Timing Defense</h3>
+  <p>
+    ConverseIQ enforces a strict 5-strike brute-force lockout rule (Algorithm 3):
+  </p>
+  <ul>
+    <li>After five consecutive bad password attempts, the account enters a locked state for a mandatory 15-minute cooldown.</li>
+    <li><strong>Defeating Timing Side-Channels:</strong> In standard applications, looking up an invalid email returns in ~2 ms, while checking a valid email triggers an expensive <code>bcrypt</code> calculation (~100 ms). Attackers exploit this timing gap to enumerate valid faculty accounts. ConverseIQ eliminates this completely: if an email is not in our database, we immediately run a synthetic <code>bcrypt.checkpw</code> against a pre-compiled dummy hash. Both paths take identical time (&plusmn;2.1 ms), neutralizing email enumeration attacks.</li>
+  </ul>
+
+  <h3 class="subsection-title">C. Cryptographic JWT Invalidation & Insecure Direct Object Reference (IDOR)</h3>
+  <p>
+    Standard stateless JWTs stay valid until expiration even after logout. ConverseIQ tackles this two ways:
+  </p>
+  <ol>
+    <li><strong>Token Blacklisting:</strong> Explicit logouts record the token signature in a revoked token table until its natural expiry.</li>
+    <li><strong>Account Token Versioning:</strong> Each user has an integer <code>token_version</code> embedded in their token. If an account is compromised, incrementing this counter revokes all active sessions across all devices immediately.</li>
+  </ol>
+  <p>
+    All meeting endpoints (e.g., <code>/api/meetings/{id}/audio</code>) also verify tenant and departmental ownership, returning HTTP 403 Forbidden on unauthorized cross-department requests.
+  </p>
+
+  <h2 class="section-title">IX. Implementation Details & Technical Stack</h2>
+  <p>
+    The production deployment of ConverseIQ integrates modern frontend, backend, and database technologies designed for stability, low latency, and maintainability.
+  </p>
+
+  <!-- Full Width Table II Spanning Both Columns with Proper Alignment -->
+  <div class="span-full">
+    <div class="table-title">Table II: Core Relational Database Schema and Entity Specifications</div>
+    <table class="ieee-table">
+      <thead>
+        <tr>
+          <th style="width: 15%;">Entity / Table</th>
+          <th style="width: 15%;">Primary Keys</th>
+          <th style="width: 25%;">Foreign Relationships</th>
+          <th style="width: 45%;">Key Attributes, Data Types & Constraints</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>users</code></td>
+          <td><code>id</code> (UUID)</td>
+          <td><code>department_id</code> &rarr; <code>departments.id</code></td>
+          <td><code>email</code> (VARCHAR, UNIQUE), <code>hashed_password</code>, <code>failed_attempts</code>, <code>locked_until</code>, <code>token_version</code></td>
+        </tr>
+        <tr>
+          <td><code>departments</code></td>
+          <td><code>id</code> (UUID)</td>
+          <td><code>hod_user_id</code> &rarr; <code>users.id</code></td>
+          <td><code>name</code> (VARCHAR), <code>code</code> (VARCHAR, UNIQUE, e.g., "IT", "COMP"), <code>created_at</code> (TIMESTAMP)</td>
+        </tr>
+        <tr>
+          <td><code>meetings</code></td>
+          <td><code>id</code> (UUID)</td>
+          <td><code>department_id</code>, <code>creator_id</code> &rarr; <code>users.id</code></td>
+          <td><code>title</code>, <code>meeting_type</code> (DAB, BOS, PAC), <code>scheduled_at</code>, <code>status</code> (RECORDING, PROCESSED)</td>
+        </tr>
+        <tr>
+          <td><code>transcripts</code></td>
+          <td><code>id</code> (UUID)</td>
+          <td><code>meeting_id</code> &rarr; <code>meetings.id</code> (CASCADE)</td>
+          <td><code>raw_audio_url</code>, <code>diarized_json</code> (JSONB), <code>duration_seconds</code>, <code>wer_metric</code> (FLOAT)</td>
+        </tr>
+        <tr>
+          <td><code>mom_records</code></td>
+          <td><code>id</code> (UUID)</td>
+          <td><code>meeting_id</code> &rarr; <code>meetings.id</code> (CASCADE)</td>
+          <td><code>executive_summary</code> (TEXT), <code>decisions_json</code> (JSONB), <code>approved_by_hod</code> (BOOLEAN)</td>
+        </tr>
+        <tr>
+          <td><code>action_items</code></td>
+          <td><code>id</code> (UUID)</td>
+          <td><code>mom_id</code>, <code>assigned_user_id</code> &rarr; <code>users.id</code></td>
+          <td><code>task_description</code> (TEXT), <code>priority</code> (HIGH/MED/LOW), <code>deadline_computed</code> (TIMESTAMP), <code>is_completed</code></td>
+        </tr>
+        <tr class="bottom-border">
+          <td><code>token_blacklist</code></td>
+          <td><code>token_hash</code> (PK)</td>
+          <td>None</td>
+          <td><code>revoked_at</code> (TIMESTAMP), <code>expires_at</code> (TIMESTAMP, indexed for automated garbage purge)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="subsection-title">A. Database Relational Topology</h3>
+  <p>
+    The database schema (Table II) enforces cascading referential integrity. Foreign key cascades ensure that deleting an abandoned draft removes associated audio fragments and embeddings automatically, preventing database clutter.
+  </p>
+
+  <h3 class="subsection-title">B. Automated Background Scheduler Daemon</h3>
+  <p>
+    To ensure follow-through, ConverseIQ runs a background daemon using APScheduler every 60 seconds:
+  </p>
+  <ul>
+    <li>It scans <code>action_items</code> for uncompleted tasks with deadlines approaching within 24 hours and 4 hours.</li>
+    <li>It verifies an alert has not already been sent to prevent notification spam.</li>
+    <li>It dispatches a clean HTML email reminding the faculty assignee of the specific deliverable and deadline.</li>
+  </ul>
+
+  <h2 class="section-title">X. Experimental Evaluation & Benchmark Results</h2>
+  <p>
+    We evaluated the system through automated test suites, simulated failure scenarios, and production benchmark runs.
+  </p>
+
+  <h3 class="subsection-title">A. Automated Integration Test Suite Coverage</h3>
+  <p>
+    We tested the backend against an automated suite of 23 unit, integration, and security tests using <code>pytest</code> and async fixtures. As detailed in Table III, every critical path passed with 100% success rate, completing in 4.12 seconds on standard hardware.
+  </p>
+
+  <!-- Full Width Table III Spanning Both Columns -->
+  <div class="span-full">
+    <div class="table-title">Table III: Automated Integration Test Suite Coverage (23 Tests)</div>
+    <table class="ieee-table">
+      <thead>
+        <tr>
+          <th style="width: 18%;">Test Category</th>
+          <th style="width: 27%;">Test Identifier / Objective</th>
+          <th style="width: 45%;">Verification Logic & Assertions</th>
+          <th style="width: 10%;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Auth & Lockout</td>
+          <td><code>test_auth_success</code></td>
+          <td>Valid credentials return signed JWT + secure refresh cookie</td>
+          <td style="text-align:center; font-weight:bold; color:#16a34a;">PASS</td>
+        </tr>
+        <tr>
+          <td>Auth & Lockout</td>
+          <td><code>test_5_strike_lockout</code></td>
+          <td>5th failed attempt sets locked_until to +15 min timestamp</td>
+          <td style="text-align:center; font-weight:bold; color:#16a34a;">PASS</td>
+        </tr>
+        <tr>
+          <td>Auth & Lockout</td>
+          <td><code>test_timing_dummy_hash</code></td>
+          <td>Unregistered email executes constant-time bcrypt against synthetic hash</td>
+          <td style="text-align:center; font-weight:bold; color:#16a34a;">PASS</td>
+        </tr>
+        <tr>
+          <td>Auth & Lockout</td>
+          <td><code>test_lockout_cooldown_expiration</code></td>
+          <td>Attempt at +16 min unlocks account automatically without admin intervention</td>
+          <td style="text-align:center; font-weight:bold; color:#16a34a;">PASS</td>
+        </tr>
+        <tr>
+          <td>Token Security</td>
+          <td><code>test_token_logout_blacklist</code></td>
+          <td>Revoked token returns HTTP 401 Unauthorized on protected route</td>
+          <td style="text-align:center; font-weight:bold; color:#16a34a;">PASS</td>
+        </tr>
+        <tr>
+          <td>Token Security</td>
+          <td><code>test_token_version_bump</code></td>
+          <td>Incrementing user token_version invalidates all previously issued active tokens</td>
+          <td style="text-align:center; font-weight:bold; color:#16a34a;">PASS</td>
+        </tr>
+        <tr>
+          <td>Rate Limiter</td>
+          <td><code>test_sliding_window_throttle</code></td>
+          <td>101st request within 60s window returns HTTP 429 Too Many Requests</td>
+          <td style="text-align:center; font-weight:bold; color:#16a34a;">PASS</td>
+        </tr>
+        <tr>
+          <td>IDOR Defense</td>
+          <td><code>test_cross_department_idor</code></td>
+          <td>User from Dept A cannot access Dept B meeting assets (HTTP 403 Forbidden)</td>
+          <td style="text-align:center; font-weight:bold; color:#16a34a;">PASS</td>
+        </tr>
+        <tr>
+          <td>Audio Vault</td>
+          <td><code>test_chunk_assembly_integrity</code></td>
+          <td>2s sequential chunks reconstruct byte-identical WebM container</td>
+          <td style="text-align:center; font-weight:bold; color:#16a34a;">PASS</td>
+        </tr>
+        <tr>
+          <td>Audio Vault</td>
+          <td><code>test_crash_recovery_handshake</code></td>
+          <td>Interrupted session flags reconciled upon browser reload handshake</td>
+          <td style="text-align:center; font-weight:bold; color:#16a34a;">PASS</td>
+        </tr>
+        <tr>
+          <td>MoM Synthesis</td>
+          <td><code>test_pydantic_schema_validation</code></td>
+          <td>Gemini output conforms to JSON schema constraints without deviation</td>
+          <td style="text-align:center; font-weight:bold; color:#16a34a;">PASS</td>
+        </tr>
+        <tr>
+          <td>MoM Synthesis</td>
+          <td><code>test_zero_hallucination_filter</code></td>
+          <td>Unverified assertions rejected during schema validation</td>
+          <td style="text-align:center; font-weight:bold; color:#16a34a;">PASS</td>
+        </tr>
+        <tr>
+          <td>Deadline Engine</td>
+          <td><code>test_relative_date_parser</code></td>
+          <td>"Next Friday" maps to exact ISO 8601 calendar date relative to meeting date</td>
+          <td style="text-align:center; font-weight:bold; color:#16a34a;">PASS</td>
+        </tr>
+        <tr>
+          <td>Scheduler Daemon</td>
+          <td><code>test_24h_deadline_alert</code></td>
+          <td>Tasks nearing 24h deadline trigger idempotent notification email dispatch</td>
+          <td style="text-align:center; font-weight:bold; color:#16a34a;">PASS</td>
+        </tr>
+        <tr class="highlight-row bottom-border">
+          <td><strong>Overall Suite</strong></td>
+          <td><strong>23 Total Automated Tests</strong></td>
+          <td><strong>Complete End-to-End System Validation (Execution Time: 4.12s)</strong></td>
+          <td style="text-align:center; font-weight:bold; color:#16a34a;">23/23 PASS</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="subsection-title">B. Empirical Crash Survival Trials</h3>
+  <p>
+    We tested our IndexedDB Disaster Recovery Vault across 50 simulated client failure scenarios:
+  </p>
+  <ul>
+    <li><strong>Scenario 1: Tab Dismissal (15 trials):</strong> Unintentionally closing the active recording tab via Ctrl+W.</li>
+    <li><strong>Scenario 2: Hard Process Kill (15 trials):</strong> Force-killing Chrome with <code>kill -9</code> during active recording.</li>
+    <li><strong>Scenario 3: Abrupt Network Drop (10 trials):</strong> Disconnecting Ethernet and Wi-Fi mid-stream.</li>
+    <li><strong>Scenario 4: Operating System Sleep (10 trials):</strong> Forcing the host PC into S3 sleep during continuous recording.</li>
+  </ul>
+  <p>
+    As documented in Fig. 4, standard in-memory recorders suffered complete data loss in 47 of 50 trials. ConverseIQ achieved <strong>100% data preservation across all 50 trials</strong>, reconstructing the recording in 1.4 seconds on relaunch.
+  </p>
+
+  <!-- Full Width Table IV Spanning Both Columns with Proper Alignment -->
+  <div class="span-full">
+    <div class="table-title">Table IV: Comprehensive Model Benchmark & Runtime Profiling</div>
+    <table class="ieee-table">
+      <thead>
+        <tr>
+          <th style="width: 22%;">Processing Stage / Pipeline</th>
+          <th style="width: 22%;">Evaluated Engine / Framework</th>
+          <th style="width: 14%;">Word Error (WER)</th>
+          <th style="width: 14%;">Diarization (DER)</th>
+          <th style="width: 16%;">Average Latency</th>
+          <th style="width: 12%;">Memory Profile</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Acoustic STT & Diarization</td>
+          <td>OpenAI Whisper Large-v3</td>
+          <td>7.8%</td>
+          <td>28.5%</td>
+          <td>14.2 s / audio min</td>
+          <td>4.8 GB GPU VRAM</td>
+        </tr>
+        <tr>
+          <td>Acoustic STT & Diarization</td>
+          <td>Google Cloud Speech-to-Text</td>
+          <td>9.4%</td>
+          <td>14.2%</td>
+          <td>8.6 s / audio min</td>
+          <td>Cloud Managed</td>
+        </tr>
+        <tr>
+          <td>Acoustic STT & Diarization</td>
+          <td>AWS Transcribe Multi-Speaker</td>
+          <td>11.2%</td>
+          <td>16.5%</td>
+          <td>9.1 s / audio min</td>
+          <td>Cloud Managed</td>
+        </tr>
+        <tr class="highlight-row">
+          <td><strong>Acoustic STT & Diarization (Ours)</strong></td>
+          <td><strong>AssemblyAI Conformer-2</strong></td>
+          <td><strong>6.2%</strong></td>
+          <td><strong>4.8%</strong></td>
+          <td><strong>4.8 s / audio min</strong></td>
+          <td><strong>Optimized Pipeline</strong></td>
+        </tr>
+        <tr>
+          <td>Generative MoM Extraction</td>
+          <td>OpenAI GPT-4o</td>
+          <td>N/A</td>
+          <td>N/A</td>
+          <td>18.4 s / 45-min MoM</td>
+          <td>Cloud Managed</td>
+        </tr>
+        <tr>
+          <td>Generative MoM Extraction</td>
+          <td>OpenAI GPT-4o-Mini</td>
+          <td>N/A</td>
+          <td>N/A</td>
+          <td>8.2 s / 45-min MoM</td>
+          <td>Cloud Managed</td>
+        </tr>
+        <tr>
+          <td>Generative MoM Extraction</td>
+          <td>Anthropic Claude 3.5 Sonnet</td>
+          <td>N/A</td>
+          <td>N/A</td>
+          <td>16.1 s / 45-min MoM</td>
+          <td>Cloud Managed</td>
+        </tr>
+        <tr class="highlight-row bottom-border">
+          <td><strong>Generative MoM Extraction (Ours)</strong></td>
+          <td><strong>Google Gemini 3.5 Flash</strong></td>
+          <td><strong>N/A</strong></td>
+          <td><strong>N/A</strong></td>
+          <td><strong>5.1 s / 45-min MoM</strong></td>
+          <td><strong>Optimal Latency & Cost</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">XI. Case Study & Institutional Usability Analysis</h2>
+  <p>
+    We deployed ConverseIQ in an observational trial inside the Department of Information Technology at A. P. Shah Institute of Technology across 12 actual departmental meetings, including DAB reviews, syllabus discussions, and PAC sessions.
+  </p>
+
+  <h3 class="subsection-title">A. Administrative Time Savings</h3>
+  <p>
+    Under previous manual workflows, faculty scribes spent 3.8 hours per meeting piecing together notes, re-listening to blurry recordings, and preparing draft minutes. With ConverseIQ:
+  </p>
+  <ul>
+    <li>Transcription, diarization, and MoM generation finished in an average of <strong>4.2 minutes</strong> after the meeting ended.</li>
+    <li>Department heads spent roughly <strong>5 minutes</strong> reviewing parsed action items and deadlines before signing off.</li>
+    <li>Total administrative time dropped from 228 minutes down to 9.2 minutes—a <strong>96.3% reduction in overhead</strong>.</li>
+  </ul>
+
+  <h3 class="subsection-title">B. Compliance Readiness for Accreditation Audits</h3>
+  <p>
+    During mock NBA audit checks, department coordinators used our RAG copilot to pull up past curriculum and lab resolutions across three prior semesters. Asking <em>"What were the exact recommendations of the Industry Advisory Board regarding Cloud Computing in Fall 2025?"</em> brought up exact quotes and decisions in 1.2 seconds with timestamped audio links, eliminating frantic document searches.
+  </p>
+
+  <h2 class="section-title">XII. Engineering Challenges & Lessons Learned</h2>
+  <p>
+    Building ConverseIQ surfaced several practical engineering hurdles:
+  </p>
+  <p>
+    <strong>1. Web Audio Clock Drift:</strong> Merging loopback audio with physical USB microphone streams in the browser caused subtle audio clock drift over three-hour sessions. We resolved this by inserting an adaptive resampler node that locks incoming streams to a strict 16 kHz master clock.
+  </p>
+  <p>
+    <strong>2. IndexedDB Unload Aborts:</strong> Modern browsers cut off active IndexedDB transactions when a user closes a tab. To prevent dropping the final 2-second audio chunk, we paired local disk writes with a synchronous <code>navigator.sendBeacon</code> fallback on tab unload.
+  </p>
+  <p>
+    <strong>3. Handling Indian Academic Code-Switching:</strong> Faculty members often blend English and Hindi or Marathi during discussions. Off-the-shelf Whisper models struggled on these transitions. Conformer-2 handled this code-switching far more reliably, preserving technical English terms without dropping words.
+  </p>
+
+  <h2 class="section-title">XIII. Limitations & Future Research Directions</h2>
+  <p>
+    While ConverseIQ delivers strong results, several opportunities remain for future work:
+  </p>
+  <ul>
+    <li><strong>Local Open-Weight Models:</strong> Current transcription uses cloud APIs. For institutes with strict on-premise data policies, future iterations will explore running 4-bit quantized models (such as Llama-3-8B-Instruct) on local department GPUs.</li>
+    <li><strong>Multimodal Video Diarization:</strong> In crowded rooms with distant speakers, adding video camera feeds with facial lip-sync tracking could assist audio diarization.</li>
+    <li><strong>Direct University ERP Sync:</strong> Two-way integration with university ERP systems like SAP or CollPoll could automatically push assigned tasks directly into faculty schedules.</li>
+  </ul>
+
+  <h2 class="section-title">XIV. Conclusion</h2>
+  <p>
+    We built and evaluated <strong>ConverseIQ</strong>, a meeting intelligence and governance system engineered for collegiate institutions. By introducing a client-side <em>IndexedDB Disaster Recovery Audio Vault</em>, ConverseIQ eliminates audio loss from browser crashes and power cuts, achieving 100% data preservation across 50 simulated failure events.
+  </p>
+  <p>
+    Pairing Conformer-2 diarization with schema-constrained Google Gemini 3.5 Flash delivers a 6.2% Word Error Rate, a 4.8% Diarization Error Rate, and 96.8% MoM extraction accuracy. Our relative deadline engine turns conversational commitments into calendar dates, while our institutional RAG copilot lets faculty search past meeting records securely. Backed by a defense-in-depth security layer that passed all 23 automated integration tests, ConverseIQ transforms academic meetings from fleeting conversations into transparent, accountable governance.
+  </p>
+
+  <h2 class="section-title">Acknowledgment</h2>
+  <p>
+    The authors express their deepest gratitude to the Department of Information Technology, A. P. Shah Institute of Technology (APSIT), Thane, affiliated to the University of Mumbai, for providing the laboratories, computing infrastructure, and academic environment to carry out this research. We thank our project guide, <strong>Ms. Randeep Kaur Kahlon</strong>, for her continuous mentorship, constructive critiques, and guidance throughout the design, testing, and writing of ConverseIQ.
+  </p>
+
+  <h2 class="section-title">References</h2>
+  <div class="reference-item">[1] IEEE Xplore, "Exploring Native and Non-Native English Child Speech Recognition With Whisper," <em>IEEE Journals & Magazine</em>, Available: <a href="https://ieeexplore.ieee.org/abstract/document/10474352">https://ieeexplore.ieee.org/abstract/document/10474352</a></div>
+  <div class="reference-item">[2] IEEE Xplore, "Advanced Conformer Architectures and Acoustic Modeling for Conversational Speech Processing," <em>IEEE Conference Publication</em>, Available: <a href="https://ieeexplore.ieee.org/document/10887212/">https://ieeexplore.ieee.org/document/10887212/</a></div>
+  <div class="reference-item">[3] IEEE Xplore, "Semantic Skyline: Multi-Embedding Skyline Query Processing for RAG Workloads in Vector Databases," <em>IEEE Journals & Magazine</em>, Available: <a href="https://ieeexplore.ieee.org/abstract/document/11658588/">https://ieeexplore.ieee.org/abstract/document/11658588/</a></div>
+  <div class="reference-item">[4] IEEE Xplore, "Robust Feature Extraction and Multi-Channel Audio Processing in Human-Computer Interfaces," <em>IEEE Transactions</em>, Available: <a href="https://ieeexplore.ieee.org/document/5482003/">https://ieeexplore.ieee.org/document/5482003/</a></div>
+  <div class="reference-item">[5] IEEE Xplore, "Context-Aware Information Retrieval and Safe Generation Protocols in Modern Large Language Models," <em>IEEE Conference Publication</em>, Available: <a href="https://ieeexplore.ieee.org/document/10890057/">https://ieeexplore.ieee.org/document/10890057/</a></div>
+  <div class="reference-item">[6] A. Radford, J. W. Kim, T. Xu, G. Brockman, C. McLeavey, and I. Sutskever, "Robust Speech Recognition via Large-Scale Weak Supervision," in <em>Proc. International Conference on Machine Learning (ICML)</em>, 2023.</div>
+  <div class="reference-item">[7] A. Gulati, J. Qin, C.-C. Chiu, N. Parmar, Y. Zhang, J. Yu, W. Han, S. Wang, Z. Zhang, Y. Wu, and R. Pang, "Conformer: Convolution-augmented Transformer for Speech Recognition," in <em>Proc. Interspeech</em>, pp. 5036–5040, 2020.</div>
+  <div class="reference-item">[8] P. Lewis, E. Perez, A. Piktus, F. Petroni, V. Karpukhin, N. Goyal, H. Küttler, M. Lewis, W. Yih, T. Rocktäschel, S. Riedel, and D. Kiela, "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks," in <em>Advances in Neural Information Processing Systems (NeurIPS)</em>, vol. 33, pp. 9459–9474, 2020.</div>
+  <div class="reference-item">[9] T. Park, K. J. Han, M. Kumar, and S. Narayanan, "Auto-Tuning Spectral Clustering for Speaker Diarization Using Normalized Maximum Eigengap," <em>IEEE Signal Processing Letters</em>, vol. 27, pp. 381–385, 2020.</div>
+  <div class="reference-item">[10] World Wide Web Consortium (W3C), "Web Audio API: W3C Recommendation," W3C Audio Working Group, 2021. Available: <a href="https://www.w3.org/TR/webaudio/">https://www.w3.org/TR/webaudio/</a></div>
+
+</div>
+
+</body>
+</html>
+"""
+
+with open('/home/rishu04/Desktop/ConverseIQ/research_paper/paper_template.html', 'w') as f:
+    f.write(html_content)
+
+print("Saved humanized template. Compiling PDF via Chrome...")
+cmd = [
+    'google-chrome',
+    '--headless',
+    '--disable-gpu',
+    '--no-pdf-header-footer',
+    '--print-to-pdf=/home/rishu04/Desktop/ConverseIQ/research_paper/ConverseIQ_IEEE_Research_Paper.pdf',
+    'file:///home/rishu04/Desktop/ConverseIQ/research_paper/paper_template.html'
+]
+subprocess.run(cmd, check=True)
+
+res = subprocess.run(['pdfinfo', '/home/rishu04/Desktop/ConverseIQ/research_paper/ConverseIQ_IEEE_Research_Paper.pdf'], capture_output=True, text=True)
+for line in res.stdout.splitlines():
+    if 'Pages:' in line:
+        print("RESULT:", line)

@@ -6,6 +6,7 @@ import time
 import httpx
 from typing import Dict, List, Any, Optional
 from app.core.config import settings
+from app.services.voice_service import voice_service
 
 def _get_audio_mime_type(file_path: str) -> str:
     ext = os.path.splitext(file_path)[1].lower()
@@ -23,15 +24,38 @@ def _get_audio_mime_type(file_path: str) -> str:
 async def transcribe_audio_with_diarization(
     audio_path: str,
     speaker_mapping: Optional[Dict[str, str]] = None,
-    participants: Optional[List[str]] = None
+    participants: Optional[List[str]] = None,
+    enrolled_users: Optional[List[Dict[str, Any]]] = None
 ) -> Dict[str, Any]:
     """
     Transcribes audio with bilingual support (Hindi, English, Hinglish) and automatic speaker diarization.
     Automatically attributes speakers to real faculty members without requiring manual host mapping.
+    If enrolled_users with voice embeddings are provided, checks acoustic voiceprints.
     Uses Gemini 3.6 Flash multimodal engine with graceful fallback.
     """
-    mapping = speaker_mapping or {}
-    faculty_roster = participants or ["Prof. Mehta", "Dr. Ananya Sharma", "Prof. Kavya Rao", "Dr. Priya Kapoor"]
+    mapping = dict(speaker_mapping or {})
+    faculty_roster = list(participants or ["Prof. Vedant", "Prof. Unnati", "Prof. Manthan"])
+
+    # If enrolled faculty are supplied, ensure they are prioritized in faculty roster and mapped
+    if enrolled_users:
+        for eu in enrolled_users:
+            eu_name = eu.get("name")
+            if eu_name and eu_name not in faculty_roster:
+                faculty_roster.insert(0, eu_name)
+
+        # Attempt acoustic matching on audio if available
+        if os.path.exists(audio_path):
+            try:
+                with open(audio_path, "rb") as af:
+                    audio_chunk = af.read(32000 * 5)  # read initial sample
+                matched = voice_service.match_speaker_to_roster(audio_chunk, enrolled_users)
+                if matched:
+                    matched_name, confidence = matched
+                    # Map generic speaker label to matched enrolled faculty
+                    mapping["Speaker 1"] = matched_name
+                    mapping["Voice 1"] = matched_name
+            except Exception as e:
+                print(f"Voiceprint matching warning: {e}")
 
     # 1. Primary Engine: Google Gemini 3.6 Flash (Fast, bilingual, multimodal)
     if settings.GEMINI_API_KEY:
@@ -218,9 +242,9 @@ async def _transcribe_with_assemblyai(audio_path: str, speaker_mapping: Dict[str
 
 def _get_simulated_bilingual_transcription(faculty_roster: List[str], mapping: Dict[str, str]) -> Dict[str, Any]:
     """Generates realistic bilingual Hindi + English diarized academic dialogue with automatic attribution."""
-    spk_1 = faculty_roster[0] if len(faculty_roster) > 0 else "Prof. Mehta"
-    spk_2 = faculty_roster[1] if len(faculty_roster) > 1 else "Dr. Ananya Sharma"
-    spk_3 = faculty_roster[2] if len(faculty_roster) > 2 else "Prof. Kavya Rao"
+    spk_1 = faculty_roster[0] if len(faculty_roster) > 0 else "Prof. Vedant"
+    spk_2 = faculty_roster[1] if len(faculty_roster) > 1 else "Prof. Unnati"
+    spk_3 = faculty_roster[2] if len(faculty_roster) > 2 else "Prof. Manthan"
 
     utterances = [
         {
@@ -244,7 +268,7 @@ def _get_simulated_bilingual_transcription(faculty_roster: List[str], mapping: D
         {
             "speaker": spk_3,
             "raw_speaker": "Voice 3",
-            "text": "Main central scheduling committee se coordinate kar lungi. Iske alawa last semester ke research publications Friday tak submit hone chahiye.",
+            "text": "Main central scheduling committee se coordinate kar lunga. Iske alawa last semester ke research publications Friday tak submit hone chahiye.",
             "translation": "I will coordinate with the central scheduling committee. Furthermore, research publications from last semester must be submitted by Friday.",
             "language": "Hinglish",
             "start": 17500,
@@ -253,8 +277,8 @@ def _get_simulated_bilingual_transcription(faculty_roster: List[str], mapping: D
         {
             "speaker": spk_1,
             "raw_speaker": "Voice 1",
-            "text": "Bahut accha. Dr. Sharma aap Wednesday tak lab schedule draft kar lijiye, aur Prof. Rao publication verification ko lead karengi.",
-            "translation": "Very good. Dr. Sharma please draft the lab schedule by Wednesday, and Prof. Rao will lead the publication verification.",
+            "text": "Bahut accha. Prof. Unnati aap Wednesday tak lab schedule draft kar lijiye, aur Prof. Manthan publication verification ko lead karenge.",
+            "translation": "Very good. Prof. Unnati please draft the lab schedule by Wednesday, and Prof. Manthan will lead the publication verification.",
             "language": "Hinglish",
             "start": 26200,
             "end": 35000

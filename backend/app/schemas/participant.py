@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import datetime
 from pydantic import BaseModel
 
 class ParticipantBase(BaseModel):
@@ -12,6 +13,9 @@ class ParticipantCreate(ParticipantBase):
 class ParticipantResponse(ParticipantBase):
     id: int
     meeting_id: int
+    attended: bool = False
+    joined_at: Optional[datetime] = None
+    speaking_time_seconds: int = 0
 
     class Config:
         from_attributes = True
