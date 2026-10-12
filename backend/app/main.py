@@ -102,8 +102,12 @@ async def seed_initial_data():
             )
             session.add(faculty_mishra)
 
-        # Seed Professors: Vedant, Unnati, Manthan
+        # Seed Professors: Vedant, Unnati, Manthan, Rishabh with APSIT Institutional Emails
         professors_seed = [
+            ("Prof. Rishabh", "23104080@apsit.edu.in"),
+            ("Prof. Unnati", "23104229@apsit.edu.in"),
+            ("Prof. Vedant", "23104025@apsit.edu.in"),
+            ("Prof. Manthan", "23104218@apsit.edu.in"),
             ("Prof. Vedant", "prof.vedant@converseiq.edu"),
             ("Prof. Unnati", "prof.unnati@converseiq.edu"),
             ("Prof. Manthan", "prof.manthan@converseiq.edu")

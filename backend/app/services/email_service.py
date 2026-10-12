@@ -6,6 +6,33 @@ from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timezone
 from typing import List, Dict, Any, Optional
 
+# Institutional Faculty Directory for direct automated email dispatch
+FACULTY_EMAIL_DIRECTORY = {
+    "rishabh": "23104080@apsit.edu.in",
+    "unnati": "23104229@apsit.edu.in",
+    "vedant": "23104025@apsit.edu.in",
+    "manthan": "23104218@apsit.edu.in",
+    "prof. rishabh": "23104080@apsit.edu.in",
+    "prof. unnati": "23104229@apsit.edu.in",
+    "prof. vedant": "23104025@apsit.edu.in",
+    "prof. manthan": "23104218@apsit.edu.in",
+    "dr. rishabh": "23104080@apsit.edu.in",
+    "dr. unnati": "23104229@apsit.edu.in",
+    "dr. vedant": "23104025@apsit.edu.in",
+    "dr. manthan": "23104218@apsit.edu.in",
+}
+
+def resolve_faculty_email(name_or_email: str) -> str:
+    """Resolves faculty names or input handles to exact institutional @apsit.edu.in emails."""
+    clean = name_or_email.strip().lower()
+    if "@" in clean:
+        return clean
+    for key, email in FACULTY_EMAIL_DIRECTORY.items():
+        if key in clean or clean in key:
+            return email
+    handle = clean.replace("dr. ", "").replace("prof. ", "").replace(" ", ".")
+    return f"{handle}@apsit.edu.in"
+
 logger = logging.getLogger("converseiq.email")
 
 class EmailService:

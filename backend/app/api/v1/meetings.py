@@ -21,7 +21,7 @@ from app.schemas.meeting import MeetingCreate, MeetingResponse, MeetingDetailRes
 from app.schemas.participant import SpeakerMappingUpdate
 from app.services.transcription import transcribe_audio_with_diarization
 from app.services.llm_analysis import generate_mom_and_actions
-from app.services.email_service import email_service
+from app.services.email_service import email_service, resolve_faculty_email
 from app.services.rag_service import hybrid_search_meetings
 
 router = APIRouter(prefix="/meetings", tags=["Meetings"])
@@ -104,9 +104,8 @@ async def create_meeting(
         for idx, name in enumerate(meeting_in.participants):
             p_name = name.strip()
             label = f"Speaker {chr(65 + idx)}"  # Speaker A, Speaker B, etc.
-            # Derive email if available or standard college email format
-            clean_handle = p_name.lower().replace("dr. ", "").replace("prof. ", "").replace(" ", ".")
-            p_email = f"{clean_handle}@converseiq.edu"
+            # Resolve to exact institutional college email
+            p_email = resolve_faculty_email(p_name)
             
             part = Participant(
                 meeting_id=new_meeting.id,

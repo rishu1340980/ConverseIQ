@@ -80,8 +80,8 @@ async def check_and_dispatch_reminders(db: AsyncSession):
         meeting_title = item.meeting.title if item.meeting else "Academic Session"
 
         if not owner_email and owner_name:
-            clean = owner_name.lower().replace("dr. ", "").replace("prof. ", "").replace(" ", ".")
-            owner_email = f"{clean}@converseiq.edu"
+            from app.services.email_service import resolve_faculty_email
+            owner_email = resolve_faculty_email(owner_name)
 
         # Tier 3: Overdue Escalation (Due date passed)
         if due < now:

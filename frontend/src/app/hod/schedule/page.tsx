@@ -587,9 +587,12 @@ export default function HodDepartmentSchedulePage() {
                   type="text"
                   value={schedAttendees}
                   onChange={(e) => setSchedAttendees(e.target.value)}
-                  placeholder="Comma-separated names, e.g. Prof. Sharma, Dr. Verma"
+                  placeholder="e.g. Prof. Vedant, Prof. Unnati, Prof. Manthan, Prof. Rishabh"
                   className="w-full px-3.5 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] focus:bg-white dark:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] focus:border-[#78A98F] outline-none"
                 />
+                <p className="text-[11px] text-[#667875] dark:text-[#8FA89C] mt-1">
+                  Automated invites with join tokens are automatically dispatched to institutional emails (@apsit.edu.in).
+                </p>
               </div>
 
               {schedError && (
