@@ -47,7 +47,7 @@ export default function HodDepartmentOverviewPage() {
   }, []);
 
   const displayName = user?.name || 'Prof. Mehta';
-  const departmentName = user?.department_name || 'Computer Science & Engineering';
+  const departmentName = user?.department_name || 'Information Technology';
 
   // Format weekly meetings for BarChartVisualizer
   const chartItems = weeklyMeetings.map((b: any) => ({

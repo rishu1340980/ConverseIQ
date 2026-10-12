@@ -34,10 +34,10 @@ async def seed_initial_data():
     """Seeds default accounts, departments, and meetings for demo and testing idempotently."""
     async with AsyncSessionLocal() as session:
         # 1. Departments
-        cs_res = await session.execute(select(Department).where(Department.name == "Computer Science & Engineering"))
+        cs_res = await session.execute(select(Department).where(Department.name == "Information Technology"))
         cs_dept = cs_res.scalar_one_or_none()
         if not cs_dept:
-            cs_dept = Department(name="Computer Science & Engineering")
+            cs_dept = Department(name="Information Technology")
             session.add(cs_dept)
             await session.commit()
             await session.refresh(cs_dept)
