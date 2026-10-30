@@ -79,6 +79,14 @@ export default function LiveMeetingPage() {
   const [isSpeechRecognitionActive, setIsSpeechRecognitionActive] = useState(false);
   const recognitionRef = useRef<any>(null);
 
+  // Faculty Directory & Multi-Invite States
+  const [facultyDirectory, setFacultyDirectory] = useState<any[]>([]);
+  const [selectedFaculty, setSelectedFaculty] = useState<any[]>([]);
+  const [facultySearchInput, setFacultySearchInput] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [meetingDescription, setMeetingDescription] = useState('');
+  const [dispatchedInvitations, setDispatchedInvitations] = useState<any[]>([]);
+
   // File upload mode state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadDuration, setUploadDuration] = useState('45');
@@ -105,6 +113,11 @@ export default function LiveMeetingPage() {
   const jitsiDirectLink = `https://meet.jit.si/${roomName}#config.prejoinPageEnabled=false`;
 
   useEffect(() => {
+    // Load official department faculty directory
+    apiRequest('/users/faculty-directory')
+      .then((data) => setFacultyDirectory(data || []))
+      .catch((err) => console.warn('Could not load faculty directory:', err));
+
     // Check for any un-ingested recordings from interrupted sessions
     getLatestUnsavedSession().then((saved) => {
       if (saved && saved.chunks && saved.chunks.length > 0) {
@@ -247,6 +260,32 @@ export default function LiveMeetingPage() {
 
     const newSessionId = `session_${Date.now()}`;
     sessionIdRef.current = newSessionId;
+
+    // Register meeting in backend to send individual email invitations
+    try {
+      const allNames = [
+        ...selectedFaculty.map((f) => f.name),
+        ...attendeeNames.split(',').map((s) => s.trim()).filter((s) => s && !selectedFaculty.some((f) => f.name.toLowerCase() === s.toLowerCase()))
+      ];
+      const payload = {
+        title: meetingTitle.trim(),
+        date: new Date().toISOString(),
+        duration_minutes: 45,
+        status: 'Scheduled',
+        description: meetingDescription.trim() || undefined,
+        faculty_ids: selectedFaculty.map((f) => f.id),
+        participants: allNames
+      };
+      const created = await apiRequest('/meetings', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+      if (created?.participants) {
+        setDispatchedInvitations(created.participants);
+      }
+    } catch (createErr) {
+      console.warn('Backend meeting registration notice:', createErr);
+    }
 
     let mediaStream: MediaStream | null = null;
 
@@ -949,17 +988,130 @@ export default function LiveMeetingPage() {
               />
             </div>
 
+            {/* Meeting Description */}
             <div>
               <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
-                Faculty Attendees (Optional)
+                Meeting Description / Agenda (Included in Formal Invitations)
               </label>
-              <input
-                type="text"
-                placeholder="e.g. Prof. Vedant, Prof. Unnati, Prof. Manthan"
-                value={attendeeNames}
-                onChange={(e) => setAttendeeNames(e.target.value)}
-                className="w-full px-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] placeholder-[#667875] dark:placeholder-[#8FA89C] focus:outline-none focus:ring-2 focus:ring-[#78A98F]/40 transition-all"
+              <textarea
+                rows={2}
+                placeholder="e.g. Deliberation on NBA Criteria 4, revised laboratory assignments, and course outcomes."
+                value={meetingDescription}
+                onChange={(e) => setMeetingDescription(e.target.value)}
+                className="w-full px-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-xs text-[#173A2C] dark:text-[#E8F0EC] placeholder-[#667875] dark:placeholder-[#8FA89C] focus:outline-none focus:ring-2 focus:ring-[#78A98F]/40 transition-all resize-none"
               />
+            </div>
+
+            {/* Searchable Faculty Selection & Multi-Invite */}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC]">
+                  Search &amp; Invite Faculty Members
+                </label>
+                <span className="text-[10px] text-[#367C88] font-bold">
+                  Dept. of Information Technology
+                </span>
+              </div>
+
+              {/* Selected Faculty Chips / Badges */}
+              {selectedFaculty.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mb-2.5 p-2 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl">
+                  {selectedFaculty.map((f) => (
+                    <span
+                      key={f.id}
+                      className="inline-flex items-center space-x-1 px-2.5 py-1 bg-white dark:bg-[#1A2B24] border border-[#B9DDE3] dark:border-[#2A5A63] rounded-lg text-xs font-semibold text-[#173A2C] dark:text-[#E8F0EC] shadow-2xs"
+                    >
+                      <span>{f.name}</span>
+                      {f.is_email_configured && f.email ? (
+                        <span className="text-[10px] text-blue-700 font-mono">({f.email})</span>
+                      ) : (
+                        <span className="text-[9px] text-amber-600 bg-amber-50 px-1 py-0.2 rounded font-medium">Unconfigured Email</span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedFaculty((prev) => prev.filter((item) => item.id !== f.id));
+                        }}
+                        className="text-slate-400 hover:text-rose-500 font-bold ml-1 cursor-pointer"
+                      >
+                        &times;
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Searchable Dropdown Input */}
+              <div className="relative">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={facultySearchInput}
+                    onChange={(e) => {
+                      setFacultySearchInput(e.target.value);
+                      setIsDropdownOpen(true);
+                    }}
+                    onFocus={() => setIsDropdownOpen(true)}
+                    placeholder="Type faculty name (e.g. Prof. Randeep, Prof. Sneha, Prof. Jayshree)..."
+                    className="w-full pl-9 pr-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-xs text-[#173A2C] dark:text-[#E8F0EC] placeholder-[#667875] dark:placeholder-[#8FA89C] focus:outline-none focus:ring-2 focus:ring-[#78A98F]/40 transition-all"
+                  />
+                  <Users className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                </div>
+
+                {/* Dropdown Options */}
+                {isDropdownOpen && (
+                  <div className="absolute z-30 left-0 right-0 mt-1 max-h-52 overflow-y-auto bg-white dark:bg-[#1A2B24] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-2xl shadow-xl divide-y divide-slate-100 dark:divide-slate-800">
+                    {facultyDirectory
+                      .filter((f) =>
+                        !selectedFaculty.some((sel) => sel.id === f.id) &&
+                        (f.name.toLowerCase().includes(facultySearchInput.toLowerCase()) ||
+                         (f.email && f.email.toLowerCase().includes(facultySearchInput.toLowerCase())))
+                      )
+                      .slice(0, 8)
+                      .map((f) => (
+                        <button
+                          key={f.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedFaculty((prev) => [...prev, f]);
+                            setFacultySearchInput('');
+                            setIsDropdownOpen(false);
+                          }}
+                          className="w-full px-3.5 py-2.5 text-left hover:bg-[#F5FAF8] dark:hover:bg-[#0F1A15] transition-colors flex items-center justify-between cursor-pointer"
+                        >
+                          <div>
+                            <div className="font-bold text-xs text-slate-900 dark:text-white">{f.name}</div>
+                            <div className="text-[10px] text-slate-500">{f.designation} &bull; IT Dept</div>
+                          </div>
+                          <div>
+                            {f.is_email_configured && f.email ? (
+                              <span className="text-[10px] text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full font-mono border border-emerald-200">
+                                {f.email}
+                              </span>
+                            ) : (
+                              <span className="text-[9px] text-amber-700 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-full font-bold border border-amber-200">
+                                Pending Email Config
+                              </span>
+                            )}
+                          </div>
+                        </button>
+                      ))}
+
+                    {facultyDirectory.filter(
+                      (f) =>
+                        !selectedFaculty.some((sel) => sel.id === f.id) &&
+                        f.name.toLowerCase().includes(facultySearchInput.toLowerCase())
+                    ).length === 0 && (
+                      <div className="p-3 text-center text-xs text-slate-400">
+                        No faculty match &quot;{facultySearchInput}&quot;
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              <p className="text-[11px] text-[#667875] dark:text-[#8FA89C] mt-1">
+                Individual meeting invitation emails will be sent to all selected faculty members with the direct join URL.
+              </p>
             </div>
 
             <div>

@@ -13,6 +13,10 @@ class Participant(Base):
     attended = Column(Boolean, default=False, nullable=False)
     joined_at = Column(DateTime, nullable=True)
     speaking_time_seconds = Column(Integer, default=0, nullable=False)
+    invitation_status = Column(String(50), default="Pending", nullable=False)  # Pending, Sent, Accepted, Declined, Failed
+    invitation_sent_at = Column(DateTime, nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
 
     # Relationships
     meeting = relationship("Meeting", back_populates="participants")
+    user = relationship("User", foreign_keys=[user_id])

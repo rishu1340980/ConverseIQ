@@ -90,42 +90,116 @@ async def create_meeting(
         status=meeting_in.status,
         created_by_id=current_user.id,
         department_id=dept_id,
-        meeting_link_token=token
+        meeting_link_token=token,
+        description=meeting_in.description,
+        start_time=meeting_in.start_time,
+        end_time=meeting_in.end_time
     )
     db.add(new_meeting)
     await db.commit()
     await db.refresh(new_meeting)
 
-    # Seed participants if provided
     join_url = f"https://converseiq.apsit.edu.in/studio?meeting_id={new_meeting.id}&token={token}"
     date_str = new_meeting.date.strftime("%B %d, %Y at %I:%M %p")
+    added_user_ids = set()
+    speaker_idx = 0
 
-    if meeting_in.participants:
-        for idx, name in enumerate(meeting_in.participants):
-            p_name = name.strip()
-            label = f"Speaker {chr(65 + idx)}"  # Speaker A, Speaker B, etc.
-            # Resolve to exact institutional college email
-            p_email = resolve_faculty_email(p_name)
+    # 1. Add participants from selected faculty IDs
+    if meeting_in.faculty_ids:
+        f_stmt = select(User).where(User.id.in_(meeting_in.faculty_ids))
+        f_res = await db.execute(f_stmt)
+        faculty_users = f_res.scalars().all()
+        for f_user in faculty_users:
+            label = f"Speaker {chr(65 + (speaker_idx % 26))}"
+            speaker_idx += 1
+            inv_status = "Pending"
+            sent_at = None
+
+            if f_user.email and f_user.is_email_configured:
+                ok = email_service.send_meeting_invite(
+                    to_email=f_user.email,
+                    faculty_name=f_user.name,
+                    meeting_title=new_meeting.title,
+                    meeting_date=date_str,
+                    join_url=join_url,
+                    organizer_name=current_user.name
+                )
+                inv_status = "Sent" if ok else "Failed"
+                if ok:
+                    sent_at = datetime.now(timezone.utc)
             
             part = Participant(
                 meeting_id=new_meeting.id,
-                name=p_name,
+                user_id=f_user.id,
+                name=f_user.name,
+                email=f_user.email,
+                speaker_label=label,
+                attended=False,
+                speaking_time_seconds=0,
+                invitation_status=inv_status,
+                invitation_sent_at=sent_at
+            )
+            db.add(part)
+            added_user_ids.add(f_user.id)
+
+    # 2. Add participants from strings (names or emails) if not already added
+    if meeting_in.participants:
+        for name in meeting_in.participants:
+            p_name = name.strip()
+            if not p_name:
+                continue
+            # Try to resolve to an existing faculty user
+            u_stmt = select(User).where(or_(User.name.ilike(f"%{p_name}%"), User.email == p_name))
+            u_res = await db.execute(u_stmt)
+            matched_user = u_res.scalars().first()
+
+            if matched_user and matched_user.id in added_user_ids:
+                continue
+
+            label = f"Speaker {chr(65 + (speaker_idx % 26))}"
+            speaker_idx += 1
+
+            if matched_user:
+                p_email = matched_user.email
+                user_id = matched_user.id
+                is_configured = matched_user.is_email_configured
+                p_display_name = matched_user.name
+                added_user_ids.add(matched_user.id)
+            else:
+                p_email = resolve_faculty_email(p_name)
+                user_id = None
+                is_configured = bool(p_email)
+                p_display_name = p_name
+
+            inv_status = "Pending"
+            sent_at = None
+            if p_email and is_configured:
+                ok = email_service.send_meeting_invite(
+                    to_email=p_email,
+                    faculty_name=p_display_name,
+                    meeting_title=new_meeting.title,
+                    meeting_date=date_str,
+                    join_url=join_url,
+                    organizer_name=current_user.name
+                )
+                inv_status = "Sent" if ok else "Failed"
+                if ok:
+                    sent_at = datetime.now(timezone.utc)
+
+            part = Participant(
+                meeting_id=new_meeting.id,
+                user_id=user_id,
+                name=p_display_name,
                 email=p_email,
                 speaker_label=label,
                 attended=False,
-                speaking_time_seconds=0
+                speaking_time_seconds=0,
+                invitation_status=inv_status,
+                invitation_sent_at=sent_at
             )
             db.add(part)
-            # Dispatch email invite
-            email_service.send_meeting_invite(
-                to_email=p_email,
-                faculty_name=p_name,
-                meeting_title=new_meeting.title,
-                meeting_date=date_str,
-                join_url=join_url,
-                organizer_name=current_user.name
-            )
-        await db.commit()
+
+    await db.commit()
 
     # Re-fetch with relationships
     stmt = select(Meeting).options(selectinload(Meeting.participants)).where(Meeting.id == new_meeting.id)

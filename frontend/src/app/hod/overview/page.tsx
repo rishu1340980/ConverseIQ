@@ -46,14 +46,17 @@ export default function HodDepartmentOverviewPage() {
     loadHodOverview();
   }, []);
 
-  const displayName = user?.name || 'Prof. Mehta';
-  const departmentName = user?.department_name || 'Information Technology';
+  const displayName = user?.name || 'Dr. Kiran Deshpande';
+  const departmentName = user?.department_name || 'Department of Information Technology';
 
   // Format weekly meetings for BarChartVisualizer
   const chartItems = weeklyMeetings.map((b: any) => ({
     label: b.week || 'Wk',
     value: b.count ?? 0,
   }));
+
+  const hasFacultyData = facultyCompletions.length > 0 && facultyCompletions.some(f => (f.total_actions ?? 1) > 0 || f.rate > 0);
+  const hasMeetingData = chartItems.length > 0 && chartItems.some(i => i.value > 0);
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto animate-fade-in">
@@ -146,7 +149,7 @@ export default function HodDepartmentOverviewPage() {
               </Link>
             </div>
 
-            {facultyCompletions.length > 0 ? (
+            {hasFacultyData ? (
               <div className="space-y-4 pt-1">
                 {facultyCompletions.map((item, idx) => (
                   <div key={idx} className="space-y-1.5">
@@ -164,10 +167,16 @@ export default function HodDepartmentOverviewPage() {
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-[#667875] dark:text-[#8FA89C] py-8 text-center">
-                No faculty task completions recorded yet.
+              <p className="text-xs text-[#667875] dark:text-[#8FA89C] py-8 text-center italic">
+                Insufficient data available to generate meaningful analytics.
               </p>
             )}
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-[#DCE7E2] dark:border-[#2D4A3E]">
+            <p className="text-xs text-[#667875] dark:text-[#8FA89C] leading-relaxed">
+              Monitors individual faculty deliverable completion rates across departmental deliberations and academic audits.
+            </p>
           </div>
         </div>
 
@@ -186,7 +195,7 @@ export default function HodDepartmentOverviewPage() {
               </span>
             </div>
 
-            {chartItems.length > 0 ? (
+            {hasMeetingData ? (
               <BarChartVisualizer
                 items={chartItems}
                 height={140}
@@ -194,20 +203,27 @@ export default function HodDepartmentOverviewPage() {
                 secondaryColor="#B9DDE3"
               />
             ) : (
-              <p className="text-xs text-[#667875] dark:text-[#8FA89C] py-12 text-center">
-                No weekly meetings trend data available yet.
+              <p className="text-xs text-[#667875] dark:text-[#8FA89C] py-12 text-center italic">
+                Insufficient data available to generate meaningful analytics.
               </p>
             )}
           </div>
 
-          <div className="pt-4 mt-4 border-t border-[#DCE7E2] dark:border-[#2D4A3E] grid grid-cols-2 text-center divide-x divide-[#DCE7E2] dark:divide-[#2D4A3E]">
-            <div>
-              <p className="text-base font-black text-[#173A2C] dark:text-[#E8F0EC]">{stats?.avg_duration || '0m'}</p>
-              <p className="text-xs text-[#667875] dark:text-[#8FA89C] font-semibold mt-0.5">Avg Duration</p>
+          <div>
+            <div className="pt-4 mt-4 border-t border-[#DCE7E2] dark:border-[#2D4A3E] grid grid-cols-2 text-center divide-x divide-[#DCE7E2] dark:divide-[#2D4A3E]">
+              <div>
+                <p className="text-base font-black text-[#173A2C] dark:text-[#E8F0EC]">{stats?.avg_duration || '0m'}</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C] font-semibold mt-0.5">Avg Duration</p>
+              </div>
+              <div>
+                <p className="text-base font-black text-[#173A2C] dark:text-[#E8F0EC]">{stats?.avg_participants || 0}</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C] font-semibold mt-0.5">Avg Attendees</p>
+              </div>
             </div>
-            <div>
-              <p className="text-base font-black text-[#173A2C] dark:text-[#E8F0EC]">{stats?.avg_participants || 0}</p>
-              <p className="text-xs text-[#667875] dark:text-[#8FA89C] font-semibold mt-0.5">Avg Attendees</p>
+            <div className="mt-3 pt-3 border-t border-[#DCE7E2] dark:border-[#2D4A3E]">
+              <p className="text-xs text-[#667875] dark:text-[#8FA89C] leading-relaxed">
+                Visualizes weekly academic meeting frequency and time commitment across semester cycles for the Department of Information Technology.
+              </p>
             </div>
           </div>
         </div>

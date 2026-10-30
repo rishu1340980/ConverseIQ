@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
@@ -8,7 +8,10 @@ class Meeting(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(255), nullable=False)
+    description = Column(Text, nullable=True)
     date = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+    start_time = Column(DateTime, nullable=True)
+    end_time = Column(DateTime, nullable=True)
     duration_minutes = Column(Integer, default=0, nullable=False)
     status = Column(String(50), default="Scheduled", nullable=False)  # Scheduled, In Progress, Processing, Completed, Failed
     created_by_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)

@@ -16,6 +16,9 @@ class ParticipantResponse(ParticipantBase):
     attended: bool = False
     joined_at: Optional[datetime] = None
     speaking_time_seconds: int = 0
+    invitation_status: Optional[str] = "Pending"
+    invitation_sent_at: Optional[datetime] = None
+    user_id: Optional[int] = None
 
     class Config:
         from_attributes = True

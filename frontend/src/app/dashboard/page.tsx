@@ -170,12 +170,24 @@ export default function DashboardPage() {
             </span>
           </div>
 
-          <BarChartVisualizer
-            items={weeklyDistribution}
-            height={130}
-            barColor="#78A98F"
-            secondaryColor="#B9DDE3"
-          />
+          {weeklyDistribution.some(w => w.value > 0) ? (
+            <BarChartVisualizer
+              items={weeklyDistribution}
+              height={130}
+              barColor="#78A98F"
+              secondaryColor="#B9DDE3"
+            />
+          ) : (
+            <p className="text-xs text-[#667875] dark:text-[#8FA89C] py-8 text-center italic">
+              Insufficient data available to generate meaningful analytics.
+            </p>
+          )}
+
+          <div className="mt-4 pt-3 border-t border-[#DCE7E2] dark:border-[#2D4A3E]">
+            <p className="text-xs text-[#667875] dark:text-[#8FA89C] leading-relaxed">
+              Tracks individual faculty session load and deliberation cadence across departmental academic calendar intervals.
+            </p>
+          </div>
         </div>
 
         {/* Right: Action Items Health */}
@@ -188,24 +200,38 @@ export default function DashboardPage() {
             <p className="text-xs text-[#667875] dark:text-[#8FA89C] mt-0.5">Completed vs active tasks</p>
           </div>
 
-          <div className="my-2">
-            <DonutStatusMeter
-              completed={completedActions}
-              total={totalTrackedActions}
-              label="Resolved"
-              size={110}
-            />
-          </div>
+          {totalTrackedActions > 0 ? (
+            <>
+              <div className="my-2">
+                <DonutStatusMeter
+                  completed={completedActions}
+                  total={totalTrackedActions}
+                  label="Resolved"
+                  size={110}
+                />
+              </div>
 
-          <div className="w-full grid grid-cols-2 gap-2 text-xs pt-3 border-t border-[#DCE7E2] dark:border-[#2D4A3E]">
-            <div className="p-2 rounded-xl bg-[#F5FAF8] dark:bg-[#0F1A15]">
-              <span className="block font-black text-[#173A2C] dark:text-[#E8F0EC]">{completedActions}</span>
-              <span className="text-[10px] text-[#667875] dark:text-[#8FA89C] font-semibold uppercase">Done</span>
-            </div>
-            <div className="p-2 rounded-xl bg-[#E4F2F4] dark:bg-[#1A3A3F]">
-              <span className="block font-black text-[#367C88] dark:text-[#4DA3B0]">{pendingActions}</span>
-              <span className="text-[10px] text-[#667875] dark:text-[#8FA89C] font-semibold uppercase">Pending</span>
-            </div>
+              <div className="w-full grid grid-cols-2 gap-2 text-xs pt-3 border-t border-[#DCE7E2] dark:border-[#2D4A3E]">
+                <div className="p-2 rounded-xl bg-[#F5FAF8] dark:bg-[#0F1A15]">
+                  <span className="block font-black text-[#173A2C] dark:text-[#E8F0EC]">{completedActions}</span>
+                  <span className="text-[10px] text-[#667875] dark:text-[#8FA89C] font-semibold uppercase">Done</span>
+                </div>
+                <div className="p-2 rounded-xl bg-[#E4F2F4] dark:bg-[#1A3A3F]">
+                  <span className="block font-black text-[#367C88] dark:text-[#4DA3B0]">{pendingActions}</span>
+                  <span className="text-[10px] text-[#667875] dark:text-[#8FA89C] font-semibold uppercase">Pending</span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <p className="text-xs text-[#667875] dark:text-[#8FA89C] py-8 text-center italic">
+              Insufficient data available to generate meaningful analytics.
+            </p>
+          )}
+
+          <div className="w-full mt-3 pt-3 border-t border-[#DCE7E2] dark:border-[#2D4A3E] text-left">
+            <p className="text-xs text-[#667875] dark:text-[#8FA89C] leading-relaxed">
+              Monitors resolution ratio of personal action items and governance commitments.
+            </p>
           </div>
         </div>
 

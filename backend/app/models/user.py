@@ -8,10 +8,13 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
-    email = Column(String(255), unique=True, index=True, nullable=False)
-    hashed_password = Column(String(255), nullable=False)
+    email = Column(String(255), unique=True, index=True, nullable=True)
+    hashed_password = Column(String(255), nullable=True)
     role = Column(String(50), nullable=False, default="Faculty")  # 'Faculty', 'HOD', 'Admin'
+    designation = Column(String(255), nullable=False, default="Assistant Professor")
+    phone = Column(String(50), nullable=True)
     department_id = Column(Integer, ForeignKey("departments.id", ondelete="SET NULL"), nullable=True)
+    is_email_configured = Column(Boolean, default=True, nullable=False)
     voice_enrolled = Column(Boolean, default=False, nullable=False)
     voice_embedding = Column(Text, nullable=True)  # JSON-serialized acoustic feature vector
     is_active = Column(Boolean, default=True, nullable=False)

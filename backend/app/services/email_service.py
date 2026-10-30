@@ -154,4 +154,35 @@ class EmailService:
 </html>"""
         return self.send_email_sync(to_email, subject, html_body, email_type="deadline_alert")
 
+    def send_otp_email(self, to_email: str, otp_code: str) -> bool:
+        """Dispatches secure 6-digit OTP for institutional authentication."""
+        subject = f"{otp_code} is your ConverseIQ Verification Code - APSIT"
+        html_body = f"""<!DOCTYPE html>
+<html>
+<body style="font-family: Arial, sans-serif; background-color: #f8fafc; padding: 24px; color: #1e293b;">
+  <div style="max-width: 520px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 32px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+    <div style="text-align: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 20px; margin-bottom: 24px;">
+      <h2 style="color: #0f172a; margin: 0; font-size: 20px;">A. P. Shah Institute of Technology</h2>
+      <p style="color: #64748b; font-size: 13px; margin: 4px 0 0 0;">Department of Information Technology &bull; ConverseIQ</p>
+    </div>
+    <p style="font-size: 15px; line-height: 1.5; color: #334155;">Hello,</p>
+    <p style="font-size: 14px; line-height: 1.6; color: #475569;">
+      Use the following single-use verification code to authenticate into the ConverseIQ Academic Intelligence platform:
+    </p>
+    <div style="text-align: center; margin: 28px 0;">
+      <span style="display: inline-block; font-size: 32px; font-weight: 800; letter-spacing: 8px; color: #1e3a8a; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px 28px;">
+        {otp_code}
+      </span>
+    </div>
+    <p style="font-size: 13px; color: #64748b; line-height: 1.5;">
+      This code is valid for <strong>10 minutes</strong> and can only be used once. If you did not request this code, please ignore this email or notify your department administrator.
+    </p>
+    <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #f1f5f9; text-align: center; font-size: 11px; color: #94a3b8;">
+      This is an automated system notification from ConverseIQ &bull; APSIT Information Technology
+    </div>
+  </div>
+</body>
+</html>"""
+        return self.send_email_sync(to_email, subject, html_body, email_type="auth_otp")
+
 email_service = EmailService()

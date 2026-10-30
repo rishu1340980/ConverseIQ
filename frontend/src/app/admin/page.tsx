@@ -36,7 +36,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
 
   // Settings State
-  const [instName, setInstName] = useState('National Institute of Engineering & Technology');
+  const [instName, setInstName] = useState('A. P. Shah Institute of Technology');
   const [aiModel, setAiModel] = useState('meta-llama/llama-3.3-70b-instruct');
   const [retentionDays, setRetentionDays] = useState(180);
   const [enableEmailAlerts, setEnableEmailAlerts] = useState(true);
@@ -417,7 +417,7 @@ export default function AdminPage() {
 
             <div className="bg-white dark:bg-[#1A2B24] p-6 rounded-2xl border border-[#DCE7E2] dark:border-[#2D4A3E] shadow-sm card-interactive">
               <h4 className="font-bold text-[#173A2C] dark:text-[#E8F0EC] mb-4">6-Month Meeting &amp; Action Item Trends</h4>
-              {analytics.meetings_vs_actions_trend && analytics.meetings_vs_actions_trend.length > 0 ? (
+              {analytics.meetings_vs_actions_trend && analytics.meetings_vs_actions_trend.length > 0 && analytics.meetings_vs_actions_trend.some((t: any) => t.meetings > 0 || t.actions > 0) ? (
                 <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 text-center text-xs">
                   {analytics.meetings_vs_actions_trend.map((t: any, idx: number) => (
                     <div key={idx} className="p-3.5 bg-[#F5FAF8] dark:bg-[#0F1A15] rounded-xl border border-[#DCE7E2] dark:border-[#2D4A3E]/60 hover:border-[#78A98F]/40 transition-colors">
@@ -428,8 +428,15 @@ export default function AdminPage() {
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-[#667875] dark:text-[#8FA89C] py-4">No historical activity logged yet.</p>
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C] py-8 text-center italic">
+                  Insufficient data available to generate meaningful analytics.
+                </p>
               )}
+              <div className="mt-4 pt-3 border-t border-[#DCE7E2] dark:border-[#2D4A3E]">
+                <p className="text-xs text-[#667875] dark:text-[#8FA89C] leading-relaxed">
+                  {analytics.context_descriptions?.meetings_vs_actions_trend || "Tracks monthly academic session cadence alongside assigned faculty action items and task closures across the Department of Information Technology."}
+                </p>
+              </div>
             </div>
           </div>
         )

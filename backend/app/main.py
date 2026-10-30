@@ -63,67 +63,94 @@ async def seed_initial_data():
             )
             session.add(admin_user)
 
-        hod_res = await session.execute(select(User).where(User.email == "hod.cs@converseiq.edu"))
+        # HOD: Dr. Kiran Deshpande
+        hod_res = await session.execute(select(User).where(User.email == "hod.it@apsit.edu.in"))
         hod_user = hod_res.scalar_one_or_none()
         if not hod_user:
-            hod_user = User(
-                name="Dr. Rajesh Gupta",
-                email="hod.cs@converseiq.edu",
-                hashed_password=get_password_hash("Hod@123"),
-                role="HOD",
-                department_id=cs_dept.id,
-                is_active=True
-            )
-            session.add(hod_user)
-
-        sharma_res = await session.execute(select(User).where(User.email == "prof.sharma@converseiq.edu"))
-        faculty_sharma = sharma_res.scalar_one_or_none()
-        if not faculty_sharma:
-            faculty_sharma = User(
-                name="Prof. Sharma",
-                email="prof.sharma@converseiq.edu",
-                hashed_password=get_password_hash("Faculty@123"),
-                role="Faculty",
-                department_id=cs_dept.id,
-                is_active=True
-            )
-            session.add(faculty_sharma)
-
-        mishra_res = await session.execute(select(User).where(User.email == "prof.mishra@converseiq.edu"))
-        faculty_mishra = mishra_res.scalar_one_or_none()
-        if not faculty_mishra:
-            faculty_mishra = User(
-                name="Prof. Mishra",
-                email="prof.mishra@converseiq.edu",
-                hashed_password=get_password_hash("Faculty@123"),
-                role="Faculty",
-                department_id=cs_dept.id,
-                is_active=True
-            )
-            session.add(faculty_mishra)
-
-        # Seed Professors: Vedant, Unnati, Manthan, Rishabh with APSIT Institutional Emails
-        professors_seed = [
-            ("Prof. Rishabh", "23104080@apsit.edu.in"),
-            ("Prof. Unnati", "23104229@apsit.edu.in"),
-            ("Prof. Vedant", "23104025@apsit.edu.in"),
-            ("Prof. Manthan", "23104218@apsit.edu.in"),
-            ("Prof. Vedant", "prof.vedant@converseiq.edu"),
-            ("Prof. Unnati", "prof.unnati@converseiq.edu"),
-            ("Prof. Manthan", "prof.manthan@converseiq.edu")
-        ]
-        for p_name, p_email in professors_seed:
-            p_res = await session.execute(select(User).where(User.email == p_email))
-            if not p_res.scalar_one_or_none():
-                new_prof = User(
-                    name=p_name,
-                    email=p_email,
-                    hashed_password=get_password_hash("Faculty@123"),
-                    role="Faculty",
+            # Also check hod.cs@converseiq.edu for backward-compatibility
+            legacy_hod_res = await session.execute(select(User).where(User.email == "hod.cs@converseiq.edu"))
+            legacy_hod = legacy_hod_res.scalar_one_or_none()
+            if legacy_hod:
+                legacy_hod.name = "Dr. Kiran Deshpande"
+                legacy_hod.designation = "Head of Department (HOD)"
+                legacy_hod.department_id = cs_dept.id
+                hod_user = legacy_hod
+            else:
+                hod_user = User(
+                    name="Dr. Kiran Deshpande",
+                    email="hod.it@apsit.edu.in",
+                    hashed_password=get_password_hash("Hod@123"),
+                    role="HOD",
+                    designation="Head of Department (HOD)",
                     department_id=cs_dept.id,
+                    is_email_configured=True,
                     is_active=True
                 )
-                session.add(new_prof)
+                session.add(hod_user)
+
+        # Faculty: Prof. Randeep Kaur Kahlon
+        randeep_res = await session.execute(select(User).where(User.name == "Prof. Randeep Kaur Kahlon"))
+        if not randeep_res.scalar_one_or_none():
+            randeep_user = User(
+                name="Prof. Randeep Kaur Kahlon",
+                email="randeep.kahlon@apsit.edu.in",
+                hashed_password=get_password_hash("Faculty@123"),
+                role="Faculty",
+                designation="Assistant Professor",
+                department_id=cs_dept.id,
+                is_email_configured=True,
+                is_active=True
+            )
+            session.add(randeep_user)
+
+        # Dedicated Demo Account for Simulation (23104080@apsit.edu.in)
+        demo_res = await session.execute(select(User).where(User.email == "23104080@apsit.edu.in"))
+        demo_user = demo_res.scalar_one_or_none()
+        if not demo_user:
+            demo_user = User(
+                name="Demo",
+                email="23104080@apsit.edu.in",
+                hashed_password=get_password_hash("Faculty@123"),
+                role="Faculty",
+                designation="Faculty Member",
+                department_id=cs_dept.id,
+                is_email_configured=True,
+                is_active=True
+            )
+            session.add(demo_user)
+        else:
+            demo_user.name = "Demo"
+            demo_user.designation = "Faculty Member"
+
+        # 12 Initial Faculty Directory Members (Unconfigured emails per Section 1B & 4)
+        initial_faculty_roster = [
+            "Prof. Jayshree Jha",
+            "Prof. Vishal Badgujar",
+            "Prof. Sneha Dalvi",
+            "Prof. Seema Jadhav",
+            "Prof. Sachin S Kasare",
+            "Prof. Sonal Balpande",
+            "Prof. Sonal Jain",
+            "Prof. Shafaque Syed",
+            "Prof. Sonia Aneesh",
+            "Prof. Apeksha Mohite",
+            "Prof. Geetanjali Kalme",
+            "Prof. Manjusha Kashilkar"
+        ]
+        for fac_name in initial_faculty_roster:
+            fac_res = await session.execute(select(User).where(User.name == fac_name))
+            if not fac_res.scalar_one_or_none():
+                new_fac = User(
+                    name=fac_name,
+                    email=None,
+                    hashed_password=get_password_hash("Faculty@123"),
+                    role="Faculty",
+                    designation="Assistant Professor",
+                    department_id=cs_dept.id,
+                    is_email_configured=False,
+                    is_active=True
+                )
+                session.add(new_fac)
 
         await session.commit()
         if admin_user:

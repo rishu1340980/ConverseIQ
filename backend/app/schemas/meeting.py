@@ -11,9 +11,13 @@ class MeetingBase(BaseModel):
     duration_minutes: int = 0
     status: str = "Scheduled"  # Scheduled, Processing, Completed, Failed
     department_id: Optional[int] = None
+    description: Optional[str] = None
+    start_time: Optional[datetime] = None
+    end_time: Optional[datetime] = None
 
 class MeetingCreate(MeetingBase):
     participants: Optional[List[str]] = []  # List of participant names to seed
+    faculty_ids: Optional[List[int]] = []   # List of faculty user IDs to invite
 
 class MeetingUpdate(BaseModel):
     title: Optional[str] = None
@@ -21,6 +25,9 @@ class MeetingUpdate(BaseModel):
     duration_minutes: Optional[int] = None
     status: Optional[str] = None
     department_id: Optional[int] = None
+    description: Optional[str] = None
+    start_time: Optional[datetime] = None
+    end_time: Optional[datetime] = None
 
 class MeetingResponse(MeetingBase):
     id: int

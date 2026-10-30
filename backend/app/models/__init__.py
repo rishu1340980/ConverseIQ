@@ -6,6 +6,7 @@ from app.models.mom import MinutesOfMeeting
 from app.models.action_item import ActionItem
 from app.models.audit_log import AuditLog
 from app.models.analytics import AnalyticsEvent
+from app.models.otp import EmailOTP
 
 __all__ = [
     "User",
@@ -15,5 +16,6 @@ __all__ = [
     "MinutesOfMeeting",
     "ActionItem",
     "AuditLog",
-    "AnalyticsEvent"
+    "AnalyticsEvent",
+    "EmailOTP"
 ]

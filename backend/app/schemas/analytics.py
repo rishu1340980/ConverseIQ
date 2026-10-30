@@ -12,3 +12,6 @@ class AnalyticsSummaryResponse(BaseModel):
     meetings_vs_actions_trend: List[Dict[str, Any]]
     department_engagement: List[Dict[str, Any]]
     feature_usage_breakdown: Dict[str, int]
+    has_sufficient_data: bool = True
+    context_descriptions: Dict[str, str] = {}
+
