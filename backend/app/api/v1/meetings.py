@@ -249,8 +249,8 @@ async def upload_and_analyze_meeting(
     # Seed participants & speaker mapping
     mapping = {}
     participant_names = []
+    participant_objs = []
     if participants:
-        participant_objs = []
         p_list = [p.strip() for p in participants.split(",") if p.strip()]
         for idx, name in enumerate(p_list):
             label = f"Speaker {chr(65 + idx)}"
