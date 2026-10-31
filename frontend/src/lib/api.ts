@@ -72,11 +72,15 @@ export async function apiRequest<T = any>(
     });
 
     if (res.status === 401) {
+      if (endpoint.includes('/auth/login') || endpoint.includes('/auth/verify-otp')) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.detail || 'Incorrect institutional email or password.');
+      }
       removeAuthToken();
       if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
         window.location.href = '/login';
       }
-      throw new Error('Session expired or invalidated. Please log in again.');
+      throw new Error('Your session has ended. Please log in to continue.');
     }
 
     if (res.status === 423) {

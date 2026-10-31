@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Check, AlertCircle, Sparkles, Mail, KeyRound, ShieldCheck, ArrowRight, RefreshCw, Lock } from 'lucide-react';
-import { apiRequest, setAuthToken, setStoredUser } from '@/lib/api';
+import { apiRequest, setAuthToken, setStoredUser, removeAuthToken } from '@/lib/api';
 import AnimatedButton from '@/components/ui/AnimatedButton';
 
 const APSIT_DOMAIN = '@apsit.edu.in';
@@ -20,6 +20,11 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Clear stale tokens when arriving on login page
+  useEffect(() => {
+    removeAuthToken();
+  }, []);
 
   // Countdown timer for OTP resend cooldown
   useEffect(() => {
