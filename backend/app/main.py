@@ -23,7 +23,11 @@ from app.api.v1.dashboard import router as dashboard_router
 from app.api.v1.meetings import router as meetings_router
 from app.api.v1.mom import router as mom_router
 from app.api.v1.action_items import router as action_items_router
-from app.api.v1.export import router as export_router
+from app.api.v1.export import (
+    router as export_router,
+    reports_router,
+    mom_export_router
+)
 from app.api.v1.ai_assistant import router as ai_router
 from app.api.v1.departments import router as departments_router
 from app.api.v1.users import router as users_router
@@ -288,6 +292,8 @@ app.include_router(meetings_router, prefix=v1)
 app.include_router(mom_router, prefix=v1)
 app.include_router(action_items_router, prefix=v1)
 app.include_router(export_router, prefix=v1)
+app.include_router(reports_router, prefix=v1)
+app.include_router(mom_export_router, prefix=v1)
 app.include_router(ai_router, prefix=v1)
 app.include_router(departments_router, prefix=v1)
 app.include_router(users_router, prefix=v1)

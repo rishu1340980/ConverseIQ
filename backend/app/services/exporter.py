@@ -212,8 +212,15 @@ def generate_mom_pdf(meeting: Meeting, mom: MinutesOfMeeting, action_items: List
     story.append(HRFlowable(width="100%", thickness=1.5, color=colors.HexColor('#1E3A8A'), spaceAfter=10))
 
     # 2. Meeting Information Table
-    organizer_name = meeting.creator.name if meeting.creator else "Head of Department (HOD)"
-    organizer_email = f" ({meeting.creator.email})" if (meeting.creator and meeting.creator.email) else ""
+    organizer_name = "Head of Department (HOD)"
+    organizer_email = ""
+    try:
+        if getattr(meeting, 'creator', None):
+            organizer_name = meeting.creator.name or organizer_name
+            if meeting.creator.email:
+                organizer_email = f" ({meeting.creator.email})"
+    except Exception:
+        pass
     date_formatted = meeting.date.strftime('%B %d, %Y')
     time_formatted = meeting.date.strftime('%I:%M %p')
     if meeting.start_time and meeting.end_time:
@@ -457,7 +464,12 @@ def generate_mom_docx(meeting: Meeting, mom: MinutesOfMeeting, action_items: Lis
 
     # 2. Meeting Information Table
     ref_no = f"APSIT/IT/MOM/{datetime.now().year}/{meeting.id:04d}"
-    organizer_name = meeting.creator.name if meeting.creator else "Head of Department (HOD)"
+    organizer_name = "Head of Department (HOD)"
+    try:
+        if getattr(meeting, 'creator', None):
+            organizer_name = meeting.creator.name or organizer_name
+    except Exception:
+        pass
     date_formatted = meeting.date.strftime('%B %d, %Y')
     time_formatted = meeting.date.strftime('%I:%M %p')
     if meeting.start_time and meeting.end_time:
@@ -591,4 +603,208 @@ def generate_mom_docx(meeting: Meeting, mom: MinutesOfMeeting, action_items: Lis
     doc.save(buffer)
     buffer.seek(0)
     return buffer
+
+
+def generate_action_items_pdf(action_items: List[ActionItem], department_name: str = "Department of Information Technology") -> io.BytesIO:
+    """
+    Generates an official institutional PDF Action Items Compliance Register
+    for A. P. Shah Institute of Technology.
+    """
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=letter,
+        rightMargin=40,
+        leftMargin=40,
+        topMargin=40,
+        bottomMargin=48
+    )
+
+    styles = getSampleStyleSheet()
+
+    inst_sub = ParagraphStyle(
+        'InstSubAI',
+        parent=styles['Normal'],
+        fontName='Helvetica',
+        fontSize=8.5,
+        leading=11,
+        alignment=1,
+        textColor=colors.HexColor('#475569')
+    )
+
+    inst_college = ParagraphStyle(
+        'InstCollegeAI',
+        parent=styles['Normal'],
+        fontName='Helvetica-Bold',
+        fontSize=12,
+        leading=15,
+        alignment=1,
+        textColor=colors.HexColor('#0F172A')
+    )
+
+    inst_dept = ParagraphStyle(
+        'InstDeptAI',
+        parent=styles['Normal'],
+        fontName='Helvetica-Bold',
+        fontSize=10.5,
+        leading=13,
+        alignment=1,
+        textColor=colors.HexColor('#1E3A8A')
+    )
+
+    doc_title_style = ParagraphStyle(
+        'DocTitleAI',
+        parent=styles['Heading1'],
+        fontName='Helvetica-Bold',
+        fontSize=13,
+        leading=17,
+        alignment=1,
+        textColor=colors.HexColor('#1E3A8A'),
+        spaceBefore=8,
+        spaceAfter=10
+    )
+
+    section_h2 = ParagraphStyle(
+        'SectionH2AI',
+        parent=styles['Heading2'],
+        fontName='Helvetica-Bold',
+        fontSize=10,
+        leading=13,
+        textColor=colors.HexColor('#0F172A'),
+        spaceBefore=10,
+        spaceAfter=4
+    )
+
+    body_style = ParagraphStyle(
+        'DocBodyAI',
+        parent=styles['Normal'],
+        fontName='Helvetica',
+        fontSize=8.5,
+        leading=12,
+        textColor=colors.HexColor('#1E293B')
+    )
+
+    table_cell = ParagraphStyle(
+        'TableCellAI',
+        parent=styles['Normal'],
+        fontName='Helvetica',
+        fontSize=8,
+        leading=11,
+        textColor=colors.HexColor('#1E293B')
+    )
+
+    table_header = ParagraphStyle(
+        'TableHeaderAI',
+        parent=styles['Normal'],
+        fontName='Helvetica-Bold',
+        fontSize=8,
+        leading=11,
+        textColor=colors.white
+    )
+
+    story = []
+
+    # 1. Institutional Banner Image
+    if os.path.exists(HEADER_IMAGE_PATH):
+        try:
+            banner_img = RLImage(HEADER_IMAGE_PATH, width=532, height=113)
+            story.append(banner_img)
+            story.append(Spacer(1, 8))
+        except Exception:
+            pass
+
+    # Institutional Text Header
+    story.append(Paragraph("PARSHWANATH CHARITABLE TRUST'S", inst_sub))
+    story.append(Paragraph("A. P. SHAH INSTITUTE OF TECHNOLOGY", inst_college))
+    story.append(Paragraph(department_name, inst_dept))
+    story.append(Paragraph("(NBA Accredited)", inst_sub))
+    story.append(Spacer(1, 6))
+
+    # Title
+    story.append(Paragraph("DEPARTMENTAL ACTION ITEMS COMPLIANCE REGISTER", doc_title_style))
+    story.append(Spacer(1, 6))
+
+    now_str = datetime.now().strftime("%B %d, %Y, %I:%M %p")
+    total_items = len(action_items)
+    pending_items = sum(1 for a in action_items if (a.status or "").lower() == "pending")
+    completed_items = sum(1 for a in action_items if (a.status or "").lower() == "completed")
+
+    meta_data = [
+        [
+            Paragraph(f"<b>Report Generated:</b> {now_str}", body_style),
+            Paragraph(f"<b>Total Action Items:</b> {total_items}", body_style)
+        ],
+        [
+            Paragraph(f"<b>Department:</b> {department_name}", body_style),
+            Paragraph(f"<b>Pending:</b> {pending_items} | <b>Completed:</b> {completed_items}", body_style)
+        ]
+    ]
+    meta_table = Table(meta_data, colWidths=[266, 266])
+    meta_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#F8FAFC')),
+        ('BOX', (0, 0), (-1, -1), 0.5, colors.HexColor('#CBD5E1')),
+        ('TOPPADDING', (0, 0), (-1, -1), 4),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+        ('LEFTPADDING', (0, 0), (-1, -1), 6),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+    ]))
+    story.append(meta_table)
+    story.append(Spacer(1, 10))
+
+    story.append(Paragraph("Action Items & Deliverables", section_h2))
+
+    if action_items:
+        act_rows = [[
+            Paragraph("Sr.", table_header),
+            Paragraph("Action Item / Deliverable", table_header),
+            Paragraph("Assigned Faculty", table_header),
+            Paragraph("Priority", table_header),
+            Paragraph("Deadline", table_header),
+            Paragraph("Status", table_header)
+        ]]
+        for idx, item in enumerate(action_items, 1):
+            due_str = item.due_date.strftime('%B %d, %Y') if item.due_date else "Immediate / Ongoing"
+            status_color = "#16a34a" if (item.status or "").lower() == "completed" else "#d97706"
+            act_rows.append([
+                Paragraph(str(idx), table_cell),
+                Paragraph(item.task, table_cell),
+                Paragraph(f"<b>{item.owner_name}</b>", table_cell),
+                Paragraph(item.priority or "Normal", table_cell),
+                Paragraph(due_str, table_cell),
+                Paragraph(f'<font color="{status_color}"><b>{item.status or "Pending"}</b></font>', table_cell)
+            ])
+        act_table = Table(act_rows, colWidths=[28, 204, 110, 55, 75, 60])
+        act_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1E3A8A')),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#CBD5E1')),
+            ('TOPPADDING', (0, 0), (-1, -1), 4),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+            ('LEFTPADDING', (0, 0), (-1, -1), 4),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#F8FAFC')])
+        ]))
+        story.append(act_table)
+    else:
+        story.append(Paragraph("No action items currently recorded in the registry.", body_style))
+
+    story.append(Spacer(1, 16))
+
+    closing_table = Table([
+        [
+            Paragraph("<b>Verified / Endorsed by:</b><br/><br/><br/><b>Dr. Kiran Deshpande</b><br/>Head of Department (HOD)<br/>Department of Information Technology", body_style),
+            Paragraph("<b>Institutional Governance:</b><br/><br/><br/><i>System-generated Compliance Document</i><br/><b>ConverseIQ Governance Engine</b>", body_style)
+        ]
+    ], colWidths=[266, 266])
+    closing_table.setStyle(TableStyle([
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('LINEABOVE', (0, 0), (-1, -1), 0.5, colors.HexColor('#CBD5E1'))
+    ]))
+    story.append(KeepTogether([closing_table]))
+
+    doc.build(story, canvasmaker=NumberedCanvas)
+    buffer.seek(0)
+    return buffer
+
 

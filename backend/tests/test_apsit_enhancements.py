@@ -8,7 +8,12 @@ from app.models.mom import MinutesOfMeeting
 from app.models.action_item import ActionItem
 from app.models.user import User
 from app.models.participant import Participant
-from app.services.exporter import generate_mom_pdf, generate_mom_docx, MANDATORY_FOOTER_TEXT
+from app.services.exporter import (
+    generate_mom_pdf,
+    generate_mom_docx,
+    generate_action_items_pdf,
+    MANDATORY_FOOTER_TEXT
+)
 
 @pytest.mark.asyncio
 async def test_strict_domain_validation():
@@ -99,4 +104,44 @@ async def test_institutional_mom_pdf_and_docx_exports():
 
     docx_buffer = generate_mom_docx(m, mom, actions)
     assert len(docx_buffer.getvalue()) > 50000
+
+    ai_pdf_buffer = generate_action_items_pdf(actions)
+    assert len(ai_pdf_buffer.getvalue()) > 50000
     assert MANDATORY_FOOTER_TEXT == "This is a system-generated Minutes of Meeting (MoM). No signature required."
+
+
+@pytest.mark.asyncio
+async def test_export_endpoints_http():
+    """Verify HTTP export routes for PDF, DOCX, and Action Items."""
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        # Login
+        login_res = await client.post("/api/v1/auth/login", json={
+            "email": "hod.it@apsit.edu.in",
+            "password": "Hod@123"
+        })
+        assert login_res.status_code == 200
+        token = login_res.json()["access_token"]
+        headers = {"Authorization": f"Bearer {token}"}
+
+        # 1. Test /api/v1/reports/action-items/pdf
+        res_ai = await client.get("/api/v1/reports/action-items/pdf", headers=headers)
+        assert res_ai.status_code == 200
+        assert res_ai.headers["content-type"] == "application/pdf"
+        assert len(res_ai.content) > 1000
+
+        # 2. Test /api/v1/export/action-items/pdf
+        res_ai2 = await client.get("/api/v1/export/action-items/pdf", headers=headers)
+        assert res_ai2.status_code == 200
+        assert res_ai2.headers["content-type"] == "application/pdf"
+
+        # 3. Test /api/v1/reports/mom/{meeting_id}/pdf
+        res_mom = await client.get("/api/v1/reports/mom/1/pdf", headers=headers)
+        assert res_mom.status_code == 200
+        assert res_mom.headers["content-type"] == "application/pdf"
+
+        # 4. Test /api/v1/mom/{meeting_id}/export/docx
+        res_docx = await client.get("/api/v1/mom/1/export/docx", headers=headers)
+        assert res_docx.status_code == 200
+
+

@@ -137,7 +137,7 @@ Return ONLY valid raw JSON with no backticks, markdown fences, or extra text.
             with open(audio_path, "rb") as f:
                 audio_b64 = base64.b64encode(f.read()).decode("utf-8")
 
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key={key}"
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={key}"
             payload = {
                 "contents": [{
                     "parts": [
@@ -176,7 +176,7 @@ Return ONLY valid raw JSON with no backticks, markdown fences, or extra text.
                 file_info = upload_resp.json().get("file", {})
                 file_uri = file_info.get("uri")
 
-                gen_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key={key}"
+                gen_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={key}"
                 payload = {
                     "contents": [{
                         "parts": [

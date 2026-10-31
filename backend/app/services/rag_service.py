@@ -198,7 +198,7 @@ async def _answer_with_gemini(query: str, context_text: str, user_name: str) -> 
     if not key:
         return None
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={key}"
     prompt = f"""
 You are the ConverseIQ Academic Meeting Intelligence Assistant for faculty member {user_name}.
 Answer the user's question accurately and concisely, grounded STRICTLY in the provided meeting records.

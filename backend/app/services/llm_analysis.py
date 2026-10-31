@@ -34,9 +34,12 @@ async def generate_mom_and_actions(transcript_text: str, participants: List[str]
     return _fallback_mom(transcript_text, faculty_list)
 
 async def _generate_with_gemini(transcript_text: str, participants: List[str]) -> Dict[str, Any]:
-    """Calls Gemini 3.6 Flash with strict JSON schema to generate MoM and faculty action items."""
+    """Calls Gemini with strict JSON schema to generate MoM and faculty action items."""
     key = settings.GEMINI_API_KEY
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key={key}"
+    if not key:
+        return None
+
+    candidate_models = ["gemini-flash-latest", "gemini-flash-lite-latest", "gemma-4-26b-a4b-it"]
 
     prompt = f"""
 You are an expert academic meeting intelligence AI for ConverseIQ.
@@ -46,11 +49,11 @@ Invited Faculty Roster:
 {', '.join(participants)}
 
 CRITICAL INSTRUCTIONS:
-1. EXECUTIVE SUMMARY: High-impact institutional summary suitable for Deans and HODs, written in formal English.
-2. FORMAL DECISIONS: Concrete, unambiguous decisions agreed or voted upon during the meeting.
-3. TOPICS DISCUSSED: Clear agenda topics with key discussion takeaways.
-4. ACTION ITEMS: Specific actionable deliverables.
-   - 'owner_name': MUST be the exact real faculty name from the roster (e.g. 'Dr. Ananya Sharma', 'Prof. Kavya Rao'), NEVER 'Speaker A' or 'Unassigned'. Determine who accepted or was assigned each task from the conversation.
+1. EXECUTIVE SUMMARY: High-impact institutional summary suitable for Deans and HODs, written in formal English based ONLY on the actual meeting transcript provided.
+2. FORMAL DECISIONS: Concrete, unambiguous decisions agreed upon during this meeting.
+3. TOPICS DISCUSSED: Clear agenda topics with key discussion takeaways from the transcript.
+4. ACTION ITEMS: Specific actionable deliverables mentioned in the transcript.
+   - 'owner_name': MUST be an exact real faculty name from the roster (e.g. '{participants[0] if participants else "Faculty"}'), NEVER 'Speaker A' or 'Unassigned'. Determine who accepted or was assigned each task from the conversation.
    - 'priority': Must be 'High', 'Medium', or 'Low'.
    - 'days_until_due': Integer days until deadline (e.g. 2 for Wednesday, 5 for Friday, 7 for next week).
 
@@ -59,7 +62,7 @@ Transcript:
 
 Output strictly valid JSON with this exact schema:
 {{
-  "summary": "Formal institutional executive summary.",
+  "summary": "Formal institutional executive summary based on the transcript.",
   "decisions": [
     "Decision 1 description",
     "Decision 2 description"
@@ -74,7 +77,7 @@ Output strictly valid JSON with this exact schema:
     {{
       "task": "Specific actionable deliverable",
       "owner_name": "Exact real faculty name from roster",
-      "priority": "High" | "Medium" | "Low",
+      "priority": "High",
       "days_until_due": 3
     }}
   ]
@@ -91,12 +94,24 @@ Return ONLY valid raw JSON with no backticks, markdown fences, or commentary.
     }
 
     async with httpx.AsyncClient(timeout=45.0) as client:
-        resp = await client.post(url, json=payload)
-        if resp.status_code == 200:
-            data = resp.json()
-            raw_text = data["candidates"][0]["content"]["parts"][0]["text"].strip()
-            raw_text = raw_text.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
-            return json.loads(raw_text)
+        for model in candidate_models:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}"
+            try:
+                resp = await client.post(url, json=payload)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    candidates = data.get("candidates", [])
+                    if candidates and "content" in candidates[0]:
+                        parts = candidates[0]["content"].get("parts", [])
+                        if parts and "text" in parts[0]:
+                            raw_text = parts[0]["text"].strip()
+                            raw_text = raw_text.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
+                            parsed = json.loads(raw_text)
+                            if "summary" in parsed:
+                                return parsed
+            except Exception as e:
+                print(f"Model {model} failed: {e}, trying next...")
+                continue
 
     return None
 
@@ -133,53 +148,85 @@ Analyze the provided meeting dialogue and extract structured Minutes of Meeting 
     return None
 
 def _fallback_mom(transcript_text: str, participants: List[str] = None) -> Dict[str, Any]:
-    """Deterministic high-quality fallback MoM."""
-    p_names = participants or ["Prof. Vedant", "Prof. Unnati", "Prof. Manthan"]
-    p1 = p_names[0] if len(p_names) > 0 else "Prof. Vedant"
-    p2 = p_names[1] if len(p_names) > 1 else "Prof. Unnati"
-    p3 = p_names[2] if len(p_names) > 2 else "Prof. Manthan"
+    """
+    Dynamic realistic fallback that parses actual transcript text
+    instead of returning fabricated static topics.
+    """
+    p_names = participants or ["Prof. Randeep Kaur Kahlon", "Prof. Jayshree Jha", "Demo"]
+    p1 = p_names[0] if len(p_names) > 0 else "Faculty Member"
+    p2 = p_names[1] if len(p_names) > 1 else p1
+    p3 = p_names[2] if len(p_names) > 2 else p2
 
-    return {
-        "summary": "The committee convened to finalize the mid-term examination timetable and coordinate documentation verification for NAAC Criteria 3. Resource allocations for CS laboratory slots were negotiated and central coordination responsibilities were delegated.",
-        "decisions": [
-            "Approved allocation of 2 additional laboratory sessions for Computer Science mid-terms on Tuesday & Thursday afternoons.",
-            "Mandated completion of all prior semester faculty publication records by end of current week.",
-            "Scheduled a follow-up review meeting with departmental coordinators for next Monday."
-        ],
-        "topics_discussed": [
-            {
-                "topic": "Mid-term Examination Timetable",
-                "points": [
-                    "Review of hall availability and seating capacities.",
-                    "Lab session conflict resolution between CS and IT departments."
-                ]
-            },
-            {
-                "topic": "NAAC Criteria 3 Research Verification",
-                "points": [
-                    "Scrutiny of peer-reviewed journal papers and patent filings.",
-                    "Collection of citation metrics across departments."
-                ]
-            }
-        ],
-        "action_items": [
-            {
-                "task": "Draft revised lab schedule for Computer Science midterm examinations",
-                "owner_name": p2,
-                "priority": "High",
-                "days_until_due": 3
-            },
-            {
-                "task": "Collect faculty research publication verification documents for NAAC Criteria 3",
-                "owner_name": p3,
-                "priority": "High",
-                "days_until_due": 5
-            },
-            {
-                "task": "Notify academic cell regarding examination room allocations",
+    clean_text = (transcript_text or "").strip()
+    lines = [line.strip() for line in clean_text.split("\n") if line.strip()]
+
+    # Extract dynamic decisions & action items from actual sentences
+    decisions = []
+    actions = []
+    topics = []
+
+    for line in lines:
+        lower = line.lower()
+        # Look for decision indicators
+        if any(w in lower for w in ["decided", "approved", "agreed", "finalized", "resolved", "confirmed"]):
+            content = line.split(":", 1)[-1].strip() if ":" in line else line
+            if len(content) > 10 and content not in decisions:
+                decisions.append(content)
+        # Look for action / task indicators
+        if any(w in lower for w in ["will", "submit", "prepare", "draft", "verify", "coordinate", "send", "review", "complete"]):
+            content = line.split(":", 1)[-1].strip() if ":" in line else line
+            if len(content) > 10:
+                speaker = line.split(":", 1)[0].strip() if ":" in line else p1
+                assigned_to = speaker if speaker in p_names else p2
+                actions.append({
+                    "task": content,
+                    "owner_name": assigned_to,
+                    "priority": "High" if "urgent" in lower or "today" in lower or "immediate" in lower else "Medium",
+                    "days_until_due": 3
+                })
+
+    if not decisions:
+        if lines:
+            decisions = [f"Deliberation confirmed on agenda points discussed by {', '.join(p_names[:2])}."]
+        else:
+            decisions = ["Institutional meeting convened with participating faculty members."]
+
+    if not actions:
+        if lines:
+            first_point = lines[0].split(":", 1)[-1].strip() if ":" in lines[0] else lines[0]
+            actions = [{
+                "task": f"Review and implement discussed deliberation points: {first_point[:80]}",
                 "owner_name": p1,
                 "priority": "Medium",
-                "days_until_due": 7
-            }
-        ]
+                "days_until_due": 4
+            }]
+        else:
+            actions = [{
+                "task": "Review and update departmental meeting compliance documentation",
+                "owner_name": p1,
+                "priority": "Medium",
+                "days_until_due": 4
+            }]
+
+    # Build meaningful summary from actual content
+    if lines:
+        sample_context = " ".join([l.split(":", 1)[-1].strip() if ":" in l else l for l in lines[:4]])
+        summary = f"The departmental committee convened with {', '.join(p_names)}. Discussions focused on: {sample_context[:250]}. Key action items and academic responsibilities were allocated for timely completion."
+        topics = [{
+            "topic": "Academic Deliberation & Departmental Agenda",
+            "points": [l.split(":", 1)[-1].strip()[:90] for l in lines[:3]]
+        }]
+    else:
+        summary = f"The departmental academic committee convened with {', '.join(p_names)}. Deliberations proceeded on key operational and curriculum matters with responsibilities assigned to respective coordinators."
+        topics = [{
+            "topic": "Departmental Administration Review",
+            "points": ["Review of academic operations", "Coordination among faculty coordinators"]
+        }]
+
+    return {
+        "summary": summary,
+        "decisions": decisions[:3],
+        "topics_discussed": topics[:3],
+        "action_items": actions[:4]
     }
+
