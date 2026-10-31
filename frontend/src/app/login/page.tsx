@@ -11,7 +11,7 @@ const INVALID_DOMAIN_MSG = 'Not Applicable. Please use your official APSIT insti
 
 export default function LoginPage() {
   const router = useRouter();
-  const [authMode, setAuthMode] = useState<'otp' | 'password'>('otp');
+  const [authMode, setAuthMode] = useState<'password' | 'otp'>('password');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
@@ -26,22 +26,27 @@ export default function LoginPage() {
     removeAuthToken();
   }, []);
 
-  // Countdown timer for OTP resend cooldown
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (timer > 0) {
-      interval = setInterval(() => {
-        setTimer((prev) => prev - 1);
-      }, 1000);
+  // Quick fill helper for verified institutional roles
+  const fillCredentials = (role: 'faculty' | 'hod' | 'admin') => {
+    setError(null);
+    setSuccessMsg(null);
+    if (role === 'faculty') {
+      setEmail('23104080@apsit.edu.in');
+      setPassword('Faculty@123');
+    } else if (role === 'hod') {
+      setEmail('hod.it@apsit.edu.in');
+      setPassword('Hod@123');
+    } else if (role === 'admin') {
+      setEmail('admin@converseiq.edu');
+      setPassword('Admin@123');
     }
-    return () => clearInterval(interval);
-  }, [timer]);
+  };
 
   const validateEmailDomain = (inputEmail: string): boolean => {
     const clean = inputEmail.trim().toLowerCase();
     if (!clean) return false;
-    // Allow admin@converseiq.edu for internal testing
-    if (clean === 'admin@converseiq.edu') return true;
+    // Allow converseiq.edu accounts (admin, hod.cs, prof.sharma)
+    if (clean.endsWith('@converseiq.edu')) return true;
     return clean.endsWith(APSIT_DOMAIN) && /^[a-zA-Z0-9_.+-]+@apsit\.edu\.in$/.test(clean);
   };
 
@@ -255,34 +260,6 @@ export default function LoginPage() {
               </p>
             </div>
 
-            {/* Mode Switcher: Institutional OTP vs Password */}
-            <div className="flex p-1 bg-[#EDF5F2] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl mb-6">
-              <button
-                type="button"
-                onClick={() => { setAuthMode('otp'); setError(null); }}
-                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 ${
-                  authMode === 'otp'
-                    ? 'bg-white dark:bg-[#1A2B24] text-[#173A2C] dark:text-[#E8F0EC] shadow-xs'
-                    : 'text-[#667875] dark:text-[#8FA89C] hover:text-[#173A2C] dark:hover:text-[#E8F0EC]'
-                }`}
-              >
-                <Mail className="w-3.5 h-3.5" />
-                <span>Institutional OTP</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => { setAuthMode('password'); setError(null); }}
-                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 ${
-                  authMode === 'password'
-                    ? 'bg-white dark:bg-[#1A2B24] text-[#173A2C] dark:text-[#E8F0EC] shadow-xs'
-                    : 'text-[#667875] dark:text-[#8FA89C] hover:text-[#173A2C] dark:hover:text-[#E8F0EC]'
-                }`}
-              >
-                <KeyRound className="w-3.5 h-3.5" />
-                <span>Password Login</span>
-              </button>
-            </div>
-
             {/* Error Message Alert */}
             {error && (
               <div className="mb-5 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-xs text-rose-700 dark:text-rose-300 font-semibold flex items-start space-x-2">
@@ -299,156 +276,97 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* AUTH MODE 1: INSTITUTIONAL OTP */}
-            {authMode === 'otp' && (
-              <div>
-                {!otpSent ? (
-                  <form onSubmit={handleRequestOtp} className="space-y-4">
-                    <div>
-                      <label className="block text-xs font-bold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
-                        Official APSIT Institutional Email
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="email"
-                          required
-                          value={email}
-                          onChange={(e) => handleEmailChange(e.target.value)}
-                          placeholder="faculty.name@apsit.edu.in"
-                          className="w-full pl-9 pr-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] placeholder:text-[#667875]/60 focus:bg-white dark:focus:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] outline-none transition-all"
-                        />
-                        <Mail className="w-4 h-4 text-[#667875] absolute left-3 top-3.5" />
-                      </div>
-                      <p className="text-[11px] text-[#667875] dark:text-[#8FA89C] mt-1 font-medium">
-                        Must end with <code className="text-[#3F795F] dark:text-[#78A98F] font-mono">@apsit.edu.in</code>
-                      </p>
-                    </div>
-
-                    <div className="pt-2">
-                      <AnimatedButton
-                        type="submit"
-                        variant="primary"
-                        size="lg"
-                        isLoading={isLoading}
-                        className="w-full justify-center bg-[#78A98F] hover:bg-[#5A9175] text-white font-bold"
-                      >
-                        Request Institutional OTP &rarr;
-                      </AnimatedButton>
-                    </div>
-                  </form>
-                ) : (
-                  <form onSubmit={handleVerifyOtp} className="space-y-4">
-                    <div className="p-3 bg-[#E4F2F4] dark:bg-[#1A3A3F] rounded-xl border border-[#B9DDE3] dark:border-[#2A5A63] text-xs text-[#132F34] dark:text-[#B9DDE3]">
-                      Enter the 6-digit verification code dispatched to: <br />
-                      <strong className="font-bold text-[#173A2C] dark:text-[#E8F0EC]">{email}</strong>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
-                        6-Digit Verification Code
-                      </label>
-                      <input
-                        type="text"
-                        maxLength={6}
-                        required
-                        autoFocus
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                        placeholder="123456"
-                        className="w-full text-center tracking-[8px] font-mono font-extrabold text-2xl py-2 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-[#173A2C] dark:text-[#E8F0EC] focus:bg-white dark:focus:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] outline-none transition-all"
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between text-xs">
-                      {timer > 0 ? (
-                        <span className="text-[#667875] dark:text-[#8FA89C] font-medium">
-                          Resend code in <strong className="text-[#173A2C] dark:text-[#E8F0EC] font-bold">{timer}s</strong>
-                        </span>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => handleRequestOtp()}
-                          disabled={isLoading}
-                          className="text-[#3F795F] dark:text-[#78A98F] font-bold hover:underline flex items-center space-x-1 cursor-pointer"
-                        >
-                          <RefreshCw className="w-3 h-3" />
-                          <span>Resend OTP</span>
-                        </button>
-                      )}
-
-                      <button
-                        type="button"
-                        onClick={() => { setOtpSent(false); setOtp(''); }}
-                        className="text-[#667875] dark:text-[#8FA89C] hover:text-[#173A2C] dark:hover:text-[#E8F0EC] font-medium cursor-pointer"
-                      >
-                        Change Email
-                      </button>
-                    </div>
-
-                    <div className="pt-2">
-                      <AnimatedButton
-                        type="submit"
-                        variant="primary"
-                        size="lg"
-                        isLoading={isLoading}
-                        className="w-full justify-center bg-[#78A98F] hover:bg-[#5A9175] text-white font-bold"
-                      >
-                        Verify &amp; Sign In
-                      </AnimatedButton>
-                    </div>
-                  </form>
-                )}
+            {/* Quick Fill Role Badges */}
+            <div className="mb-5 p-3 bg-[#EDF5F2] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-2xl space-y-2">
+              <div className="flex items-center justify-between text-[11px] font-bold text-[#667875] dark:text-[#8FA89C]">
+                <span>Quick-Fill Verified Roles:</span>
+                <span className="text-[10px] text-[#3F795F] dark:text-[#78A98F] font-semibold">1-Click Auto-Fill</span>
               </div>
-            )}
+              <div className="grid grid-cols-3 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => fillCredentials('faculty')}
+                  className="py-1.5 px-2 bg-white dark:bg-[#1A2B24] border border-[#BDDEC0] dark:border-[#2D4A3E] rounded-xl text-center text-xs font-bold text-[#173A2C] dark:text-[#E8F0EC] hover:bg-[#D4E9DF] dark:hover:bg-[#243D33] transition-all shadow-2xs"
+                >
+                  <span className="block text-[10px] text-[#667875] dark:text-[#8FA89C] font-semibold">Faculty</span>
+                  Demo (IT)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => fillCredentials('hod')}
+                  className="py-1.5 px-2 bg-white dark:bg-[#1A2B24] border border-[#B9DDE3] dark:border-[#2A5A63] rounded-xl text-center text-xs font-bold text-[#132F34] dark:text-[#E8F0EC] hover:bg-[#E4F2F4] dark:hover:bg-[#1A3A3F] transition-all shadow-2xs"
+                >
+                  <span className="block text-[10px] text-[#367C88] dark:text-[#4DA3B0] font-semibold">HOD</span>
+                  Dr. Kiran
+                </button>
+                <button
+                  type="button"
+                  onClick={() => fillCredentials('admin')}
+                  className="py-1.5 px-2 bg-white dark:bg-[#1A2B24] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-center text-xs font-bold text-[#173A2C] dark:text-[#E8F0EC] hover:bg-[#EDF5F2] dark:hover:bg-[#243D33] transition-all shadow-2xs"
+                >
+                  <span className="block text-[10px] text-[#667875] dark:text-[#8FA89C] font-semibold">Admin</span>
+                  System
+                </button>
+              </div>
+            </div>
 
-            {/* AUTH MODE 2: PASSWORD LOGIN */}
-            {authMode === 'password' && (
-              <form onSubmit={handlePasswordSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-bold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
-                    Official APSIT Email
-                  </label>
+            {/* SECURE PASSWORD LOGIN */}
+            <form onSubmit={handlePasswordSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
+                  Official Institutional Email
+                </label>
+                <div className="relative">
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => handleEmailChange(e.target.value)}
-                    placeholder="faculty.name@apsit.edu.in"
-                    className="w-full px-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] placeholder:text-[#667875]/60 focus:bg-white dark:focus:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] outline-none transition-all"
+                    placeholder="23104080@apsit.edu.in"
+                    className="w-full pl-9 pr-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] placeholder:text-[#667875]/60 focus:bg-white dark:focus:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] outline-none transition-all font-medium"
                   />
+                  <Mail className="w-4 h-4 text-[#667875] absolute left-3 top-3.5" />
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-[#173A2C] dark:text-[#E8F0EC] mb-1.5">
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-bold text-[#173A2C] dark:text-[#E8F0EC]">
                     Password
                   </label>
+                  <span className="text-[10px] text-[#667875] dark:text-[#8FA89C]">
+                    Faculty@123 / Hod@123
+                  </span>
+                </div>
+                <div className="relative">
                   <input
                     type="password"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full px-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] placeholder:text-[#667875]/60 focus:bg-white dark:focus:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] outline-none transition-all"
+                    className="w-full pl-9 pr-4 py-2.5 bg-[#F5FAF8] dark:bg-[#0F1A15] border border-[#DCE7E2] dark:border-[#2D4A3E] rounded-xl text-sm text-[#173A2C] dark:text-[#E8F0EC] placeholder:text-[#667875]/60 focus:bg-white dark:focus:bg-[#1A2B24] focus:ring-2 focus:ring-[#78A98F] outline-none transition-all"
                   />
+                  <Lock className="w-4 h-4 text-[#667875] absolute left-3 top-3.5" />
                 </div>
+              </div>
 
-                <div className="pt-2">
-                  <AnimatedButton
-                    type="submit"
-                    variant="primary"
-                    size="lg"
-                    isLoading={isLoading}
-                    className="w-full justify-center bg-[#78A98F] hover:bg-[#5A9175] text-white font-bold"
-                  >
-                    Sign In
-                  </AnimatedButton>
-                </div>
-              </form>
-            )}
+              <div className="pt-2">
+                <AnimatedButton
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  isLoading={isLoading}
+                  className="w-full justify-center bg-[#78A98F] hover:bg-[#5A9175] text-white font-bold text-sm shadow-sm"
+                >
+                  Secure Sign In &rarr;
+                </AnimatedButton>
+              </div>
+            </form>
 
             <div className="mt-6 pt-4 border-t border-[#DCE7E2] dark:border-[#2D4A3E] text-center">
               <p className="text-[11px] text-[#667875] dark:text-[#8FA89C]">
-                Unauthorized access is strictly prohibited &bull; APSIT IT Dept
+                Official Academic Intelligence &bull; APSIT IT Dept
               </p>
             </div>
 

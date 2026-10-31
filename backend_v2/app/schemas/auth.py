@@ -21,3 +21,16 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: UserResponse
+
+class OTPRequest(BaseModel):
+    email: EmailStr
+
+class OTPVerify(BaseModel):
+    email: EmailStr
+    otp: str
+
+class OTPRequestResponse(BaseModel):
+    success: bool
+    message: str
+    email: str
+

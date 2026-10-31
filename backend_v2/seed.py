@@ -40,6 +40,62 @@ async def seed():
 
         # 2. Seed Users
         users_to_seed = [
+            # APSIT Institutional Faculty & Leadership Accounts
+            {
+                "name": "Demo",
+                "email": "23104080@apsit.edu.in",
+                "password": "Faculty@123",
+                "role": "Faculty",
+                "dept_code": "IT",
+                "designation": "Assistant Professor",
+                "phone": "+91 98765 43213"
+            },
+            {
+                "name": "Dr. Kiran Deshpande",
+                "email": "hod.it@apsit.edu.in",
+                "password": "Hod@123",
+                "role": "HOD",
+                "dept_code": "IT",
+                "designation": "Head of Department (HOD)",
+                "phone": "+91 98765 43214"
+            },
+            {
+                "name": "Prof. Randeep Kaur Kahlon",
+                "email": "randeep.kahlon@apsit.edu.in",
+                "password": "Faculty@123",
+                "role": "Faculty",
+                "dept_code": "IT",
+                "designation": "Assistant Professor",
+                "phone": "+91 98765 43215"
+            },
+            {
+                "name": "Prof. Unnati",
+                "email": "23104229@apsit.edu.in",
+                "password": "Faculty@123",
+                "role": "Faculty",
+                "dept_code": "IT",
+                "designation": "Assistant Professor",
+                "phone": "+91 98765 43216"
+            },
+            {
+                "name": "Prof. Vedant",
+                "email": "23104025@apsit.edu.in",
+                "password": "Faculty@123",
+                "role": "Faculty",
+                "dept_code": "IT",
+                "designation": "Assistant Professor",
+                "phone": "+91 98765 43217"
+            },
+            {
+                "name": "Prof. Manthan",
+                "email": "23104218@apsit.edu.in",
+                "password": "Faculty@123",
+                "role": "Faculty",
+                "dept_code": "IT",
+                "designation": "Assistant Professor",
+                "phone": "+91 98765 43218"
+            },
+            # ConverseIQ System Accounts
             {
                 "name": "Prof. Sharma",
                 "email": "prof.sharma@converseiq.edu",
@@ -87,6 +143,12 @@ async def seed():
                 )
                 session.add(new_user)
                 print(f"Created user: {u['name']} ({u['role']}) - {u['email']}")
+            else:
+                existing_user.hashed_password = get_password_hash(u["password"])
+                existing_user.is_active = True
+                existing_user.failed_login_attempts = 0
+                existing_user.locked_until = None
+                print(f"Updated password & status for user: {u['email']}")
 
         # Remove any leftover dummy faculty accounts from older seeds
         dummy_emails = [
