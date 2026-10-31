@@ -122,6 +122,13 @@ async def seed_initial_data():
             demo_user.name = "Demo"
             demo_user.designation = "Faculty Member"
 
+        # Check for legacy or active faculty accounts
+        fac_s_res = await session.execute(select(User).where(User.email == "prof.sharma@converseiq.edu"))
+        faculty_sharma = fac_s_res.scalar_one_or_none() or randeep_user or demo_user
+
+        fac_m_res = await session.execute(select(User).where(User.email == "prof.mishra@converseiq.edu"))
+        faculty_mishra = fac_m_res.scalar_one_or_none() or demo_user
+
         # 12 Initial Faculty Directory Members (Unconfigured emails per Section 1B & 4)
         initial_faculty_roster = [
             "Prof. Jayshree Jha",
@@ -160,15 +167,16 @@ async def seed_initial_data():
             if not cs_dept.hod_id:
                 cs_dept.hod_id = hod_user.id
                 await session.commit()
-        if faculty_sharma:
+        if faculty_sharma and getattr(faculty_sharma, 'id', None):
             await session.refresh(faculty_sharma)
-        if faculty_mishra:
+        if faculty_mishra and getattr(faculty_mishra, 'id', None):
             await session.refresh(faculty_mishra)
 
         # 3. Seed Meeting
         meeting_res = await session.execute(select(Meeting).where(Meeting.title == "Curriculum & NAAC Review Committee"))
         meeting1 = meeting_res.scalar_one_or_none()
-        if not meeting1 and faculty_sharma:
+        creator = faculty_sharma or randeep_user or demo_user or hod_user or admin_user
+        if not meeting1 and creator:
             meeting1 = Meeting(
                 title="Curriculum & NAAC Review Committee",
                 date=datetime.now(timezone.utc) - timedelta(days=1),
