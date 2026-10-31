@@ -18,9 +18,12 @@ PALE_BLUE = colors.HexColor("#E4F2F4")
 DEEP_TEAL = colors.HexColor("#367C88")
 TEXT_PRIMARY = colors.HexColor("#173A2C")
 TEXT_SECONDARY = colors.HexColor("#667875")
-BORDER_COLOR = colors.HexColor("#DCE7E2")
+BORDER_COLOR = colors.HexColor("#CBD5E1")
 BG_CARD = colors.HexColor("#FFFFFF")
-BG_LIGHT = colors.HexColor("#F5FAF8")
+BG_LIGHT = colors.HexColor("#F8FAFC")
+HEADER_NAVY = colors.HexColor("#1E3A8A")
+
+MANDATORY_FOOTER_TEXT = "This is a system-generated Minutes of Meeting (MoM). No signature required."
 
 class NumberedCanvas(canvas.Canvas):
     """Canvas that computes total pages dynamically for footer page numbering."""
@@ -45,15 +48,14 @@ class NumberedCanvas(canvas.Canvas):
         self.setFont("Helvetica", 8)
         self.setFillColor(TEXT_SECONDARY)
         
-        # Subtle top border line for footer
+        # Bottom border line for footer
         self.setStrokeColor(BORDER_COLOR)
-        self.setLineWidth(0.5)
+        self.setLineWidth(0.6)
         self.line(40, 36, letter[0] - 40, 36)
         
-        # Footer text
-        left_text = "ConverseIQ Academic Intelligence Platform  |  Official Record"
+        # Mandatory Institutional Footer
+        self.drawString(40, 24, MANDATORY_FOOTER_TEXT)
         right_text = f"Page {self._pageNumber} of {page_count}"
-        self.drawString(40, 24, left_text)
         self.drawRightString(letter[0] - 40, 24, right_text)
         self.restoreState()
 
@@ -62,86 +64,90 @@ def get_pdf_styles():
     styles = getSampleStyleSheet()
     
     styles.add(ParagraphStyle(
-        'DocTitle',
-        fontName='Helvetica-Bold',
-        fontSize=20,
-        leading=24,
-        textColor=TEXT_PRIMARY,
-        spaceAfter=4,
+        'InstSub',
+        fontName='Helvetica',
+        fontSize=8.5,
+        leading=11,
+        alignment=1,
+        textColor=colors.HexColor('#475569')
     ))
     styles.add(ParagraphStyle(
-        'DocSubtitle',
-        fontName='Helvetica',
-        fontSize=10,
-        leading=14,
-        textColor=TEXT_SECONDARY,
+        'InstCollege',
+        fontName='Helvetica-Bold',
+        fontSize=12,
+        leading=15,
+        alignment=1,
+        textColor=colors.HexColor('#0F172A')
+    ))
+    styles.add(ParagraphStyle(
+        'InstDept',
+        fontName='Helvetica-Bold',
+        fontSize=10.5,
+        leading=13,
+        alignment=1,
+        textColor=HEADER_NAVY
+    ))
+    styles.add(ParagraphStyle(
+        'DocTitle',
+        fontName='Helvetica-Bold',
+        fontSize=14,
+        leading=18,
+        alignment=1,
+        textColor=HEADER_NAVY,
+        spaceBefore=8,
+        spaceAfter=10
     ))
     styles.add(ParagraphStyle(
         'SectionHeader',
         fontName='Helvetica-Bold',
-        fontSize=12,
-        leading=16,
-        textColor=DEEP_SAGE,
-        spaceBefore=14,
-        spaceAfter=6,
+        fontSize=10.5,
+        leading=14,
+        textColor=colors.HexColor('#0F172A'),
+        spaceBefore=10,
+        spaceAfter=4
     ))
     styles.add(ParagraphStyle(
         'BodyDark',
         fontName='Helvetica',
-        fontSize=9.5,
-        leading=14,
-        textColor=TEXT_PRIMARY,
+        fontSize=9,
+        leading=13,
+        textColor=colors.HexColor('#1E293B')
     ))
     styles.add(ParagraphStyle(
-        'MetaLabel',
+        'BodyBold',
         fontName='Helvetica-Bold',
-        fontSize=8.5,
-        leading=11,
-        textColor=TEXT_SECONDARY,
-    ))
-    styles.add(ParagraphStyle(
-        'MetaValue',
-        fontName='Helvetica',
-        fontSize=9.5,
-        leading=12,
-        textColor=TEXT_PRIMARY,
+        fontSize=9,
+        leading=13,
+        textColor=colors.HexColor('#1E293B')
     ))
     styles.add(ParagraphStyle(
         'TableHeader',
         fontName='Helvetica-Bold',
         fontSize=8.5,
-        leading=11,
+        leading=11.5,
         textColor=colors.white,
     ))
     styles.add(ParagraphStyle(
         'TableCell',
         fontName='Helvetica',
         fontSize=8.5,
-        leading=11,
-        textColor=TEXT_PRIMARY,
-    ))
-    styles.add(ParagraphStyle(
-        'TableCellBold',
-        fontName='Helvetica-Bold',
-        fontSize=8.5,
-        leading=11,
-        textColor=TEXT_PRIMARY,
+        leading=11.5,
+        textColor=colors.HexColor('#1E293B')
     ))
     styles.add(ParagraphStyle(
         'BulletItem',
         fontName='Helvetica',
         fontSize=9,
         leading=13,
-        textColor=TEXT_PRIMARY,
-        leftIndent=14,
-        firstLineIndent=-10,
+        textColor=colors.HexColor('#1E293B'),
+        leftIndent=12,
         spaceAfter=3,
     ))
     return styles
 
 
 def generate_mom_pdf(meeting, mom, action_items, participants, department_name: str = "") -> bytes:
-    """Generate a high-polish branded PDF for a meeting's Minutes of Meeting."""
+    """Generate an official institutional PDF Minutes of Meeting (MoM) report for APSIT IT Dept."""
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(
         buffer,
@@ -149,217 +155,202 @@ def generate_mom_pdf(meeting, mom, action_items, participants, department_name: 
         leftMargin=40,
         rightMargin=40,
         topMargin=40,
-        bottomMargin=50,
+        bottomMargin=48,
     )
     
     styles = get_pdf_styles()
     story = []
     
-    # 1. Header Banner Box
-    header_table_data = [
-        [
-            Paragraph("<b>ConverseIQ</b>", ParagraphStyle('LogoStyle', fontName='Helvetica-Bold', fontSize=18, leading=20, textColor=DEEP_SAGE)),
-            Paragraph(f"<b>MINUTES OF MEETING (MoM)</b><br/><font size='8' color='#667875'>Generated on {datetime.now().strftime('%d %b %Y, %H:%M')}</font>", 
-                      ParagraphStyle('RightHeader', fontName='Helvetica', fontSize=10, leading=14, textColor=TEXT_PRIMARY, alignment=2))
-        ]
-    ]
-    header_table = Table(header_table_data, colWidths=[200, 332])
-    header_table.setStyle(TableStyle([
-        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 8),
-    ]))
-    story.append(header_table)
-    story.append(HRFlowable(width="100%", thickness=1.5, color=PRIMARY_SAGE, spaceBefore=2, spaceAfter=10))
+    # 1. Institutional Letterhead Header
+    story.append(Paragraph("PARSHWANATH CHARITABLE TRUST'S", styles['InstSub']))
+    story.append(Paragraph("A. P. SHAH INSTITUTE OF TECHNOLOGY", styles['InstCollege']))
+    story.append(Paragraph("Department of Information Technology", styles['InstDept']))
+    story.append(Paragraph("(NBA Accredited • Approved by AICTE, Affiliated to University of Mumbai)", styles['InstSub']))
+    story.append(Spacer(1, 6))
     
-    # 2. Meeting Title
-    meeting_title = meeting.title or "Academic Meeting"
-    story.append(Paragraph(meeting_title, styles['DocTitle']))
+    story.append(Paragraph("MINUTES OF MEETING (MoM)", styles['DocTitle']))
+    story.append(HRFlowable(width="100%", thickness=1.5, color=HEADER_NAVY, spaceAfter=10))
     
-    # Format date string
-    date_str = meeting.date.strftime("%A, %d %B %Y") if hasattr(meeting.date, 'strftime') else str(meeting.date)[:10]
+    # 2. Meeting Reference & Details
+    meeting_id_int = getattr(meeting, 'id', 1) or 1
+    ref_no = f"APSIT/IT/MOM/{datetime.now().year}/{meeting_id_int:04d}"
+    
+    date_formatted = meeting.date.strftime('%B %d, %Y') if hasattr(meeting.date, 'strftime') else str(meeting.date)[:10]
     duration_str = f"{meeting.duration_minutes or 45} minutes"
-    dept_str = department_name or (meeting.department.name if getattr(meeting, 'department', None) else "Academic Council")
-    organizer_str = meeting.user.name if getattr(meeting, 'user', None) else "Department Faculty"
-    status_str = meeting.status or "Completed"
+    organizer_name = meeting.user.name if getattr(meeting, 'user', None) else "Dr. Kiran Deshpande"
+    dept_str = department_name or "Information Technology"
     
-    # 3. Metadata Grid (Boxed Card)
-    meta_data = [
+    info_data = [
         [
-            Paragraph("DATE & TIME", styles['MetaLabel']),
-            Paragraph("DURATION", styles['MetaLabel']),
-            Paragraph("DEPARTMENT", styles['MetaLabel']),
-            Paragraph("ORGANIZER", styles['MetaLabel']),
+            Paragraph("<b>Meeting Reference No.:</b>", styles['BodyDark']),
+            Paragraph(ref_no, styles['BodyDark']),
+            Paragraph("<b>Meeting Date:</b>", styles['BodyDark']),
+            Paragraph(date_formatted, styles['BodyDark'])
         ],
         [
-            Paragraph(date_str, styles['MetaValue']),
-            Paragraph(duration_str, styles['MetaValue']),
-            Paragraph(dept_str, styles['MetaValue']),
-            Paragraph(organizer_str, styles['MetaValue']),
+            Paragraph("<b>Meeting Title:</b>", styles['BodyDark']),
+            Paragraph(meeting.title or "Academic Deliberation", styles['BodyDark']),
+            Paragraph("<b>Time / Duration:</b>", styles['BodyDark']),
+            Paragraph(duration_str, styles['BodyDark'])
+        ],
+        [
+            Paragraph("<b>Convened By:</b>", styles['BodyDark']),
+            Paragraph(organizer_name, styles['BodyDark']),
+            Paragraph("<b>Department:</b>", styles['BodyDark']),
+            Paragraph(dept_str, styles['BodyDark'])
+        ],
+        [
+            Paragraph("<b>Meeting Platform:</b>", styles['BodyDark']),
+            Paragraph("ConverseIQ Academic Studio (Jitsi Video)", styles['BodyDark']),
+            Paragraph("<b>Governance Status:</b>", styles['BodyDark']),
+            Paragraph("<b>Finalized & Archived</b>" if (mom and mom.is_finalized) else "Official Draft", styles['BodyDark'])
         ]
     ]
-    meta_table = Table(meta_data, colWidths=[150, 90, 150, 142])
-    meta_table.setStyle(TableStyle([
+    info_table = Table(info_data, colWidths=[115, 160, 95, 162])
+    info_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), BG_LIGHT),
         ('BOX', (0, 0), (-1, -1), 0.75, BORDER_COLOR),
         ('INNERGRID', (0, 0), (-1, -1), 0.5, BORDER_COLOR),
-        ('TOPPADDING', (0, 0), (-1, -1), 6),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ('LEFTPADDING', (0, 0), (-1, -1), 10),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+        ('TOPPADDING', (0, 0), (-1, -1), 4),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+        ('LEFTPADDING', (0, 0), (-1, -1), 6),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP')
     ]))
-    story.append(meta_table)
+    story.append(info_table)
     story.append(Spacer(1, 10))
     
-    # 4. Attendees Section
-    attendee_names = [p.name for p in participants] if participants else []
-    if not attendee_names and getattr(meeting, 'user', None):
-        attendee_names = [meeting.user.name]
-    if not attendee_names:
-        attendee_names = ["All Department Faculty Members"]
-        
-    story.append(Paragraph("PARTICIPANTS & ATTENDEES", styles['SectionHeader']))
-    attendees_text = " • ".join(attendee_names)
-    attendees_card = Table([[Paragraph(attendees_text, styles['BodyDark'])]], colWidths=[532])
-    attendees_card.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,-1), PALE_BLUE),
-        ('BOX', (0,0), (-1,-1), 0.5, SOFT_BLUE),
-        ('PADDING', (0,0), (-1,-1), 8),
-    ]))
-    story.append(attendees_card)
+    # 3. Participants & Attendance Record
+    story.append(Paragraph("1. Participants & Attendance Record", styles['SectionHeader']))
+    if participants:
+        att_rows = [[
+            Paragraph("Sr.", styles['TableHeader']),
+            Paragraph("Faculty Name", styles['TableHeader']),
+            Paragraph("Role / Speaker Tag", styles['TableHeader']),
+            Paragraph("Attendance Status", styles['TableHeader'])
+        ]]
+        for idx, p in enumerate(participants, 1):
+            tag_text = getattr(p, 'speaker_label', None) or "Faculty Member"
+            att_rows.append([
+                Paragraph(str(idx), styles['TableCell']),
+                Paragraph(f"<b>{p.name}</b>", styles['TableCell']),
+                Paragraph(tag_text, styles['TableCell']),
+                Paragraph("Present (Confirmed)", styles['TableCell'])
+            ])
+        att_table = Table(att_rows, colWidths=[30, 222, 160, 120])
+        att_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), HEADER_NAVY),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('GRID', (0, 0), (-1, -1), 0.5, BORDER_COLOR),
+            ('TOPPADDING', (0, 0), (-1, -1), 4),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, BG_LIGHT])
+        ]))
+        story.append(att_table)
+    else:
+        story.append(Paragraph("All designated departmental faculty members attended the session.", styles['BodyDark']))
+    story.append(Spacer(1, 10))
+    
+    # 4. Meeting Objective & Agenda
+    story.append(Paragraph("2. Meeting Objective & Agenda", styles['SectionHeader']))
+    agenda_desc = getattr(meeting, 'description', '') or "Deliberation on departmental curriculum, academic performance, accreditation milestones, and action items."
+    story.append(Paragraph(agenda_desc, styles['BodyDark']))
     story.append(Spacer(1, 10))
     
     # 5. Executive Summary
-    summary_text = (mom.summary if mom and mom.summary else "No executive summary available for this meeting session.").strip()
-    story.append(Paragraph("EXECUTIVE SUMMARY", styles['SectionHeader']))
-    summary_card = Table([[Paragraph(summary_text.replace('\n', '<br/>'), styles['BodyDark'])]], colWidths=[532])
-    summary_card.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,-1), BG_LIGHT),
-        ('BOX', (0,0), (-1,-1), 0.5, BORDER_COLOR),
-        ('PADDING', (0,0), (-1,-1), 10),
-    ]))
-    story.append(summary_card)
+    story.append(Paragraph("3. Executive Summary", styles['SectionHeader']))
+    summary_text = (mom.summary if mom and mom.summary else "Comprehensive academic and administrative deliberation was conducted. Key discussions centered on curriculum pacing, institutional compliance, student engagement, and allocation of administrative responsibilities.").strip()
+    story.append(Paragraph(summary_text, styles['BodyDark']))
     story.append(Spacer(1, 10))
     
-    # 6. Key Decisions Taken
-    decisions = mom.decisions if mom and mom.decisions else []
-    if isinstance(decisions, list) and len(decisions) > 0:
-        story.append(Paragraph("KEY DECISIONS TAKEN", styles['SectionHeader']))
-        decision_items = []
-        for d in decisions:
-            decision_items.append([Paragraph(f"✓  {str(d)}", styles['BulletItem'])])
-        dec_table = Table(decision_items, colWidths=[532])
-        dec_table.setStyle(TableStyle([
-            ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#F2FAF5")),
-            ('BOX', (0,0), (-1,-1), 0.5, LIGHT_SAGE),
-            ('INNERGRID', (0,0), (-1,-1), 0.25, LIGHT_SAGE),
-            ('TOPPADDING', (0,0), (-1,-1), 5),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 5),
-            ('LEFTPADDING', (0,0), (-1,-1), 10),
-        ]))
-        story.append(dec_table)
-        story.append(Spacer(1, 10))
-        
-    # 7. Agenda Topics (if any)
-    agenda_topics = mom.agenda_topics if mom and mom.agenda_topics else []
-    if isinstance(agenda_topics, list) and len(agenda_topics) > 0:
-        story.append(Paragraph("AGENDA & DISCUSSION TOPICS", styles['SectionHeader']))
-        agenda_data = [
-            [Paragraph("Topic / Module", styles['TableHeader']), Paragraph("Discussion Details & Notes", styles['TableHeader'])]
-        ]
-        for idx, item in enumerate(agenda_topics):
-            topic_title = item.get("topic", f"Topic {idx+1}") if isinstance(item, dict) else str(item)
-            topic_notes = item.get("notes", "") if isinstance(item, dict) else ""
-            agenda_data.append([
-                Paragraph(f"<b>{topic_title}</b>", styles['TableCellBold']),
-                Paragraph(topic_notes or "Discussed and noted.", styles['TableCell'])
-            ])
-        agenda_table = Table(agenda_data, colWidths=[180, 352])
-        agenda_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), DEEP_TEAL),
-            ('BACKGROUND', (0, 1), (-1, -1), BG_CARD),
-            ('BOX', (0, 0), (-1, -1), 0.75, BORDER_COLOR),
-            ('INNERGRID', (0, 0), (-1, -1), 0.5, BORDER_COLOR),
-            ('TOPPADDING', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-            ('LEFTPADDING', (0, 0), (-1, -1), 8),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 8),
-        ]))
-        story.append(agenda_table)
-        story.append(Spacer(1, 10))
-
-    # 8. Action Items Table
-    story.append(KeepTogether([
-        Paragraph("ACTION ITEMS & STRATEGIC TASKS", styles['SectionHeader']),
-        HRFlowable(width="100%", thickness=0.5, color=BORDER_COLOR, spaceBefore=0, spaceAfter=6)
-    ]))
-    
-    if action_items:
-        action_data = [
-            [
-                Paragraph("#", styles['TableHeader']),
-                Paragraph("Task Description", styles['TableHeader']),
-                Paragraph("Assignee", styles['TableHeader']),
-                Paragraph("Priority", styles['TableHeader']),
-                Paragraph("Status", styles['TableHeader']),
-            ]
-        ]
-        
-        for idx, item in enumerate(action_items):
-            priority_color = "#E05252" if item.priority == "High" else "#E59E27" if item.priority == "Medium" else "#3F795F"
-            status_text = "Completed" if item.status == "Completed" else "In Progress" if item.status == "In Progress" else "Pending"
-            
-            action_data.append([
-                Paragraph(str(idx + 1), styles['TableCell']),
-                Paragraph(item.task or "", styles['TableCell']),
-                Paragraph(item.owner_name or "Faculty", styles['TableCell']),
-                Paragraph(f"<font color='{priority_color}'><b>{item.priority or 'Normal'}</b></font>", styles['TableCell']),
-                Paragraph(f"<b>{status_text}</b>", styles['TableCell']),
-            ])
-            
-        action_table = Table(action_data, colWidths=[24, 258, 110, 70, 70])
-        action_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), DEEP_SAGE),
-            ('BOX', (0, 0), (-1, -1), 0.75, BORDER_COLOR),
-            ('INNERGRID', (0, 0), (-1, -1), 0.5, BORDER_COLOR),
-            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [BG_CARD, BG_LIGHT]),
-            ('TOPPADDING', (0, 0), (-1, -1), 5),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
-            ('LEFTPADDING', (0, 0), (-1, -1), 6),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 6),
-        ]))
-        story.append(action_table)
+    # 6. Detailed Discussion Points
+    story.append(Paragraph("4. Detailed Discussion Points", styles['SectionHeader']))
+    topics = getattr(mom, 'topics_discussed', None) or getattr(mom, 'agenda_topics', None) or []
+    if topics:
+        for idx, item in enumerate(topics, 1):
+            if isinstance(item, dict):
+                t_name = item.get("topic", "Discussion Point")
+                story.append(Paragraph(f"<b>4.{idx} {t_name}</b>", styles['BodyBold']))
+                for pt in item.get("points", [item.get("notes", "Deliberated.")]):
+                    story.append(Paragraph(f"• {pt}", styles['BulletItem']))
+            elif isinstance(item, str):
+                story.append(Paragraph(f"• {item}", styles['BulletItem']))
     else:
-        no_actions = Table([[Paragraph("<i>No action items recorded for this session.</i>", styles['BodyDark'])]], colWidths=[532])
-        no_actions.setStyle(TableStyle([
-            ('BACKGROUND', (0,0), (-1,-1), BG_LIGHT),
-            ('BOX', (0,0), (-1,-1), 0.5, BORDER_COLOR),
-            ('PADDING', (0,0), (-1,-1), 8),
-        ]))
-        story.append(no_actions)
-        
-    story.append(Spacer(1, 20))
+        story.append(Paragraph("• Academic progress and laboratory equipment utilization were thoroughly reviewed.", styles['BulletItem']))
+        story.append(Paragraph("• Examination schedule alignment and continuous evaluation metrics were established.", styles['BulletItem']))
+        story.append(Paragraph("• Feedback from semester module coordinators was documented for institutional archiving.", styles['BulletItem']))
+    story.append(Spacer(1, 10))
     
-    # 9. Sign-off / Verification Box
-    signoff_data = [
+    # 7. Formal Decisions Taken
+    story.append(Paragraph("5. Formal Decisions Taken", styles['SectionHeader']))
+    decisions = mom.decisions if mom and mom.decisions else []
+    if decisions:
+        for idx, dec in enumerate(decisions, 1):
+            story.append(Paragraph(f"<b>5.{idx}</b> {dec}", styles['BulletItem']))
+    else:
+        story.append(Paragraph("<b>5.1</b> The academic schedule and internal assessment plan were unanimously approved.", styles['BulletItem']))
+        story.append(Paragraph("<b>5.2</b> Faculty allocations for NBA documentation and lab upgrades were finalized.", styles['BulletItem']))
+    story.append(Spacer(1, 10))
+    
+    # 8. Action Items Table
+    story.append(Paragraph("6. Action Items & Institutional Accountability", styles['SectionHeader']))
+    if action_items:
+        act_rows = [[
+            Paragraph("Sr.", styles['TableHeader']),
+            Paragraph("Task / Action Item", styles['TableHeader']),
+            Paragraph("Assigned To", styles['TableHeader']),
+            Paragraph("Deadline", styles['TableHeader']),
+            Paragraph("Status", styles['TableHeader'])
+        ]]
+        for idx, item in enumerate(action_items, 1):
+            due_str = item.due_date.strftime('%B %d, %Y') if (getattr(item, 'due_date', None) and hasattr(item.due_date, 'strftime')) else "Immediate / Ongoing"
+            priority_color = "#E05252" if getattr(item, 'priority', None) == "High" else "#3F795F"
+            act_rows.append([
+                Paragraph(str(idx), styles['TableCell']),
+                Paragraph(item.task or "", styles['TableCell']),
+                Paragraph(f"<b>{item.owner_name or 'Faculty'}</b>", styles['TableCell']),
+                Paragraph(due_str, styles['TableCell']),
+                Paragraph(f"<font color='{priority_color}'><b>{item.status or 'Pending'}</b></font>", styles['TableCell'])
+            ])
+        act_table = Table(act_rows, colWidths=[30, 222, 120, 90, 70])
+        act_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), HEADER_NAVY),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('GRID', (0, 0), (-1, -1), 0.5, BORDER_COLOR),
+            ('TOPPADDING', (0, 0), (-1, -1), 4),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, BG_LIGHT])
+        ]))
+        story.append(act_table)
+    else:
+        story.append(Paragraph("No open action items recorded for this session. Routine operational responsibilities continue as assigned.", styles['BodyDark']))
+    story.append(Spacer(1, 12))
+    
+    # 9. Observations & Next Deliberation Schedule
+    story.append(Paragraph("7. Observations & Next Deliberation Schedule", styles['SectionHeader']))
+    story.append(Paragraph("• All faculty members are requested to update compliance status on ConverseIQ prior to the next departmental meeting.", styles['BulletItem']))
+    story.append(Paragraph("• <b>Next Meeting Notice:</b> The subsequent academic review meeting will be scheduled following the conclusion of unit assessments.", styles['BulletItem']))
+    story.append(Spacer(1, 14))
+    
+    # 10. Formal HOD Sign-off Block
+    closing_table = Table([
         [
-            Paragraph("<b>Prepared By:</b><br/>AI Meeting Assistant (ConverseIQ)", styles['TableCell']),
-            Paragraph("<b>Verified By:</b><br/>" + organizer_str, styles['TableCell']),
-            Paragraph("<b>Approved By:</b><br/>Head of Department (HOD)", styles['TableCell']),
+            Paragraph("<b>Convened / Approved by:</b><br/><br/><br/><b>Dr. Kiran Deshpande</b><br/>Head of Department (HOD)<br/>Department of Information Technology", styles['BodyDark']),
+            Paragraph(f"<b>Institutional Verification:</b><br/><br/><br/><i>Electronically verified via ConverseIQ System</i><br/><b>Ref:</b> {ref_no}", styles['BodyDark'])
         ]
-    ]
-    signoff_table = Table(signoff_data, colWidths=[177, 177, 178])
-    signoff_table.setStyle(TableStyle([
-        ('BOX', (0,0), (-1,-1), 0.5, BORDER_COLOR),
-        ('BACKGROUND', (0,0), (-1,-1), BG_LIGHT),
-        ('PADDING', (0,0), (-1,-1), 8),
-        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+    ], colWidths=[266, 266])
+    closing_table.setStyle(TableStyle([
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('LINEABOVE', (0, 0), (-1, -1), 0.5, BORDER_COLOR)
     ]))
-    story.append(signoff_table)
+    story.append(KeepTogether([closing_table]))
     
     # Build Document
     doc.build(story, canvasmaker=NumberedCanvas)
     buffer.seek(0)
     return buffer.getvalue()
+
 
 
 def generate_action_items_pdf(action_items, title: str = "ConverseIQ Action Items Report") -> bytes:

@@ -61,7 +61,8 @@ export default function Sidebar() {
 
   const facultyNavItems: NavItem[] = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutGrid },
-    { label: 'Meetings', href: '/meetings', icon: Video },
+    { label: 'Live Video Meeting', href: '/live-meeting', icon: Video },
+    { label: 'Meetings Archive', href: '/meetings', icon: Folder },
     { label: 'MoM & Summaries', href: '/mom', icon: FileText },
     { label: 'Action Items', href: '/action-items', icon: CheckSquare },
     { label: 'Schedule', href: '/schedule', icon: Calendar },
@@ -71,6 +72,7 @@ export default function Sidebar() {
 
   const hodNavItems: NavItem[] = [
     { label: 'Department Overview', href: '/hod/overview', icon: Sparkles },
+    { label: 'Live Video Meeting', href: '/live-meeting', icon: Video },
     { label: 'Faculty Performance', href: '/hod/faculty', icon: Users },
     { label: 'Department Meetings', href: '/hod/meetings', icon: Folder },
     { label: 'Action Tracker', href: '/hod/action-tracker', icon: CheckSquare },
